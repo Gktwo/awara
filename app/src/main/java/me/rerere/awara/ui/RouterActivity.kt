@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.theme.AwaraTheme
 
 class RouterActivity : ComponentActivity() {
@@ -99,7 +100,7 @@ class RouterActivity : ComponentActivity() {
                             .fillMaxSize()
                             .padding(padding)
                     ) {
-                        Text("Hello World!")
+                        IndexPage()
                     }
                 }
             }

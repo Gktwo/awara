@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -56,14 +57,22 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.6.1")
 
     // Compose
-    implementation(platform("androidx.compose:compose-bom:2022.10.00"))
+    implementation(platform("androidx.compose:compose-bom:2023.01.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    implementation("androidx.compose.material3:material3-window-size-class")
+    implementation("androidx.compose.material:material-icons-extended")
+
+    // Koin
+    implementation("io.insert-koin:koin-androidx-compose:3.4.2")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // Kotlinx Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
