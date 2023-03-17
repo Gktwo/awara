@@ -21,7 +21,7 @@ class RouterActivity : ComponentActivity() {
             AwaraTheme {
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "login"
+                    startDestination = "index"
                 ) {
                     composable("index") {
                         IndexPage()
