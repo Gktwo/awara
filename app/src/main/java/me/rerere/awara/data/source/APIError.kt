@@ -32,14 +32,3 @@ fun HttpException.toAPIError(): APIError {
         message = bodyJson["message"]?.jsonPrimitive?.content ?: "error.unknown",
     )
 }
-
-/**
- * If the throwable is a HttpException, then convert it to APIError
- *
- * @param block The block to be executed if the throwable is a HttpException
- */
-fun Throwable.ifAPIError(block: (APIError) -> Unit) {
-    if (this is HttpException) {
-        block(this.toAPIError())
-    }
-}

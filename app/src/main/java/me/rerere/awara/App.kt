@@ -6,6 +6,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import me.rerere.awara.data.repo.UserRepo
 import me.rerere.awara.data.source.APIError
 import me.rerere.awara.data.source.IwaraAPI
 import me.rerere.awara.ui.page.index.IndexVM
@@ -64,7 +65,7 @@ val networkModule = module {
 
 val repoModule = module {
     single {
-
+        UserRepo(get())
     }
 }
 

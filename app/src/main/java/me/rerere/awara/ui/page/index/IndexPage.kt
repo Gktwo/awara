@@ -80,7 +80,7 @@ fun IndexPage(
             ) {
                 Button(
                     onClick = {
-                        vm.test()
+
                     }
                 ) {
                     Text("Hello World!")
