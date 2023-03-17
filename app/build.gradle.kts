@@ -57,13 +57,16 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.6.1")
 
     // Compose
-    implementation(platform("androidx.compose:compose-bom:2023.01.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material3:material3-window-size-class")
-    implementation("androidx.compose.material:material-icons-extended")
+    // implementation(platform("androidx.compose:compose-bom:2023.01.00"))
+    implementation("androidx.compose.ui:ui:1.4.0-rc01")
+    implementation("androidx.compose.ui:ui-graphics:1.4.0-rc01")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.0-rc01")
+    implementation("androidx.compose.material3:material3:1.1.0-alpha08")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.0-alpha08")
+    implementation("androidx.compose.material:material-icons-extended:1.4.0-rc01")
+
+    // Accompanist
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.29.2-rc")
 
     // Koin
     implementation("io.insert-koin:koin-androidx-compose:3.4.2")
@@ -92,4 +95,18 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+}
+
+tasks {
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            freeCompilerArgs += "-opt-in=androidx.compose.material3.ExperimentalMaterial3Api"
+            freeCompilerArgs += "-opt-in=androidx.compose.material.ExperimentalMaterialApi"
+            freeCompilerArgs += "-opt-in=androidx.compose.animation.ExperimentalAnimationApi"
+            freeCompilerArgs += "-opt-in=androidx.compose.foundation.ExperimentalFoundationApi"
+            freeCompilerArgs += "-opt-in=com.google.accompanist.pager.ExperimentalPagerApi"
+            freeCompilerArgs += "-opt-in=coil.annotation.ExperimentalCoilApi"
+            freeCompilerArgs += "-opt-in=androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi"
+        }
+    }
 }

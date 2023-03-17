@@ -3,12 +3,11 @@ package me.rerere.awara
 import android.app.Application
 import me.rerere.awara.data.source.IwaraAPI
 import me.rerere.awara.ui.page.index.IndexVM
+import me.rerere.awara.ui.page.login.LoginVM
 import me.rerere.awara.util.SerializationConverterFactory
-import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -71,5 +70,6 @@ val repoModule = module {
 }
 
 val viewModelModule = module {
+    viewModelOf(::LoginVM)
     viewModelOf(::IndexVM)
 }

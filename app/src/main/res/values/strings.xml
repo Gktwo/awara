@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Awara</string>
+    <string name="app_name" translatable="false">Awara</string>
+    <string name="login_title">Login</string>
+    <string name="login_button">Login</string>
+    <string name="login_user">Username or Email</string>
+    <string name="login_password">Password</string>
 </resources>
