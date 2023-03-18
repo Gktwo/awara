@@ -5,4 +5,7 @@
     <string name="login_button">登录</string>
     <string name="login_user">用户名或邮箱</string>
     <string name="login_password">密码</string>
+    <string name="index_nav_video">视频</string>
+    <string name="index_nav_image">图片</string>
+    <string name="index_nav_forum">论坛</string>
 </resources>

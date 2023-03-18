@@ -4,4 +4,7 @@
     <string name="login_button">Login</string>
     <string name="login_user">Username or Email</string>
     <string name="login_password">Password</string>
+    <string name="index_nav_video">Video</string>
+    <string name="index_nav_image">Image</string>
+    <string name="index_nav_forum">Forum</string>
 </resources>
