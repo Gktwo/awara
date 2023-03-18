@@ -1,9 +1,10 @@
 # Awara
-Next generation Android app for [iwara.tv](https://iwara.tv/).
+Next generation Android app for iwara.
 
 ## Features
-- Material You Design
-- TODO
+- 🎨 Material You Design
+- 💻 Automatic screen adaptation
+- 🌏 Localized language support
 
 ## Screenshots
 - TODO
