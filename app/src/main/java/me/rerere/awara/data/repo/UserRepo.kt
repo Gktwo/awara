@@ -5,11 +5,11 @@ import me.rerere.awara.data.source.IwaraAPI
 
 class UserRepo(private val iwaraAPI: IwaraAPI) {
     suspend fun login(
-        username: String,
+        email: String,
         password: String
     ) = iwaraAPI.login(
         LoginReq(
-            email = username,
+            email = email,
             password = password
         )
     )

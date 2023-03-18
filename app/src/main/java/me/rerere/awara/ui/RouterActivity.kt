@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -12,6 +13,7 @@ import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.login.LoginPage
 import me.rerere.awara.ui.theme.AwaraTheme
 
+
 class RouterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -19,16 +21,20 @@ class RouterActivity : ComponentActivity() {
         setContent {
             val navController = rememberAnimatedNavController()
             AwaraTheme {
-                AnimatedNavHost(
-                    navController = navController,
-                    startDestination = "index"
+                CompositionLocalProvider(
+                    LocalRouterProvider provides navController
                 ) {
-                    composable("index") {
-                        IndexPage()
-                    }
+                    AnimatedNavHost(
+                        navController = navController,
+                        startDestination = "index"
+                    ) {
+                        composable("index") {
+                            IndexPage()
+                        }
 
-                    composable("login") {
-                        LoginPage()
+                        composable("login") {
+                            LoginPage()
+                        }
                     }
                 }
             }

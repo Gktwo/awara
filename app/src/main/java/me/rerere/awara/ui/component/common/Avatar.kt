@@ -1,6 +1,7 @@
 package me.rerere.awara.ui.component.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -12,13 +13,17 @@ import coil.compose.AsyncImage
 
 @Composable
 fun Avatar(
-    model: String
+    model: String,
+    onClick: () -> Unit = {}
 ) {
     AsyncImage(
         model = model,
         contentDescription = "avatar",
         modifier = Modifier
             .clip(CircleShape)
+            .clickable {
+                onClick()
+            }
             .size(32.dp)
             .background(MaterialTheme.colorScheme.secondaryContainer)
     )

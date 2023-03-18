@@ -1,5 +1,7 @@
 package me.rerere.awara.ui.page.index
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -21,6 +24,7 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.VideoLabel
@@ -42,13 +46,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
+import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.Avatar
 import me.rerere.awara.ui.component.ext.plus
 import me.rerere.awara.ui.hooks.rememberWindowSize
@@ -118,51 +125,58 @@ private fun IndexPageTabletLayout(vm: IndexVM) {
                     }
                 }
             }
-            DockedSearchBar(
+            Row(
                 modifier = Modifier
                     .statusBarsPadding()
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                query = query,
-                onQueryChange = {
-                    query = it
-                },
-                onSearch = {
-                },
-                active = active,
-                onActiveChange = { active = it },
-                leadingIcon = {
-                    Avatar(
-                        model = "https://iwara.tv/images/default-avatar.jpg",
-                    )
-                },
-                placeholder = {
-                    Text("今天你想搜点什么?")
-                },
-                trailingIcon = {
-                    if (active) {
-                        IconButton(
-                            onClick = { active = false }
-                        ) {
-                            Icon(Icons.Outlined.Close, "Close")
-                        }
-                    } else {
-                        IconButton(
-                            onClick = {
-                                active = true
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                DockedSearchBar(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(horizontal = 12.dp),
+                    query = query,
+                    onQueryChange = {
+                        query = it
+                    },
+                    onSearch = {
+                    },
+                    active = active,
+                    onActiveChange = { active = it },
+                    leadingIcon = {
+                        Avatar(
+                            model = "https://iwara.tv/images/default-avatar.jpg",
+                        )
+                    },
+                    placeholder = {
+                        Text("今天你想搜点什么?")
+                    },
+                    trailingIcon = {
+                        if (active) {
+                            IconButton(
+                                onClick = { active = false }
+                            ) {
+                                Icon(Icons.Outlined.Close, "Close")
                             }
-                        ) {
-                            Icon(Icons.Outlined.Search, "Search")
+                        } else {
+                            IconButton(
+                                onClick = {
+                                    active = true
+                                }
+                            ) {
+                                Icon(Icons.Outlined.Search, "Search")
+                            }
                         }
                     }
-                }
-            ) {}
+                ) {}
+            }
         }
     }
 }
 
 @Composable
 private fun IndexPagePhoneLayout(vm: IndexVM) {
+    val router = LocalRouterProvider.current
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
     var query by remember {
@@ -173,46 +187,52 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
     }
     Scaffold(
         topBar = {
-            SearchBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                query = query,
-                onQueryChange = {
-                    query = it
-                },
-                onSearch = {
+            Box(
+                contentAlignment = Alignment.TopCenter,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                SearchBar(
+                    //modifier = Modifier,
+                    query = query,
+                    onQueryChange = {
+                        query = it
+                    },
+                    onSearch = {
 
-                },
-                active = active,
-                onActiveChange = { active = it },
-                leadingIcon = {
-                    Avatar(
-                        model = "https://iwara.tv/images/default-avatar.jpg",
-                    )
-                },
-                placeholder = {
-                    Text("今天你想搜点什么?")
-                },
-                trailingIcon = {
-                    if (active) {
-                        IconButton(
-                            onClick = { active = false }
-                        ) {
-                            Icon(Icons.Outlined.Close, "Close")
-                        }
-                    } else {
-                        IconButton(
+                    },
+                    active = active,
+                    onActiveChange = { active = it },
+                    leadingIcon = {
+                        Avatar(
+                            model = "https://iwara.tv/images/default-avatar.jpg",
                             onClick = {
-                                active = true
+                                router.navigate("login")
                             }
-                        ) {
-                            Icon(Icons.Outlined.Search, "Search")
+                        )
+                    },
+                    placeholder = {
+                        Text("今天你想搜点什么?")
+                    },
+                    trailingIcon = {
+                        if (active) {
+                            IconButton(
+                                onClick = { active = false }
+                            ) {
+                                Icon(Icons.Outlined.Close, "Close")
+                            }
+                        } else {
+                            IconButton(
+                                onClick = {
+                                    active = true
+                                }
+                            ) {
+                                Icon(Icons.Outlined.Search, "Search")
+                            }
                         }
                     }
-                }
-            ) {
+                ) {
 
+                }
             }
         },
         bottomBar = {
@@ -229,13 +249,19 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                 }
             }
         }
-    ) {
+    ) { padding ->
         HorizontalPager(
             pageCount = 3,
             state = pagerState,
-            modifier = Modifier.padding(it)
         ) {
-
+            LazyColumn(
+                contentPadding = padding,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(100) {
+                    Text("Hi")
+                }
+            }
         }
     }
 }
