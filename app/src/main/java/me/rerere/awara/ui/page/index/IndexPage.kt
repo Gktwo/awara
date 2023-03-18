@@ -1,8 +1,18 @@
 package me.rerere.awara.ui.page.index
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -15,6 +25,7 @@ import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.VideoLabel
 import androidx.compose.material3.Button
+import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
@@ -29,13 +40,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import kotlinx.coroutines.launch
 import me.rerere.awara.R
 import me.rerere.awara.ui.component.common.Avatar
+import me.rerere.awara.ui.component.ext.plus
 import me.rerere.awara.ui.hooks.rememberWindowSize
 import org.koin.androidx.compose.koinViewModel
 
@@ -45,11 +60,11 @@ fun IndexPage(
 ) {
     val windowSizeClass = rememberWindowSize()
     when (windowSizeClass.widthSizeClass) {
-        WindowWidthSizeClass.Expanded -> {
+        WindowWidthSizeClass.Expanded, WindowWidthSizeClass.Medium -> {
             IndexPageTabletLayout(vm)
         }
 
-        WindowWidthSizeClass.Medium, WindowWidthSizeClass.Compact -> {
+        WindowWidthSizeClass.Compact -> {
             IndexPagePhoneLayout(vm)
         }
     }
@@ -58,6 +73,7 @@ fun IndexPage(
 @Composable
 private fun IndexPageTabletLayout(vm: IndexVM) {
     val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
     var query by remember {
         mutableStateOf("")
     }
@@ -70,62 +86,77 @@ private fun IndexPageTabletLayout(vm: IndexVM) {
                 NavigationRailItem(
                     selected = pagerState.currentPage == index,
                     onClick = {
-                        // TODO: Handle navigation
+                        scope.launch { pagerState.animateScrollToPage(index) }
                     },
                     icon = navigationPoint.icon,
                     label = navigationPoint.title
                 )
             }
         }
-        Scaffold(
-            topBar = {
-                SearchBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
-                    query = query,
-                    onQueryChange = {
-                        query = it
-                    },
-                    onSearch = {
-                    },
-                    active = active,
-                    onActiveChange = { active = it },
-                    leadingIcon = {
-                        Avatar(
-                            model = "https://iwara.tv/images/default-avatar.jpg",
-                        )
-                    },
-                    placeholder = {
-                        Text("今天你想搜点什么?")
-                    },
-                    trailingIcon = {
-                        if (active) {
-                            IconButton(
-                                onClick = { active = false }
-                            ) {
-                                Icon(Icons.Outlined.Close, "Close")
-                            }
-                        } else {
-                            IconButton(
-                                onClick = {
-                                    active = true
-                                }
-                            ) {
-                                Icon(Icons.Outlined.Search, "Search")
+        Box {
+            Scaffold { padding ->
+                HorizontalPager(
+                    pageCount = 3,
+                    state = pagerState,
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = WindowInsets.statusBars
+                            .only(WindowInsetsSides.Top)
+                            .asPaddingValues()
+                            .plus(
+                                PaddingValues(
+                                    top = 56.dp // 硬编码docker search bar高度
+                                )
+                            )
+                    ) {
+                        items(100) {
+                            Button(onClick = { /*TODO*/ }) {
+                                Text("Hi")
                             }
                         }
                     }
-                ) {}
+                }
             }
-        ) { padding ->
-            HorizontalPager(
-                pageCount = 3,
-                state = pagerState,
-                modifier = Modifier.padding(padding)
-            ) {
-
-            }
+            DockedSearchBar(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                query = query,
+                onQueryChange = {
+                    query = it
+                },
+                onSearch = {
+                },
+                active = active,
+                onActiveChange = { active = it },
+                leadingIcon = {
+                    Avatar(
+                        model = "https://iwara.tv/images/default-avatar.jpg",
+                    )
+                },
+                placeholder = {
+                    Text("今天你想搜点什么?")
+                },
+                trailingIcon = {
+                    if (active) {
+                        IconButton(
+                            onClick = { active = false }
+                        ) {
+                            Icon(Icons.Outlined.Close, "Close")
+                        }
+                    } else {
+                        IconButton(
+                            onClick = {
+                                active = true
+                            }
+                        ) {
+                            Icon(Icons.Outlined.Search, "Search")
+                        }
+                    }
+                }
+            ) {}
         }
     }
 }
@@ -133,6 +164,7 @@ private fun IndexPageTabletLayout(vm: IndexVM) {
 @Composable
 private fun IndexPagePhoneLayout(vm: IndexVM) {
     val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
     var query by remember {
         mutableStateOf("")
     }
@@ -150,6 +182,7 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                     query = it
                 },
                 onSearch = {
+
                 },
                 active = active,
                 onActiveChange = { active = it },
@@ -188,7 +221,7 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                     NavigationBarItem(
                         selected = pagerState.currentPage == index,
                         onClick = {
-                            // TODO: Handle navigation
+                            scope.launch { pagerState.animateScrollToPage(index) }
                         },
                         icon = navigationPoint.icon,
                         label = navigationPoint.title
