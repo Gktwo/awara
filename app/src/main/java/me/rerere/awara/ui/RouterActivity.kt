@@ -9,6 +9,7 @@ import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import me.rerere.awara.ui.component.common.MessageProvider
 import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.login.LoginPage
 import me.rerere.awara.ui.theme.AwaraTheme
@@ -24,16 +25,18 @@ class RouterActivity : ComponentActivity() {
                 CompositionLocalProvider(
                     LocalRouterProvider provides navController
                 ) {
-                    AnimatedNavHost(
-                        navController = navController,
-                        startDestination = "index"
-                    ) {
-                        composable("index") {
-                            IndexPage()
-                        }
+                    MessageProvider {
+                        AnimatedNavHost(
+                            navController = navController,
+                            startDestination = "index"
+                        ) {
+                            composable("index") {
+                                IndexPage()
+                            }
 
-                        composable("login") {
-                            LoginPage()
+                            composable("login") {
+                                LoginPage()
+                            }
                         }
                     }
                 }
