@@ -3,6 +3,12 @@ package me.rerere.awara.ui
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.core.view.WindowCompat
@@ -28,7 +34,25 @@ class RouterActivity : ComponentActivity() {
                     MessageProvider {
                         AnimatedNavHost(
                             navController = navController,
-                            startDestination = "index"
+                            startDestination = "index",
+                            enterTransition = {
+                                slideInVertically(
+                                    initialOffsetY = { 1000 },
+                                    animationSpec = tween(300)
+                                ) + fadeIn(animationSpec = tween(300))
+                            },
+                            exitTransition = {
+                                fadeOut(animationSpec = tween(300))
+                            },
+                            popEnterTransition = {
+                                fadeIn(animationSpec = tween(300))
+                            },
+                            popExitTransition = {
+                                slideOutVertically(
+                                    targetOffsetY = { 1000 },
+                                    animationSpec = tween(300)
+                                ) + fadeOut(animationSpec = tween(300))
+                            }
                         ) {
                             composable("index") {
                                 IndexPage()
