@@ -13,4 +13,6 @@ class UserRepo(private val iwaraAPI: IwaraAPI) {
             password = password
         )
     )
+
+    suspend fun renewToken() = iwaraAPI.renewToken()
 }

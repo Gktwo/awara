@@ -10,4 +10,7 @@ interface IwaraAPI {
     suspend fun login(
         @Body loginReq: LoginReq
     ): LoginRes
+
+    @POST("/user/token")
+    suspend fun renewToken(): LoginRes
 }
