@@ -9,8 +9,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
@@ -33,6 +37,10 @@ class RouterActivity : ComponentActivity() {
                 ) {
                     MessageProvider {
                         AnimatedNavHost(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                // 防止夜间模式下切换页面闪白屏
+                                .background(MaterialTheme.colorScheme.background),
                             navController = navController,
                             startDestination = "index",
                             enterTransition = {

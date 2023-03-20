@@ -2,6 +2,11 @@ package me.rerere.awara.util
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -12,6 +17,14 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import java.io.IOException
 import java.lang.reflect.Type
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Base64
+import java.util.Date
+import java.util.Locale
 
 class SerializationConverterFactory(private val json: Json) : Converter.Factory() {
     companion object {
@@ -71,3 +84,17 @@ internal class SerializationResponseBodyConverter<T>(
         return json.decodeFromString(type, string)
     }
 }
+
+// format: 2023-03-20T01:49:29.000Z
+object InstantSerializer : KSerializer<Instant> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Date", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: Instant) {
+        encoder.encodeString(DateTimeFormatter.ISO_INSTANT.format(value))
+    }
+
+    override fun deserialize(decoder: Decoder): Instant {
+        return Instant.from(DateTimeFormatter.ISO_INSTANT.parse(decoder.decodeString()))
+    }
+}
+

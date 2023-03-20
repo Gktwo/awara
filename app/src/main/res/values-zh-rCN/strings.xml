@@ -8,4 +8,6 @@
     <string name="index_nav_video">视频</string>
     <string name="index_nav_image">图片</string>
     <string name="index_nav_forum">论坛</string>
+    <string name="errors_not_found">该资源未找到</string>
+    <string name="errors_unknown">未知错误 %s</string>
 </resources>

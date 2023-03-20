@@ -7,4 +7,6 @@
     <string name="index_nav_video">Video</string>
     <string name="index_nav_image">Image</string>
     <string name="index_nav_forum">Forum</string>
+    <string name="errors_not_found">The resource could not be found</string>
+    <string name="errors_unknown">Unknown error %s</string>
 </resources>

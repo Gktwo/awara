@@ -108,7 +108,6 @@ private fun BoxScope.MessageList(
                     .padding(2.dp),
                 shape = MaterialTheme.shapes.medium,
                 tonalElevation = 6.dp,
-                shadowElevation = 1.dp,
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),

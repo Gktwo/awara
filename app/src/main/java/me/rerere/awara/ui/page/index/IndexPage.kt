@@ -49,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
+import me.rerere.awara.data.source.APIResult
 import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.Avatar
@@ -264,6 +265,16 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                 contentPadding = padding,
                 modifier = Modifier.fillMaxSize()
             ) {
+                item {
+                    Button(onClick = { vm.test() }) {
+                        Text("Test: " + me.rerere.awara.data.source.stringResource(
+                            APIResult.Error(
+                                404, "errors.notFound"
+                            )
+                        ))
+                    }
+                }
+
                 items(100) {
                     val message = LocalMessageProvider.current
                     TextButton(

@@ -1,13 +1,7 @@
 package me.rerere.awara
 
 import android.app.Application
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import me.rerere.awara.data.repo.UserRepo
-import me.rerere.awara.data.source.APIError
 import me.rerere.awara.data.source.IwaraAPI
 import me.rerere.awara.ui.page.index.IndexVM
 import me.rerere.awara.ui.page.login.LoginVM
@@ -19,7 +13,6 @@ import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
-import retrofit2.Response
 import retrofit2.Retrofit
 
 class App : Application() {
