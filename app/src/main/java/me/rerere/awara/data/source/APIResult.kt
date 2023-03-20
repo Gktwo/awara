@@ -38,6 +38,27 @@ suspend fun <T> runAPICatching(block: suspend () -> T): APIResult<out T> {
     }
 }
 
+inline fun <T> APIResult<T>.onSuccess(block: (T) -> Unit): APIResult<T> {
+    if (this is APIResult.Success) {
+        block(data)
+    }
+    return this
+}
+
+inline fun <T> APIResult<T>.onError(block: (APIResult.Error) -> Unit): APIResult<T> {
+    if (this is APIResult.Error) {
+        block(this)
+    }
+    return this
+}
+
+inline fun <T> APIResult<T>.onException(block: (APIResult.Exception) -> Unit): APIResult<T> {
+    if (this is APIResult.Exception) {
+        block(this)
+    }
+    return this
+}
+
 private fun HttpException.toAPIError(): APIResult.Error {
     val body = this.response()?.errorBody()?.string()
     val bodyJson = Json.decodeFromString<JsonObject>(

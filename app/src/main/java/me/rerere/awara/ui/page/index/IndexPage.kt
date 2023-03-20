@@ -1,5 +1,6 @@
 package me.rerere.awara.ui.page.index
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,10 +12,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -34,7 +35,6 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,17 +44,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
 import me.rerere.awara.data.source.APIResult
-import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.Avatar
-import me.rerere.awara.ui.component.common.MessagePosition
+import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.ext.plus
+import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.hooks.rememberWindowSize
 import org.koin.androidx.compose.koinViewModel
 
@@ -257,37 +256,33 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
         var counter by remember {
             mutableStateOf(0)
         }
+        val videos = vm.state.videos?.results ?: emptyList()
         HorizontalPager(
             pageCount = 3,
             state = pagerState,
         ) {
-            LazyColumn(
-                contentPadding = padding,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                item {
-                    Button(onClick = { vm.test() }) {
-                        Text("Test: " + me.rerere.awara.data.source.stringResource(
-                            APIResult.Error(
-                                404, "errors.notFound"
+            Spin(show = videos.isEmpty()) {
+                LazyVerticalStaggeredGrid(
+                    contentPadding = padding + PaddingValues(8.dp),
+                    modifier = Modifier.fillMaxSize(),
+                    columns = StaggeredGridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalItemSpacing = 8.dp
+                ) {
+                    item {
+                        Button(onClick = { vm.test() }) {
+                            Text(
+                                "Test: " + me.rerere.awara.data.source.stringResource(
+                                    APIResult.Error(
+                                        404, "errors.notFound"
+                                    )
+                                )
                             )
-                        ))
-                    }
-                }
-
-                items(100) {
-                    val message = LocalMessageProvider.current
-                    TextButton(
-                        onClick = {
-                            val count = counter++
-                            message.warning(
-                                position = MessagePosition.TOP
-                            ) {
-                                Text("哈哈哈哈哈哈哈哈哈哈哈")
-                            }
                         }
-                    ) {
-                        Text("Hi")
+                    }
+
+                    items(videos) { video ->
+                        MediaCard(media = video)
                     }
                 }
             }
