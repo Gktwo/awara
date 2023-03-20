@@ -45,6 +45,7 @@ fun Button(
                         color = textStyle.color.takeOrElse {
                             LocalContentColor.current
                         },
+                        strokeWidth = 2.dp,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(horizontal = 6.dp)

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -42,6 +44,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -72,6 +75,7 @@ fun IndexPage(
 
 @Composable
 private fun IndexPageTabletLayout(vm: IndexVM) {
+    val router = LocalRouterProvider.current
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
     var query by remember {
@@ -101,7 +105,7 @@ private fun IndexPageTabletLayout(vm: IndexVM) {
                 ) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = WindowInsets.statusBars
+                        contentPadding = WindowInsets.safeContent
                             .only(WindowInsetsSides.Top)
                             .asPaddingValues()
                             .plus(
@@ -120,13 +124,16 @@ private fun IndexPageTabletLayout(vm: IndexVM) {
             }
             Row(
                 modifier = Modifier
-                    .statusBarsPadding()
+                    .padding(
+                        WindowInsets.safeContent
+                            .only(WindowInsetsSides.Top)
+                            .asPaddingValues()
+                    )
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 DockedSearchBar(
                     modifier = Modifier
-                        .statusBarsPadding()
                         .padding(horizontal = 12.dp),
                     query = query,
                     onQueryChange = {
@@ -139,6 +146,9 @@ private fun IndexPageTabletLayout(vm: IndexVM) {
                     leadingIcon = {
                         Avatar(
                             model = "https://iwara.tv/images/default-avatar.jpg",
+                            onClick = {
+                                router.navigate("login")
+                            }
                         )
                     },
                     placeholder = {
@@ -260,9 +270,9 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                         onClick = {
                             val count = counter++
                             message.warning(
-                                position = MessagePosition.BOTTOM
+                                position = MessagePosition.TOP
                             ) {
-                                Text("哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈")
+                                Text("哈哈哈哈哈哈哈哈哈哈哈")
                             }
                         }
                     ) {

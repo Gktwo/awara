@@ -9,7 +9,14 @@ import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Cancel
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
@@ -32,9 +39,15 @@ import me.rerere.awara.ui.theme.info
 import me.rerere.awara.ui.theme.success
 import me.rerere.awara.ui.theme.warning
 
-@OptIn(ExperimentalComposeUiApi::class)
+/**
+ * Provide message container
+ *
+ * @param modifier The modifier of the message container
+ * @param content The content of the message container
+ */
 @Composable
 fun MessageProvider(
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
     val messageHolder = rememberMessageHolder()
@@ -91,19 +104,21 @@ private fun BoxScope.MessageList(
         items(messages) { message ->
             Surface(
                 modifier = Modifier
-                    .animateItemPlacement(),
+                    .animateItemPlacement()
+                    .padding(2.dp),
                 shape = MaterialTheme.shapes.medium,
-                tonalElevation = 4.dp
+                tonalElevation = 6.dp,
+                shadowElevation = 1.dp,
             ) {
                 Row(
-                    modifier = Modifier.padding(6.dp),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     when (message.type) {
                         MessageType.INFO -> {
                             Icon(
-                                imageVector = Icons.Outlined.Info,
+                                imageVector = Icons.Filled.Info,
                                 contentDescription = "Info",
                                 tint = MaterialTheme.colorScheme.info,
                             )
@@ -111,7 +126,7 @@ private fun BoxScope.MessageList(
 
                         MessageType.SUCCESS -> {
                             Icon(
-                                imageVector = Icons.Outlined.Check,
+                                imageVector = Icons.Filled.CheckCircle,
                                 contentDescription = "Success",
                                 tint = MaterialTheme.colorScheme.success,
                             )
@@ -119,7 +134,7 @@ private fun BoxScope.MessageList(
 
                         MessageType.WARNING -> {
                             Icon(
-                                imageVector = Icons.Outlined.Warning,
+                                imageVector = Icons.Filled.Error,
                                 contentDescription = "Warning",
                                 tint = MaterialTheme.colorScheme.warning,
                             )
@@ -127,7 +142,7 @@ private fun BoxScope.MessageList(
 
                         MessageType.ERROR -> {
                             Icon(
-                                imageVector = Icons.Outlined.Error,
+                                imageVector = Icons.Filled.Warning,
                                 contentDescription = "Error",
                                 tint = MaterialTheme.colorScheme.error,
                             )
@@ -142,14 +157,27 @@ private fun BoxScope.MessageList(
     }
 }
 
+/**
+ * The type of the message
+ */
 enum class MessageType {
     DEFAULT, INFO, SUCCESS, WARNING, ERROR
 }
 
+/**
+ * The position of the message
+ */
 enum class MessagePosition {
     TOP, BOTTOM
 }
 
+/**
+ * @param type The type of the message
+ * @param position The position of the message
+ * @param content The content of the message
+ * @param createTime The time when the message is created
+ * @param duration The duration of the message
+ */
 class Message(
     val type: MessageType,
     val position: MessagePosition,
@@ -170,6 +198,13 @@ class MessageHolder {
         messages.add(Message(type, position, content))
     }
 
+    /**
+     * Create a default message
+     *
+     * @param position The position of the message
+     * @param duration The duration of the message
+     * @param content The content of the message
+     */
     fun default(
         position: MessagePosition = MessagePosition.BOTTOM,
         duration: Long = 3000,
@@ -178,6 +213,13 @@ class MessageHolder {
         createMessage(MessageType.DEFAULT, position, duration, content)
     }
 
+    /**
+     * Create a info message
+     *
+     * @param position The position of the message
+     * @param duration The duration of the message
+     * @param content The content of the message
+     */
     fun info(
         position: MessagePosition = MessagePosition.BOTTOM,
         duration: Long = 3000,
@@ -186,6 +228,13 @@ class MessageHolder {
         createMessage(MessageType.INFO, position, duration, content)
     }
 
+    /**
+     * Create a success message
+     *
+     * @param position The position of the message
+     * @param duration The duration of the message
+     * @param content The content of the message
+     */
     fun success(
         position: MessagePosition = MessagePosition.BOTTOM,
         duration: Long = 3000,
@@ -194,6 +243,13 @@ class MessageHolder {
         createMessage(MessageType.SUCCESS, position, duration, content)
     }
 
+    /**
+     * Create a warning message
+     *
+     * @param position The position of the message
+     * @param duration The duration of the message
+     * @param content The content of the message
+     */
     fun warning(
         position: MessagePosition = MessagePosition.BOTTOM,
         duration: Long = 3000,
@@ -202,6 +258,13 @@ class MessageHolder {
         createMessage(MessageType.WARNING, position, duration, content)
     }
 
+    /**
+     * Create a error message
+     *
+     * @param position The position of the message
+     * @param duration The duration of the message
+     * @param content The content of the message
+     */
     fun error(
         position: MessagePosition = MessagePosition.BOTTOM,
         duration: Long = 3000,
