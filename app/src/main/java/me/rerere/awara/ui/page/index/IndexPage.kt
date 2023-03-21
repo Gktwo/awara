@@ -2,6 +2,7 @@ package me.rerere.awara.ui.page.index
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -49,7 +50,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
+import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.LocalRouterProvider
+import me.rerere.awara.ui.component.common.LocalDialogProvider
 import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.ext.plus
 import me.rerere.awara.ui.component.iwara.Avatar
@@ -207,9 +210,9 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                     active = active,
                     onActiveChange = { active = it },
                     leadingIcon = {
-                       Avatar(
-                           user = LocalUserStore.current.user
-                       )
+                        Avatar(
+                            user = LocalUserStore.current.user
+                        )
                     },
                     placeholder = {
                         Text("今天你想搜点什么?")
@@ -259,14 +262,16 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
             var state by remember {
                 mutableStateOf(false)
             }
-            if(state) {
+            if (state) {
                 ModalBottomSheet(
                     onDismissRequest = { state = false }
                 ) {
                     Text("??")
                 }
             }
-            Spin(show = videos.isEmpty()) {
+            Column {
+                val dialogProvider = LocalDialogProvider.current
+                val messageProvider = LocalMessageProvider.current
                 LazyVerticalStaggeredGrid(
                     contentPadding = padding + PaddingValues(8.dp),
                     modifier = Modifier.fillMaxSize(),
@@ -274,6 +279,24 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalItemSpacing = 8.dp
                 ) {
+                    item {
+                        Button(
+                            onClick = {
+                                dialogProvider.input(
+                                    title = {
+                                        Text("Title")
+                                    }
+                                ) {
+                                    messageProvider.info {
+                                        Text(it)
+                                    }
+                                }
+                            }
+                        ) {
+                            Text("Test")
+                        }
+                    }
+
                     items(videos) { video ->
                         MediaCard(media = video)
                     }

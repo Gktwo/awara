@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -102,12 +103,11 @@ private fun BoxScope.MessageList(
         reverseLayout = alignment == Alignment.TopCenter
     ) {
         items(messages) { message ->
-            Surface(
+            OutlinedCard(
                 modifier = Modifier
                     .animateItemPlacement()
                     .padding(2.dp),
                 shape = MaterialTheme.shapes.medium,
-                tonalElevation = 6.dp,
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),

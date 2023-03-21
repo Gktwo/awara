@@ -9,13 +9,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import me.rerere.awara.data.entity.Tag
 import me.rerere.awara.data.entity.User
 import me.rerere.awara.data.repo.UserRepo
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
+import me.rerere.compose_setting.preference.mmkvPreference
 import me.rerere.compose_setting.preference.rememberStringPreference
+import org.koin.androidx.compose.getKoin
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -26,7 +30,7 @@ fun UserStoreProvider(
     val token by rememberStringPreference(key = "token", default = "")
     LaunchedEffect(token) {
         if (token.isNotBlank()) {
-            vm.loadUser()
+            vm.init()
         }
     }
     CompositionLocalProvider(
@@ -53,16 +57,26 @@ class UserStoreVM(
 ) : ViewModel() {
     var userStore by mutableStateOf(UserStore())
 
-    fun loadUser() {
+    fun init() {
         viewModelScope.launch {
-            runAPICatching {
-                userRepo.getSelfProfile()
-            }.onSuccess {
-                userStore = UserStore(
-                    user = it.user,
-                    tagBlacklist = it.tagBlacklist
-                )
-            }
+            awaitAll(
+                async {
+                    runAPICatching {
+                        userRepo.getSelfProfile()
+                    }.onSuccess {
+                        userStore = UserStore(
+                            user = it.user,
+                            tagBlacklist = it.tagBlacklist
+                        )
+                    }
+                }, async {
+                    runAPICatching {
+                        userRepo.renewToken()
+                    }.onSuccess {
+                        mmkvPreference.putString("token", it.token)
+                    }
+                }
+            )
         }
     }
 }

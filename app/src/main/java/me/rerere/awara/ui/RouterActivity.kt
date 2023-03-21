@@ -19,6 +19,7 @@ import androidx.core.view.WindowCompat
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import me.rerere.awara.ui.component.common.DialogProvider
 import me.rerere.awara.ui.component.common.MessageProvider
 import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.login.LoginPage
@@ -37,39 +38,41 @@ class RouterActivity : ComponentActivity() {
                     LocalRouterProvider provides navController
                 ) {
                     MessageProvider {
-                        UserStoreProvider {
-                            AnimatedNavHost(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    // 防止夜间模式下切换页面闪白屏
-                                    .background(MaterialTheme.colorScheme.background),
-                                navController = navController,
-                                startDestination = "index",
-                                enterTransition = {
-                                    slideInVertically(
-                                        initialOffsetY = { 1000 },
-                                        animationSpec = tween(300)
-                                    ) + fadeIn(animationSpec = tween(300))
-                                },
-                                exitTransition = {
-                                    fadeOut(animationSpec = tween(300))
-                                },
-                                popEnterTransition = {
-                                    fadeIn(animationSpec = tween(300))
-                                },
-                                popExitTransition = {
-                                    slideOutVertically(
-                                        targetOffsetY = { 1000 },
-                                        animationSpec = tween(300)
-                                    ) + fadeOut(animationSpec = tween(300))
-                                }
-                            ) {
-                                composable("index") {
-                                    IndexPage()
-                                }
+                        DialogProvider {
+                            UserStoreProvider {
+                                AnimatedNavHost(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        // 防止夜间模式下切换页面闪白屏
+                                        .background(MaterialTheme.colorScheme.background),
+                                    navController = navController,
+                                    startDestination = "index",
+                                    enterTransition = {
+                                        slideInVertically(
+                                            initialOffsetY = { 1000 },
+                                            animationSpec = tween(300)
+                                        ) + fadeIn(animationSpec = tween(300))
+                                    },
+                                    exitTransition = {
+                                        fadeOut(animationSpec = tween(300))
+                                    },
+                                    popEnterTransition = {
+                                        fadeIn(animationSpec = tween(300))
+                                    },
+                                    popExitTransition = {
+                                        slideOutVertically(
+                                            targetOffsetY = { 1000 },
+                                            animationSpec = tween(300)
+                                        ) + fadeOut(animationSpec = tween(300))
+                                    }
+                                ) {
+                                    composable("index") {
+                                        IndexPage()
+                                    }
 
-                                composable("login") {
-                                    LoginPage()
+                                    composable("login") {
+                                        LoginPage()
+                                    }
                                 }
                             }
                         }
