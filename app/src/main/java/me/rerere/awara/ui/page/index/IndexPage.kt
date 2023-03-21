@@ -25,8 +25,11 @@ import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.VideoLabel
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.DockedSearchBar
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
@@ -36,6 +39,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -54,9 +58,14 @@ import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.LocalDialogProvider
 import me.rerere.awara.ui.component.common.Spin
+import me.rerere.awara.ui.component.ext.excludeBottom
 import me.rerere.awara.ui.component.ext.plus
 import me.rerere.awara.ui.component.iwara.Avatar
+import me.rerere.awara.ui.component.iwara.FilterAndSort
+import me.rerere.awara.ui.component.iwara.FilterOption
 import me.rerere.awara.ui.component.iwara.MediaCard
+import me.rerere.awara.ui.component.iwara.PaginationBar
+import me.rerere.awara.ui.component.iwara.SortOption
 import me.rerere.awara.ui.hooks.rememberWindowSize
 import me.rerere.awara.ui.stores.LocalUserStore
 import org.koin.androidx.compose.koinViewModel
@@ -102,26 +111,32 @@ private fun IndexPageTabletLayout(vm: IndexVM) {
             }
         }
         Box {
-            Scaffold { padding ->
+            Scaffold(
+            ) { padding ->
                 HorizontalPager(
                     pageCount = 3,
                     state = pagerState,
                 ) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = WindowInsets.safeContent
-                            .only(WindowInsetsSides.Top)
-                            .asPaddingValues()
-                            .plus(
-                                PaddingValues(
-                                    top = 56.dp // 硬编码docker search bar高度
+                    Column {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = WindowInsets.safeContent
+                                .only(WindowInsetsSides.Top)
+                                .asPaddingValues()
+                                .plus(
+                                    PaddingValues(
+                                        top = 56.dp // 硬编码docker search bar高度
+                                    )
                                 )
-                            )
-                    ) {
-                        items(100) {
-                            Button(onClick = { /*TODO*/ }) {
-                                Text("Hi")
+                        ) {
+                            items(100) {
+                                Button(onClick = { /*TODO*/ }) {
+                                    Text("Hi")
+                                }
                             }
+                        }
+                        BottomAppBar {
+                            PaginationBar(page = 1, onPageChange = {})
                         }
                     }
                 }
@@ -235,7 +250,7 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                         }
                     }
                 ) {
-
+                    Text("??")
                 }
             }
         },
@@ -252,55 +267,81 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                     )
                 }
             }
-        }
+        },
     ) { padding ->
         val videos = vm.state.videos?.results ?: emptyList()
         HorizontalPager(
             pageCount = 3,
             state = pagerState,
+            modifier = Modifier
+                .fillMaxSize()
         ) {
-            var state by remember {
-                mutableStateOf(false)
-            }
-            if (state) {
-                ModalBottomSheet(
-                    onDismissRequest = { state = false }
-                ) {
-                    Text("??")
-                }
-            }
             Column {
                 val dialogProvider = LocalDialogProvider.current
                 val messageProvider = LocalMessageProvider.current
                 LazyVerticalStaggeredGrid(
-                    contentPadding = padding + PaddingValues(8.dp),
-                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = padding.excludeBottom() + PaddingValues(8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth(),
                     columns = StaggeredGridCells.Fixed(2),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalItemSpacing = 8.dp
                 ) {
-                    item {
-                        Button(
-                            onClick = {
-                                dialogProvider.input(
-                                    title = {
-                                        Text("Title")
-                                    }
-                                ) {
-                                    messageProvider.info {
-                                        Text(it)
-                                    }
-                                }
-                            }
-                        ) {
-                            Text("Test")
-                        }
-                    }
-
                     items(videos) { video ->
                         MediaCard(media = video)
                     }
                 }
+
+                PaginationBar(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            bottom = padding.calculateBottomPadding()
+                        ),
+                    page = 1,
+                    onPageChange = {},
+                    leading = {
+                        FilterAndSort(
+                            onSortChange = {},
+                            sortOptions = listOf(
+                                SortOption(
+                                    name = "最新",
+                                    label = {
+                                        Text("最新")
+                                    }
+                                ),
+                                SortOption(
+                                    name = "最热",
+                                    label = {
+                                        Text("最新")
+                                    }
+                                ),
+                            ),
+                            filters = emptyList(),
+                            filterOptions = listOf(
+                                FilterOption(
+                                    name = "rating",
+                                    label = {
+                                        Text("评分")
+                                    },
+                                    render = {
+                                        Text("评分")
+                                    }
+                                ),
+                                FilterOption(
+                                    name = "sort",
+                                    label = {
+                                        Text("评分")
+                                    },
+                                    render = {
+                                        Text("评分")
+                                    }
+                                )
+                            )
+                        )
+                    },
+                )
             }
         }
     }

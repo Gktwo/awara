@@ -30,11 +30,13 @@ class IndexVM(
 
     fun test() {
         viewModelScope.launch {
+            state = state.copy(loading = true)
             runAPICatching {
                 Log.i(TAG, "test: start")
                 mediaRepo.getVideoList(mapOf(
-                    "subscribed" to "true",
-                    "rating" to "general"
+                    //"subscribed" to "true",
+                    "rating" to "general",
+                    "sort" to "trending"
                 ))
             }.onSuccess {
                 Log.i(TAG, state.toString())
@@ -44,6 +46,7 @@ class IndexVM(
             }.onException {
                 Log.e(TAG, "test: $it")
             }
+            state = state.copy(loading = false)
         }
     }
 
@@ -53,6 +56,7 @@ class IndexVM(
 }
 
 data class IndexState(
+    val loading: Boolean = false,
     val videos: Pager<Video>? = null,
     val images: Pager<Image>? = null
 )
