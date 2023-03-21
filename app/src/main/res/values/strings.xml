@@ -9,4 +9,6 @@
     <string name="index_nav_forum">Forum</string>
     <string name="errors_not_found">The resource could not be found</string>
     <string name="errors_unknown">Unknown error %s</string>
+    <string name="errors_validation_error">Your input is invalid</string>
+    <string name="errors_invalid_login">Invalid username or password</string>
 </resources>

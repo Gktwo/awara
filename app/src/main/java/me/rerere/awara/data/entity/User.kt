@@ -25,4 +25,3 @@ data class User(
     val updatedAt: Instant,
     val avatar: File?,
 )
-

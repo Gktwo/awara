@@ -28,6 +28,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
@@ -261,6 +262,16 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
             pageCount = 3,
             state = pagerState,
         ) {
+            var state by remember {
+                mutableStateOf(false)
+            }
+            if(state) {
+                ModalBottomSheet(
+                    onDismissRequest = { state = false }
+                ) {
+                    Text("??")
+                }
+            }
             Spin(show = videos.isEmpty()) {
                 LazyVerticalStaggeredGrid(
                     contentPadding = padding + PaddingValues(8.dp),
@@ -270,7 +281,9 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                     verticalItemSpacing = 8.dp
                 ) {
                     item {
-                        Button(onClick = { vm.test() }) {
+                        Button(onClick = {
+                            state = !state
+                        }) {
                             Text(
                                 "Test: " + me.rerere.awara.data.source.stringResource(
                                     APIResult.Error(

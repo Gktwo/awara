@@ -73,6 +73,8 @@ private fun HttpException.toAPIError(): APIResult.Error {
 fun Context.stringResourceOfError(error: APIResult.Error): String {
     return when(error.message) {
         "errors.notFound" -> resources.getString(R.string.errors_not_found)
+        "errors.validationError" -> resources.getString(R.string.errors_validation_error)
+        "errors.invalidLogin" -> resources.getString(R.string.errors_invalid_login)
         else -> resources.getString(R.string.errors_unknown, error.message)
     }
 }

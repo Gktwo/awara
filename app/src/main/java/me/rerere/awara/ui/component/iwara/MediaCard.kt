@@ -57,6 +57,8 @@ fun MediaCard(
             ) {
                 Text(
                     text = media.title.trim(),
+                    maxLines = 2,
+                    style = MaterialTheme.typography.labelLarge
                 )
 
                 Row {
@@ -64,7 +66,6 @@ fun MediaCard(
                         text = media.user.name,
                         style = MaterialTheme.typography.labelMedium,
                         color = LocalContentColor.current.copy(alpha = 0.75f),
-                        maxLines = 2
                     )
 
                     Spacer(modifier = Modifier.weight(1f))
