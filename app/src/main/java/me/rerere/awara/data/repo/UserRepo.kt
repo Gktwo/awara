@@ -17,6 +17,8 @@ class UserRepo(private val iwaraAPI: IwaraAPI) {
 
     suspend fun renewToken() = iwaraAPI.renewToken()
 
+    suspend fun getSelfProfile() = iwaraAPI.getSelfProfile()
+
     suspend fun getProfile(
         username: String
     ): ProfileDto = iwaraAPI.getProfile(username)

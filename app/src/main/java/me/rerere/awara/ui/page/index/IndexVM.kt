@@ -33,7 +33,7 @@ class IndexVM(
             runAPICatching {
                 Log.i(TAG, "test: start")
                 mediaRepo.getVideoList(mapOf(
-                    "sort" to "date",
+                    "subscribed" to "true",
                     "rating" to "general"
                 ))
             }.onSuccess {

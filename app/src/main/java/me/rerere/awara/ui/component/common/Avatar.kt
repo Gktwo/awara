@@ -13,13 +13,14 @@ import coil.compose.AsyncImage
 
 @Composable
 fun Avatar(
+    modifier: Modifier = Modifier,
     model: String,
     onClick: () -> Unit = {}
 ) {
     AsyncImage(
         model = model,
         contentDescription = "avatar",
-        modifier = Modifier
+        modifier = modifier
             .clip(CircleShape)
             .clickable {
                 onClick()

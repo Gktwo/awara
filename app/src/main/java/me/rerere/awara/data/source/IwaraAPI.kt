@@ -3,6 +3,7 @@ package me.rerere.awara.data.source
 import me.rerere.awara.data.dto.LoginReq
 import me.rerere.awara.data.dto.LoginRes
 import me.rerere.awara.data.dto.ProfileDto
+import me.rerere.awara.data.dto.Self
 import me.rerere.awara.data.entity.Image
 import me.rerere.awara.data.entity.Video
 import retrofit2.http.Body
@@ -20,6 +21,9 @@ interface IwaraAPI {
     @POST("/user/token")
     suspend fun renewToken(): LoginRes
 
+    @GET("/user")
+    suspend fun getSelfProfile(): Self
+
     @GET("/profile/{username}")
     suspend fun getProfile(
         @Path("username") username: String
@@ -34,4 +38,5 @@ interface IwaraAPI {
     suspend fun getImageList(
         @QueryMap queryMap: Map<String, String>
     ): Pager<Image>
+
 }

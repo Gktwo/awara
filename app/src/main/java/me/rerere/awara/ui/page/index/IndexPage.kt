@@ -49,13 +49,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
-import me.rerere.awara.data.source.APIResult
 import me.rerere.awara.ui.LocalRouterProvider
-import me.rerere.awara.ui.component.common.Avatar
 import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.ext.plus
+import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.hooks.rememberWindowSize
+import me.rerere.awara.ui.stores.LocalUserStore
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -146,7 +146,7 @@ private fun IndexPageTabletLayout(vm: IndexVM) {
                     onActiveChange = { active = it },
                     leadingIcon = {
                         Avatar(
-                            model = "https://iwara.tv/images/default-avatar.jpg",
+                            user = LocalUserStore.current.user,
                             onClick = {
                                 router.navigate("login")
                             }
@@ -207,12 +207,9 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                     active = active,
                     onActiveChange = { active = it },
                     leadingIcon = {
-                        Avatar(
-                            model = "https://iwara.tv/images/default-avatar.jpg",
-                            onClick = {
-                                router.navigate("login")
-                            }
-                        )
+                       Avatar(
+                           user = LocalUserStore.current.user
+                       )
                     },
                     placeholder = {
                         Text("今天你想搜点什么?")
@@ -254,9 +251,6 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
             }
         }
     ) { padding ->
-        var counter by remember {
-            mutableStateOf(0)
-        }
         val videos = vm.state.videos?.results ?: emptyList()
         HorizontalPager(
             pageCount = 3,
@@ -280,20 +274,6 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalItemSpacing = 8.dp
                 ) {
-                    item {
-                        Button(onClick = {
-                            state = !state
-                        }) {
-                            Text(
-                                "Test: " + me.rerere.awara.data.source.stringResource(
-                                    APIResult.Error(
-                                        404, "errors.notFound"
-                                    )
-                                )
-                            )
-                        }
-                    }
-
                     items(videos) { video ->
                         MediaCard(media = video)
                     }

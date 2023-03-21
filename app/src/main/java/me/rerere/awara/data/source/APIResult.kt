@@ -61,9 +61,13 @@ inline fun <T> APIResult<T>.onException(block: (APIResult.Exception) -> Unit): A
 
 private fun HttpException.toAPIError(): APIResult.Error {
     val body = this.response()?.errorBody()?.string()
-    val bodyJson = Json.decodeFromString<JsonObject>(
-        body ?: "{}"
-    )
+    val bodyJson = kotlin.runCatching {
+        Json.decodeFromString<JsonObject>(
+            body ?: "{}"
+        )
+    }.getOrElse {
+        JsonObject(emptyMap())
+    }
     return APIResult.Error(
         status = this.code(),
         message = bodyJson["message"]?.jsonPrimitive?.content ?: "error.unknown",

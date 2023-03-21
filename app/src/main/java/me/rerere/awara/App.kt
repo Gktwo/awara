@@ -24,7 +24,3 @@ class App : Application() {
         }
     }
 }
-
-
-
-
