@@ -29,7 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import me.rerere.awara.ui.component.common.LocalDialogProvider
+import me.rerere.awara.ui.LocalDialogProvider
 
 @Composable
 fun FilterAndSort(

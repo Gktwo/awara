@@ -11,9 +11,9 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.res.stringResource
 import me.rerere.awara.R
+import me.rerere.awara.ui.LocalDialogProvider
 
 @Composable
 fun DialogProvider(
@@ -37,10 +37,6 @@ fun DialogProvider(
 data class DialogRequest(
     val render: @Composable (dismiss: () -> Unit) -> Unit,
 )
-
-val LocalDialogProvider = staticCompositionLocalOf<DialogHolder> {
-    error("DialogProvider not found")
-}
 
 class DialogHolder {
     val dialogs = mutableStateListOf<DialogRequest>()

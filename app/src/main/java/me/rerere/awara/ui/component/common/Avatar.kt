@@ -2,6 +2,7 @@ package me.rerere.awara.ui.component.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ fun Avatar(
         model = model,
         contentDescription = "avatar",
         modifier = modifier
+            .padding(4.dp)
             .clip(CircleShape)
             .clickable {
                 onClick()

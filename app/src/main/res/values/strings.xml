@@ -14,4 +14,6 @@
     <string name="pagination_current">Page %d</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="index_nav_subscription">Subscription</string>
+    <string name="setting_title">Settings</string>
 </resources>

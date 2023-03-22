@@ -15,4 +15,6 @@
     <string name="pagination_current">第 %d 页</string>
     <string name="confirm">确认</string>
     <string name="cancel">取消</string>
+    <string name="index_nav_subscription">订阅</string>
+    <string name="setting_title">设置</string>
 </resources>

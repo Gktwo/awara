@@ -18,6 +18,7 @@ fun Avatar(
         } else {
             "https://files.iwara.tv/image/avatar/${user.avatar.id}/${user.avatar.name}"
         },
-        modifier = modifier
+        modifier = modifier,
+        onClick = onClick
     )
 }

@@ -24,22 +24,19 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material.icons.outlined.VideoLabel
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DockedSearchBar
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -54,10 +51,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
+import me.rerere.awara.ui.LocalDialogProvider
 import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.LocalRouterProvider
-import me.rerere.awara.ui.component.common.LocalDialogProvider
-import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.ext.excludeBottom
 import me.rerere.awara.ui.component.ext.plus
 import me.rerere.awara.ui.component.iwara.Avatar
@@ -65,9 +61,11 @@ import me.rerere.awara.ui.component.iwara.FilterAndSort
 import me.rerere.awara.ui.component.iwara.FilterOption
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.component.iwara.PaginationBar
-import me.rerere.awara.ui.component.iwara.SortOption
+import me.rerere.awara.ui.component.iwara.sort.MediaSortOptions
 import me.rerere.awara.ui.hooks.rememberWindowSize
 import me.rerere.awara.ui.stores.LocalUserStore
+import me.rerere.awara.ui.stores.UserStoreAction
+import me.rerere.awara.ui.stores.subscribeAsState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -164,7 +162,7 @@ private fun IndexPageTabletLayout(vm: IndexVM) {
                     onActiveChange = { active = it },
                     leadingIcon = {
                         Avatar(
-                            user = LocalUserStore.current.user,
+                            user = null,
                             onClick = {
                                 router.navigate("login")
                             }
@@ -201,58 +199,33 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
     val router = LocalRouterProvider.current
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
-    var query by remember {
-        mutableStateOf("")
-    }
-    var active by remember {
-        mutableStateOf(false)
-    }
+    val message = LocalMessageProvider.current
+    val userStore = LocalUserStore.current
+    val user = userStore.subscribeAsState()
     Scaffold(
         topBar = {
-            Box(
-                contentAlignment = Alignment.TopCenter,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                SearchBar(
-                    //modifier = Modifier,
-                    query = query,
-                    onQueryChange = {
-                        query = it
-                    },
-                    onSearch = {
-
-                    },
-                    active = active,
-                    onActiveChange = { active = it },
-                    leadingIcon = {
-                        Avatar(
-                            user = LocalUserStore.current.user
-                        )
-                    },
-                    placeholder = {
-                        Text("今天你想搜点什么?")
-                    },
-                    trailingIcon = {
-                        if (active) {
-                            IconButton(
-                                onClick = { active = false }
-                            ) {
-                                Icon(Icons.Outlined.Close, "Close")
-                            }
-                        } else {
-                            IconButton(
-                                onClick = {
-                                    active = true
-                                }
-                            ) {
-                                Icon(Icons.Outlined.Search, "Search")
-                            }
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(user.user?.name ?: stringResource(R.string.app_name))
+                },
+                navigationIcon = {
+                    Avatar(
+                        user = user.user,
+                        onClick = {
+                            router.navigate("login")
                         }
+                    )
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            userStore(UserStoreAction.Logout)
+                        }
+                    ) {
+                        Icon(Icons.Outlined.Search, "Search")
                     }
-                ) {
-                    Text("??")
                 }
-            }
+            )
         },
         bottomBar = {
             NavigationBar {
@@ -271,77 +244,70 @@ private fun IndexPagePhoneLayout(vm: IndexVM) {
     ) { padding ->
         val videos = vm.state.videos?.results ?: emptyList()
         HorizontalPager(
-            pageCount = 3,
+            pageCount = 4,
             state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-        ) {
-            Column {
-                val dialogProvider = LocalDialogProvider.current
-                val messageProvider = LocalMessageProvider.current
-                LazyVerticalStaggeredGrid(
-                    contentPadding = padding.excludeBottom() + PaddingValues(8.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxWidth(),
-                    columns = StaggeredGridCells.Fixed(2),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalItemSpacing = 8.dp
-                ) {
-                    items(videos) { video ->
-                        MediaCard(media = video)
+        ) { page ->
+            when (page) {
+                1 -> {
+                    Column {
+                        val dialogProvider = LocalDialogProvider.current
+                        val messageProvider = LocalMessageProvider.current
+                        LazyVerticalStaggeredGrid(
+                            contentPadding = padding.excludeBottom() + PaddingValues(8.dp),
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth(),
+                            columns = StaggeredGridCells.Fixed(2),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalItemSpacing = 8.dp
+                        ) {
+                            items(videos) { video ->
+                                MediaCard(media = video)
+                            }
+                        }
+
+                        PaginationBar(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(
+                                    bottom = padding.calculateBottomPadding()
+                                ),
+                            page = 1,
+                            onPageChange = {},
+                            leading = {
+                                FilterAndSort(
+                                    onSortChange = {},
+                                    sortOptions = MediaSortOptions,
+                                    filters = emptyList(),
+                                    filterOptions = listOf(
+                                        FilterOption(
+                                            name = "rating",
+                                            label = {
+                                                Text("评分")
+                                            },
+                                            render = {
+                                                Text("评分")
+                                            }
+                                        ),
+                                        FilterOption(
+                                            name = "sort",
+                                            label = {
+                                                Text("评分")
+                                            },
+                                            render = {
+                                                Text("评分")
+                                            }
+                                        )
+                                    )
+                                )
+                            },
+                        )
                     }
                 }
 
-                PaginationBar(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            bottom = padding.calculateBottomPadding()
-                        ),
-                    page = 1,
-                    onPageChange = {},
-                    leading = {
-                        FilterAndSort(
-                            onSortChange = {},
-                            sortOptions = listOf(
-                                SortOption(
-                                    name = "最新",
-                                    label = {
-                                        Text("最新")
-                                    }
-                                ),
-                                SortOption(
-                                    name = "最热",
-                                    label = {
-                                        Text("最新")
-                                    }
-                                ),
-                            ),
-                            filters = emptyList(),
-                            filterOptions = listOf(
-                                FilterOption(
-                                    name = "rating",
-                                    label = {
-                                        Text("评分")
-                                    },
-                                    render = {
-                                        Text("评分")
-                                    }
-                                ),
-                                FilterOption(
-                                    name = "sort",
-                                    label = {
-                                        Text("评分")
-                                    },
-                                    render = {
-                                        Text("评分")
-                                    }
-                                )
-                            )
-                        )
-                    },
-                )
+                else -> {}
             }
         }
     }
@@ -354,6 +320,14 @@ private data class NavigationPoint(
 )
 
 private val navigations = listOf(
+    NavigationPoint(
+        title = {
+            Text(stringResource(R.string.index_nav_subscription))
+        },
+        icon = {
+            Icon(Icons.Outlined.Subscriptions, "Subscription")
+        },
+    ),
     NavigationPoint(
         title = {
             Text(stringResource(R.string.index_nav_video))
@@ -372,7 +346,7 @@ private val navigations = listOf(
     ),
     NavigationPoint(
         title = {
-            Text(stringResource(R.string.index_nav_video))
+            Text(stringResource(R.string.index_nav_forum))
         },
         icon = {
             Icon(Icons.Outlined.Forum, "Forum")
