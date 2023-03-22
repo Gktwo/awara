@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import me.rerere.awara.data.dto.ProfileDto
 import me.rerere.awara.data.entity.Tag
 import me.rerere.awara.data.entity.User
 import me.rerere.awara.data.repo.UserRepo
@@ -36,7 +37,20 @@ val LocalUserStore = staticCompositionLocalOf {
                     is UserStoreAction.SetTagBlacklist -> prevState.copy(tagBlacklist = action.tagBlacklist)
                     is UserStoreAction.Logout -> {
                         mmkvPreference.remove("token")
-                        prevState.copy(user = null, tagBlacklist = emptyList())
+                        prevState.copy(
+                            user = null,
+                            tagBlacklist = emptyList(),
+                            profile = null,
+                            loading = false
+                        )
+                    }
+
+                    is UserStoreAction.SetProfile -> {
+                        prevState.copy(profile = action.profile)
+                    }
+
+                    is UserStoreAction.SetLoading -> {
+                        prevState.copy(loading = action.loading)
                     }
                 }
             }
@@ -45,13 +59,17 @@ val LocalUserStore = staticCompositionLocalOf {
 }
 
 data class UserStoreState(
+    val loading: Boolean = false,
     val user: User? = null,
+    val profile: ProfileDto? = null,
     val tagBlacklist: List<Tag> = emptyList()
 )
 
 sealed class UserStoreAction {
     data class SetUser(val user: User) : UserStoreAction()
     data class SetTagBlacklist(val tagBlacklist: List<Tag>) : UserStoreAction()
+    data class SetProfile(val profile: ProfileDto) : UserStoreAction()
+    data class SetLoading(val loading: Boolean) : UserStoreAction()
     object Logout : UserStoreAction()
 }
 
@@ -75,8 +93,9 @@ fun UserStoreProvider(
     }
     // 当Token变化时，重新获取用户信息
     LaunchedEffect(token) {
-        if(token.isEmpty()) return@LaunchedEffect
+        if (token.isEmpty()) return@LaunchedEffect
         Log.i(TAG, "UserStoreProvider: get user info")
+        store.dispatch(UserStoreAction.SetLoading(true))
         awaitAll(
             async {
                 runAPICatching {
@@ -84,6 +103,7 @@ fun UserStoreProvider(
                 }.onSuccess {
                     store.dispatch(UserStoreAction.SetUser(it.user))
                     store.dispatch(UserStoreAction.SetTagBlacklist(it.tagBlacklist))
+                    store.dispatch(UserStoreAction.SetProfile(it.profile))
                     Log.i(TAG, "UserStoreProvider: get user info success: $it")
                 }.onError {
                     Log.e(TAG, "UserStoreProvider: get user info error: $it")
@@ -92,6 +112,7 @@ fun UserStoreProvider(
                 }
             }
         )
+        store.dispatch(UserStoreAction.SetLoading(false))
     }
     content()
 }

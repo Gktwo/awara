@@ -41,7 +41,7 @@ class ReduxStore<T, A>(
 }
 
 @Composable
-fun <T, A> Store<T, A>.subscribeAsState(): T {
+fun <T, A> Store<T, A>.collectAsState(): T {
     val state = remember { mutableStateOf(this.state) }
     DisposableEffect(Unit) {
         val listener = { newState: T ->

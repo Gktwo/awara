@@ -8,4 +8,5 @@ import me.rerere.awara.data.entity.User
 data class Self(
     val tagBlacklist: List<Tag>,
     val user: User,
+    val profile: ProfileDto
 )

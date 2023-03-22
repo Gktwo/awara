@@ -14,11 +14,6 @@ private const val TAG = "NetworkModule"
 val networkModule = module {
     single {
         OkHttpClient.Builder()
-            .addInterceptor(HttpLoggingInterceptor {
-                Log.i(TAG, it)
-            }.apply {
-                setLevel(HttpLoggingInterceptor.Level.BASIC)
-            })
             .addInterceptor {
                 val request = it.request()
                 val newRequest = request.newBuilder()
@@ -35,6 +30,13 @@ val networkModule = module {
                     .build()
                 it.proceed(newRequest)
             }
+            .addInterceptor(
+                HttpLoggingInterceptor {
+                    Log.i(TAG, it)
+                }.apply {
+                    setLevel(HttpLoggingInterceptor.Level.BASIC)
+                }
+            )
             .build()
     }
 

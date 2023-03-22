@@ -1,71 +1,19 @@
 package me.rerere.awara.ui.page.index
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.Image
-import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material.icons.outlined.VideoLabel
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationRail
-import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import me.rerere.awara.R
-import me.rerere.awara.ui.LocalDialogProvider
-import me.rerere.awara.ui.LocalMessageProvider
-import me.rerere.awara.ui.LocalRouterProvider
-import me.rerere.awara.ui.component.ext.excludeBottom
-import me.rerere.awara.ui.component.ext.plus
-import me.rerere.awara.ui.component.iwara.Avatar
-import me.rerere.awara.ui.component.iwara.FilterAndSort
-import me.rerere.awara.ui.component.iwara.FilterOption
-import me.rerere.awara.ui.component.iwara.MediaCard
-import me.rerere.awara.ui.component.iwara.PaginationBar
-import me.rerere.awara.ui.component.iwara.sort.MediaSortOptions
 import me.rerere.awara.ui.hooks.rememberWindowSize
-import me.rerere.awara.ui.stores.LocalUserStore
-import me.rerere.awara.ui.stores.UserStoreAction
-import me.rerere.awara.ui.stores.subscribeAsState
+import me.rerere.awara.ui.page.index.layout.IndexPagePhoneLayout
+import me.rerere.awara.ui.page.index.layout.IndexPageTabletLayout
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -84,243 +32,13 @@ fun IndexPage(
     }
 }
 
-@Composable
-private fun IndexPageTabletLayout(vm: IndexVM) {
-    val router = LocalRouterProvider.current
-    val pagerState = rememberPagerState()
-    val scope = rememberCoroutineScope()
-    var query by remember {
-        mutableStateOf("")
-    }
-    var active by remember {
-        mutableStateOf(false)
-    }
-    Row {
-        NavigationRail {
-            navigations.forEachIndexed { index, navigationPoint ->
-                NavigationRailItem(
-                    selected = pagerState.currentPage == index,
-                    onClick = {
-                        scope.launch { pagerState.animateScrollToPage(index) }
-                    },
-                    icon = navigationPoint.icon,
-                    label = navigationPoint.title
-                )
-            }
-        }
-        Box {
-            Scaffold(
-            ) { padding ->
-                HorizontalPager(
-                    pageCount = 3,
-                    state = pagerState,
-                ) {
-                    Column {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = WindowInsets.safeContent
-                                .only(WindowInsetsSides.Top)
-                                .asPaddingValues()
-                                .plus(
-                                    PaddingValues(
-                                        top = 56.dp // 硬编码docker search bar高度
-                                    )
-                                )
-                        ) {
-                            items(100) {
-                                Button(onClick = { /*TODO*/ }) {
-                                    Text("Hi")
-                                }
-                            }
-                        }
-                        BottomAppBar {
-                            PaginationBar(page = 1, onPageChange = {})
-                        }
-                    }
-                }
-            }
-            Row(
-                modifier = Modifier
-                    .padding(
-                        WindowInsets.safeContent
-                            .only(WindowInsetsSides.Top)
-                            .asPaddingValues()
-                    )
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                DockedSearchBar(
-                    modifier = Modifier
-                        .padding(horizontal = 12.dp),
-                    query = query,
-                    onQueryChange = {
-                        query = it
-                    },
-                    onSearch = {
-                    },
-                    active = active,
-                    onActiveChange = { active = it },
-                    leadingIcon = {
-                        Avatar(
-                            user = null,
-                            onClick = {
-                                router.navigate("login")
-                            }
-                        )
-                    },
-                    placeholder = {
-                        Text("今天你想搜点什么?")
-                    },
-                    trailingIcon = {
-                        if (active) {
-                            IconButton(
-                                onClick = { active = false }
-                            ) {
-                                Icon(Icons.Outlined.Close, "Close")
-                            }
-                        } else {
-                            IconButton(
-                                onClick = {
-                                    active = true
-                                }
-                            ) {
-                                Icon(Icons.Outlined.Search, "Search")
-                            }
-                        }
-                    }
-                ) {}
-            }
-        }
-    }
-}
-
-@Composable
-private fun IndexPagePhoneLayout(vm: IndexVM) {
-    val router = LocalRouterProvider.current
-    val pagerState = rememberPagerState()
-    val scope = rememberCoroutineScope()
-    val message = LocalMessageProvider.current
-    val userStore = LocalUserStore.current
-    val user = userStore.subscribeAsState()
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(user.user?.name ?: stringResource(R.string.app_name))
-                },
-                navigationIcon = {
-                    Avatar(
-                        user = user.user,
-                        onClick = {
-                            router.navigate("login")
-                        }
-                    )
-                },
-                actions = {
-                    IconButton(
-                        onClick = {
-                            userStore(UserStoreAction.Logout)
-                        }
-                    ) {
-                        Icon(Icons.Outlined.Search, "Search")
-                    }
-                }
-            )
-        },
-        bottomBar = {
-            NavigationBar {
-                navigations.forEachIndexed { index, navigationPoint ->
-                    NavigationBarItem(
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            scope.launch { pagerState.animateScrollToPage(index) }
-                        },
-                        icon = navigationPoint.icon,
-                        label = navigationPoint.title
-                    )
-                }
-            }
-        },
-    ) { padding ->
-        val videos = vm.state.videos?.results ?: emptyList()
-        HorizontalPager(
-            pageCount = 4,
-            state = pagerState,
-            modifier = Modifier
-                .fillMaxSize()
-        ) { page ->
-            when (page) {
-                1 -> {
-                    Column {
-                        val dialogProvider = LocalDialogProvider.current
-                        val messageProvider = LocalMessageProvider.current
-                        LazyVerticalStaggeredGrid(
-                            contentPadding = padding.excludeBottom() + PaddingValues(8.dp),
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
-                            columns = StaggeredGridCells.Fixed(2),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                            verticalItemSpacing = 8.dp
-                        ) {
-                            items(videos) { video ->
-                                MediaCard(media = video)
-                            }
-                        }
-
-                        PaginationBar(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(
-                                    bottom = padding.calculateBottomPadding()
-                                ),
-                            page = 1,
-                            onPageChange = {},
-                            leading = {
-                                FilterAndSort(
-                                    onSortChange = {},
-                                    sortOptions = MediaSortOptions,
-                                    filters = emptyList(),
-                                    filterOptions = listOf(
-                                        FilterOption(
-                                            name = "rating",
-                                            label = {
-                                                Text("评分")
-                                            },
-                                            render = {
-                                                Text("评分")
-                                            }
-                                        ),
-                                        FilterOption(
-                                            name = "sort",
-                                            label = {
-                                                Text("评分")
-                                            },
-                                            render = {
-                                                Text("评分")
-                                            }
-                                        )
-                                    )
-                                )
-                            },
-                        )
-                    }
-                }
-
-                else -> {}
-            }
-        }
-    }
-}
-
-
-private data class NavigationPoint(
+data class IndexNavigation(
     val title: @Composable () -> Unit,
     val icon: @Composable () -> Unit,
 )
 
-private val navigations = listOf(
-    NavigationPoint(
+val indexNavigations = listOf(
+    IndexNavigation(
         title = {
             Text(stringResource(R.string.index_nav_subscription))
         },
@@ -328,7 +46,7 @@ private val navigations = listOf(
             Icon(Icons.Outlined.Subscriptions, "Subscription")
         },
     ),
-    NavigationPoint(
+    IndexNavigation(
         title = {
             Text(stringResource(R.string.index_nav_video))
         },
@@ -336,7 +54,7 @@ private val navigations = listOf(
             Icon(Icons.Outlined.VideoLabel, "Videos")
         },
     ),
-    NavigationPoint(
+    IndexNavigation(
         title = {
             Text(stringResource(R.string.index_nav_image))
         },
@@ -344,7 +62,7 @@ private val navigations = listOf(
             Icon(Icons.Outlined.Image, "Images")
         },
     ),
-    NavigationPoint(
+    IndexNavigation(
         title = {
             Text(stringResource(R.string.index_nav_forum))
         },

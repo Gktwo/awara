@@ -8,7 +8,7 @@ import java.time.Instant
 
 @Serializable
 data class ProfileDto(
-    val user: User,
+    val user: User?,
     val header: File?,
     @Serializable(with = InstantSerializer::class)
     val updatedAt: Instant,
