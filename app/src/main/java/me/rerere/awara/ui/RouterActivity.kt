@@ -13,6 +13,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
@@ -23,6 +24,7 @@ import me.rerere.awara.ui.component.common.DialogProvider
 import me.rerere.awara.ui.component.common.MessageProvider
 import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.login.LoginPage
+import me.rerere.awara.ui.page.setting.SettingPage
 import me.rerere.awara.ui.stores.UserStoreProvider
 import me.rerere.awara.ui.theme.AwaraTheme
 
@@ -34,50 +36,61 @@ class RouterActivity : ComponentActivity() {
         setContent {
             val navController = rememberAnimatedNavController()
             AwaraTheme {
-                CompositionLocalProvider(
-                    LocalRouterProvider provides navController
-                ) {
-                    MessageProvider {
-                        DialogProvider {
-                            UserStoreProvider {
-                                AnimatedNavHost(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        // 防止夜间模式下切换页面闪白屏
-                                        .background(MaterialTheme.colorScheme.background),
-                                    navController = navController,
-                                    startDestination = "index",
-                                    enterTransition = {
-                                        slideInVertically(
-                                            initialOffsetY = { 1000 },
-                                            animationSpec = tween(300)
-                                        ) + fadeIn(animationSpec = tween(300))
-                                    },
-                                    exitTransition = {
-                                        fadeOut(animationSpec = tween(300))
-                                    },
-                                    popEnterTransition = {
-                                        fadeIn(animationSpec = tween(300))
-                                    },
-                                    popExitTransition = {
-                                        slideOutVertically(
-                                            targetOffsetY = { 1000 },
-                                            animationSpec = tween(300)
-                                        ) + fadeOut(animationSpec = tween(300))
-                                    }
-                                ) {
-                                    composable("index") {
-                                        IndexPage()
-                                    }
+                CompositionLocalProvider(LocalRouterProvider provides navController) {
+                    ContextProvider {
+                        UserStoreProvider {
+                            AnimatedNavHost(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    // 防止夜间模式下切换页面闪白屏
+                                    .background(MaterialTheme.colorScheme.background),
+                                navController = navController,
+                                startDestination = "index",
+                                enterTransition = {
+                                    slideInVertically(
+                                        initialOffsetY = { 1000 },
+                                        animationSpec = tween(300)
+                                    ) + fadeIn(animationSpec = tween(300))
+                                },
+                                exitTransition = {
+                                    fadeOut(animationSpec = tween(300))
+                                },
+                                popEnterTransition = {
+                                    fadeIn(animationSpec = tween(300))
+                                },
+                                popExitTransition = {
+                                    slideOutVertically(
+                                        targetOffsetY = { 1000 },
+                                        animationSpec = tween(300)
+                                    ) + fadeOut(animationSpec = tween(300))
+                                }
+                            ) {
+                                composable("index") {
+                                    IndexPage()
+                                }
 
-                                    composable("login") {
-                                        LoginPage()
-                                    }
+                                composable("login") {
+                                    LoginPage()
+                                }
+
+                                composable("setting") {
+                                    SettingPage()
                                 }
                             }
                         }
                     }
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun ContextProvider(
+        content: @Composable () -> Unit
+    ) {
+        MessageProvider {
+            DialogProvider {
+                content()
             }
         }
     }
