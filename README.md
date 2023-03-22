@@ -13,7 +13,15 @@ Next generation Android app for iwara.
 - TODO
 
 ## Contributing
-- TODO
+- 架构指南: [Architecture Guide](https://developer.android.com/topic/architecture)
 
 ## License
-- TODO
+GPLv3 [LICENSE](LICENSE)
+```text
+                   GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+```
