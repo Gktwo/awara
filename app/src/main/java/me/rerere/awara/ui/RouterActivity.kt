@@ -24,6 +24,7 @@ import me.rerere.awara.ui.component.common.DialogProvider
 import me.rerere.awara.ui.component.common.MessageProvider
 import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.login.LoginPage
+import me.rerere.awara.ui.page.search.SearchPage
 import me.rerere.awara.ui.page.setting.SettingPage
 import me.rerere.awara.ui.stores.UserStoreProvider
 import me.rerere.awara.ui.theme.AwaraTheme
@@ -75,6 +76,10 @@ class RouterActivity : ComponentActivity() {
 
                                 composable("setting") {
                                     SettingPage()
+                                }
+
+                                composable("search") {
+                                    SearchPage()
                                 }
                             }
                         }
