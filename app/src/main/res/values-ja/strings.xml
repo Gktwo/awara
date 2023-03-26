@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name" translatable="false">Awara</string>
+    <string name="login_title">ログイン</string>
+    <string name="login_button">ログイン</string>
+    <string name="login_user">ユーザー名/メールアドレス</string>
+    <string name="login_password">パスワード</string>
+    <string name="index_nav_video">動画</string>
+    <string name="index_nav_image">画像</string>
+    <string name="index_nav_forum">フォーラム</string>
+    <string name="errors_not_found">リソースが見つかりません。</string>
+    <string name="errors_unknown">不明なエラー %s</string>
+    <string name="errors_validation_error">入力が無効です</string>
+    <string name="errors_invalid_login">ユーザー名、またはパスワードが無効</string>
+    <string name="pagination_current">%dページ</string>
+    <string name="confirm">確定</string>
+    <string name="cancel">キャンセル</string>
+    <string name="index_nav_subscription">登録</string>
+    <string name="setting_title">設定</string>
+</resources>
