@@ -35,6 +35,7 @@ fun IndexPage(
 data class IndexNavigation(
     val title: @Composable () -> Unit,
     val icon: @Composable () -> Unit,
+    val needLogin: Boolean = false,
 )
 
 val indexNavigations = listOf(
@@ -45,6 +46,7 @@ val indexNavigations = listOf(
         icon = {
             Icon(Icons.Outlined.Subscriptions, "Subscription")
         },
+        needLogin = true
     ),
     IndexNavigation(
         title = {

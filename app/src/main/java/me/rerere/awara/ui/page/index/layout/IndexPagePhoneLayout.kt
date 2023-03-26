@@ -20,6 +20,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -41,6 +44,14 @@ fun IndexPagePhoneLayout(vm: IndexVM) {
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val navigations by remember {
+        derivedStateOf {
+            // TODO: Fix this
+            indexNavigations.filter {
+                !it.needLogin || userState.user != null
+            }
+        }
+    }
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet {
@@ -78,7 +89,7 @@ fun IndexPagePhoneLayout(vm: IndexVM) {
             },
             bottomBar = {
                 NavigationBar {
-                    indexNavigations.forEachIndexed { index, indexNavigation ->
+                    navigations.forEachIndexed { index, indexNavigation ->
                         NavigationBarItem(
                             icon = {
                                 indexNavigation.icon()
@@ -96,7 +107,7 @@ fun IndexPagePhoneLayout(vm: IndexVM) {
             },
         ) { innerPadding ->
             HorizontalPager(
-                pageCount = indexNavigations.size,
+                pageCount = navigations.size,
                 state = pagerState,
                 modifier = Modifier.padding(innerPadding)
             ) { page ->
