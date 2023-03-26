@@ -1,21 +1,15 @@
 package me.rerere.awara.ui.page.index
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import me.rerere.awara.data.entity.Image
+import me.rerere.awara.R
 import me.rerere.awara.data.entity.Media
-import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.repo.UserRepo
-import me.rerere.awara.data.source.APIResult
-import me.rerere.awara.data.source.Pager
-import me.rerere.awara.data.source.onError
-import me.rerere.awara.data.source.onException
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
 
@@ -28,35 +22,55 @@ class IndexVM(
     var state by mutableStateOf(IndexState())
         private set
 
-    fun test() {
+    private fun loadSubscriptions() {
         viewModelScope.launch {
-            state = state.copy(loading = true)
+            state = state.copy(subscriptionLoading = true)
             runAPICatching {
-                Log.i(TAG, "test: start")
-                mediaRepo.getVideoList(mapOf(
-                    //"subscribed" to "true",
-                    "rating" to "general",
-                    "sort" to "trending"
-                ))
+                val param = mapOf(
+                    "subscribed" to "true",
+                    "limit" to "24",
+                    "page" to (state.subscriptionPage - 1).toString()
+                )
+                when(state.subscriptionType){
+                    SubscriptionType.VIDEO -> mediaRepo.getVideoList(param)
+                    SubscriptionType.IMAGE -> mediaRepo.getImageList(param)
+                }
             }.onSuccess {
-                Log.i(TAG, state.toString())
-                state = state.copy(videos = it)
-            }.onError {
-                Log.d(TAG, "init: $it")
-            }.onException {
-                Log.e(TAG, "test: $it")
+                state = state.copy(
+                    subscriptions = it.results
+                )
             }
-            state = state.copy(loading = false)
+            state = state.copy(subscriptionLoading = false)
         }
     }
 
+    fun jumpToSubscriptionPage(page: Int){
+        if(page == state.subscriptionPage || page < 1) return
+        state = state.copy(subscriptionPage = page)
+        loadSubscriptions()
+    }
+
+    fun changeSubscriptionType(it: IndexVM.SubscriptionType) {
+        state = state.copy(subscriptionType = it)
+        loadSubscriptions()
+    }
+
     init {
-        test()
+        loadSubscriptions()
+    }
+
+    data class IndexState(
+        val subscriptionLoading: Boolean = false,
+        val subscriptionPage: Int = 1,
+        val subscriptionType : SubscriptionType = SubscriptionType.VIDEO,
+        val subscriptions: List<Media> = emptyList(),
+    )
+
+    enum class SubscriptionType(
+        val id: Int
+    ) {
+        VIDEO(R.string.video),
+        IMAGE(R.string.image),
     }
 }
 
-data class IndexState(
-    val loading: Boolean = false,
-    val videos: Pager<Video>? = null,
-    val images: Pager<Image>? = null
-)

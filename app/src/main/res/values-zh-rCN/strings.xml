@@ -17,4 +17,7 @@
     <string name="cancel">取消</string>
     <string name="index_nav_subscription">订阅</string>
     <string name="setting_title">设置</string>
+    <string name="video">视频</string>
+    <string name="image">图片</string>
+    <string name="post">帖子</string>
 </resources>

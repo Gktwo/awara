@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name" translatable="false">Awara</string>
     <string name="login_title">ログイン</string>
     <string name="login_button">ログイン</string>
     <string name="login_user">ユーザー名/メールアドレス</string>
@@ -16,4 +15,7 @@
     <string name="cancel">キャンセル</string>
     <string name="index_nav_subscription">登録</string>
     <string name="setting_title">設定</string>
+    <string name="video">動画</string>
+    <string name="image">画像</string>
+    <string name="post">帖子</string>
 </resources>

@@ -70,7 +70,7 @@ private fun HttpException.toAPIError(): APIResult.Error {
     }
     return APIResult.Error(
         status = this.code(),
-        message = bodyJson["message"]?.jsonPrimitive?.content ?: "error.unknown",
+        message = bodyJson["message"]?.jsonPrimitive?.content ?: "error",
     )
 }
 

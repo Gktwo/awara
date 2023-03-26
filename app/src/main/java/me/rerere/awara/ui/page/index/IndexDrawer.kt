@@ -152,7 +152,7 @@ private fun DrawerItem(
 ) {
     ProvideTextStyle(MaterialTheme.typography.titleMedium) {
         Surface(
-            tonalElevation = 2.dp,
+            tonalElevation = 4.dp,
             shape = RoundedCornerShape(50),
             onClick = {
                 onClick()

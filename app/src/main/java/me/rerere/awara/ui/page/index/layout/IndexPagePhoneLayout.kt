@@ -33,6 +33,7 @@ import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.page.index.IndexDrawer
 import me.rerere.awara.ui.page.index.IndexVM
 import me.rerere.awara.ui.page.index.indexNavigations
+import me.rerere.awara.ui.page.index.pager.IndexSubscriptionPage
 import me.rerere.awara.ui.stores.LocalUserStore
 import me.rerere.awara.ui.stores.collectAsState
 
@@ -44,12 +45,9 @@ fun IndexPagePhoneLayout(vm: IndexVM) {
     val pagerState = rememberPagerState()
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val navigations by remember {
-        derivedStateOf {
-            // TODO: Fix this
-            indexNavigations.filter {
-                !it.needLogin || userState.user != null
-            }
+    val navigations = remember(userState.user) {
+        indexNavigations.filter {
+            !it.needLogin || userState.user != null
         }
     }
     ModalNavigationDrawer(
@@ -113,7 +111,7 @@ fun IndexPagePhoneLayout(vm: IndexVM) {
             ) { page ->
                 when (page) {
                     0 -> {
-                        // TODO
+                       IndexSubscriptionPage(vm)
                     }
 
                     1 -> {
