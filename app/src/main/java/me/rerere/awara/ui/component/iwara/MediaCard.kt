@@ -1,11 +1,13 @@
 package me.rerere.awara.ui.component.iwara
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,8 +30,11 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.AsyncImagePainter
+import coil.compose.rememberAsyncImagePainter
 import me.rerere.awara.data.entity.Media
 import me.rerere.awara.data.entity.thumbnailUrl
+import me.rerere.awara.ui.component.common.SkeletonBox
 
 @Composable
 fun MediaCard(
@@ -41,14 +46,22 @@ fun MediaCard(
         onClick = {}
     ) {
         Column {
-            AsyncImage(
-                model = media.thumbnailUrl(),
-                contentDescription = "Media Cover",
+            val painter = rememberAsyncImagePainter(
+                model = media.thumbnailUrl()
+            )
+            SkeletonBox(
+                show = painter.state is AsyncImagePainter.State.Loading,
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f),
-                contentScale = ContentScale.FillBounds
-            )
+            ) {
+                Image(
+                    painter = painter,
+                    contentDescription = "Media Cover",
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
 
             Column(
                 modifier = Modifier.padding(

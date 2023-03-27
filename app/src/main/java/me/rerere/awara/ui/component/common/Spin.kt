@@ -35,7 +35,7 @@ fun Spin(
                         .clip(MaterialTheme.shapes.small)
                         .background(
                             color = MaterialTheme.colorScheme.primary.copy(
-                                alpha = 0.25f
+                                alpha = 0.15f
                             )
                         )
                         .fillMaxSize()
