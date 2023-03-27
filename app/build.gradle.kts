@@ -77,6 +77,9 @@ dependencies {
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
+    // Lottie
+    implementation("com.airbnb.android:lottie-compose:6.0.0")
+
     // Kotlinx Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 

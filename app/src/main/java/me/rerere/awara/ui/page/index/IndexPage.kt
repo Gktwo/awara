@@ -33,6 +33,7 @@ fun IndexPage(
 }
 
 data class IndexNavigation(
+    val name: String,
     val title: @Composable () -> Unit,
     val icon: @Composable () -> Unit,
     val needLogin: Boolean = false,
@@ -40,6 +41,7 @@ data class IndexNavigation(
 
 val indexNavigations = listOf(
     IndexNavigation(
+        name = "subscription",
         title = {
             Text(stringResource(R.string.index_nav_subscription))
         },
@@ -49,6 +51,7 @@ val indexNavigations = listOf(
         needLogin = true
     ),
     IndexNavigation(
+        name = "video",
         title = {
             Text(stringResource(R.string.index_nav_video))
         },
@@ -57,6 +60,7 @@ val indexNavigations = listOf(
         },
     ),
     IndexNavigation(
+        name = "image",
         title = {
             Text(stringResource(R.string.index_nav_image))
         },
@@ -65,6 +69,7 @@ val indexNavigations = listOf(
         },
     ),
     IndexNavigation(
+        name = "forum",
         title = {
             Text(stringResource(R.string.index_nav_forum))
         },

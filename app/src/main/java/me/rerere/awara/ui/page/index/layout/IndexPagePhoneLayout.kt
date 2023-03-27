@@ -1,5 +1,7 @@
 package me.rerere.awara.ui.page.index.layout
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -29,11 +31,15 @@ import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
 import me.rerere.awara.ui.LocalRouterProvider
+import me.rerere.awara.ui.component.common.NamedHorizontalPager
+import me.rerere.awara.ui.component.common.TodoStatus
 import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.page.index.IndexDrawer
 import me.rerere.awara.ui.page.index.IndexVM
 import me.rerere.awara.ui.page.index.indexNavigations
+import me.rerere.awara.ui.page.index.pager.IndexImagePage
 import me.rerere.awara.ui.page.index.pager.IndexSubscriptionPage
+import me.rerere.awara.ui.page.index.pager.IndexVideoPage
 import me.rerere.awara.ui.stores.LocalUserStore
 import me.rerere.awara.ui.stores.collectAsState
 
@@ -104,26 +110,28 @@ fun IndexPagePhoneLayout(vm: IndexVM) {
                 }
             },
         ) { innerPadding ->
-            HorizontalPager(
-                pageCount = navigations.size,
+            NamedHorizontalPager(
                 state = pagerState,
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
+                pages = navigations.map { it.name },
             ) { page ->
                 when (page) {
-                    0 -> {
-                       IndexSubscriptionPage(vm)
+                    "subscription" -> {
+                        IndexSubscriptionPage(vm)
                     }
 
-                    1 -> {
-                        // TODO
+                    "video" -> {
+                        IndexVideoPage(vm)
                     }
 
-                    2 -> {
-                        // TODO
+                    "image" -> {
+                        IndexImagePage(vm)
                     }
 
-                    3 -> {
-                        // TODO
+                    "forum" -> {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            TodoStatus()
+                        }
                     }
                 }
             }
