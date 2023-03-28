@@ -66,7 +66,7 @@ class RouterActivity : ComponentActivity() {
                                     slideOutVertically(
                                         targetOffsetY = { 1000 },
                                         animationSpec = tween(300)
-                                    ) + fadeOut(animationSpec = tween(300))
+                                    ) + fadeOut(animationSpec = tween(100))
                                 }
                             ) {
                                 composable("index") {

@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
+import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
 import androidx.media3.exoplayer.ExoPlayer
@@ -39,13 +40,15 @@ fun rememberPlayerState(
                     }
                 }
                 if(playbackState == Player.STATE_READY){
-                    state.duration = state.duration
+                    state.duration = state.player.duration
+                    state.currentMediaItem = state.player.currentMediaItem
                 }
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 super.onIsPlayingChanged(isPlaying)
                 state.playing = isPlaying
+                state.duration = state.player.duration
             }
 
             override fun onIsLoadingChanged(isLoading: Boolean) {
@@ -56,6 +59,7 @@ fun rememberPlayerState(
             override fun onVideoSizeChanged(videoSize: VideoSize) {
                 super.onVideoSizeChanged(videoSize)
                 state.videoSize = videoSize
+                state.duration = state.player.duration
             }
         }
         state.player.addListener(playbackListener)
@@ -69,8 +73,8 @@ fun rememberPlayerState(
                 Log.w(TAG, "onPlaybackStateChanged: unknown state ${state.player.playbackState}")
             }
         }
-        state.videoSize = state.videoSize
-        state.duration = state.duration
+        state.videoSize = state.player.videoSize
+        state.duration = state.player.duration
         Log.i(TAG, "rememberPlayerState: Init")
         onDispose {
             state.player.run {
@@ -88,8 +92,13 @@ class PlayerState(val player: Player) {
     var state by mutableStateOf(State.IDLE)
     var loading by mutableStateOf(false)
 
+    var currentMediaItem by mutableStateOf<MediaItem?>(null)
     var videoSize by mutableStateOf(VideoSize.UNKNOWN)
     var duration by mutableStateOf(0L)
+
+    fun seekTo(newPosition: Long) {
+        player.seekTo(newPosition.coerceIn(0..duration))
+    }
     
     enum class State {
         IDLE,
