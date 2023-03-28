@@ -66,7 +66,7 @@ fun MediaCard(
                     painter = painter,
                     contentDescription = "Media Cover",
                     contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize().blur(8.dp)
                 )
             }
 
