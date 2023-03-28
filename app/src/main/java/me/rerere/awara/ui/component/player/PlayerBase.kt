@@ -23,11 +23,11 @@ fun  PlayerBase(
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                state.controller?.setVideoSurfaceView(this)
+                state.player.setVideoSurfaceView(this)
             }
         },
         update = {
-            state.controller?.setVideoSurfaceView(it)
+            state.player.setVideoSurfaceView(it)
         },
         modifier = modifier.background(Color.Black)
     )

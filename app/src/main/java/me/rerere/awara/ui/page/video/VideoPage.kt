@@ -54,7 +54,7 @@ fun VideoPage(vm: VideoVM = koinViewModel()) {
             Text("playing: ${state.playing} state: ${state.state} loading: ${state.loading}")
 
             Button(onClick = {
-                state.controller?.run {
+                state.player.run {
                     playWhenReady = true
                     setMediaItem(
                         MediaItem.fromUri("https://www.learningcontainer.com/wp-content/uploads/2020/05/sample-mp4-file.mp4")
