@@ -53,8 +53,8 @@ android {
 dependencies {
     // Android KTX
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.0")
-    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.activity:activity-compose:1.7.0")
 
     // Compose
     // implementation(platform("androidx.compose:compose-bom:2023.01.00"))
@@ -64,6 +64,13 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.0-alpha08")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.0-alpha08")
     implementation("androidx.compose.material:material-icons-extended:1.4.0-rc01")
+
+    // Media
+    implementation("androidx.media3:media3-exoplayer:1.0.0")
+    implementation("androidx.media3:media3-cast:1.0.0")
+    implementation("androidx.media3:media3-session:1.0.0")
+    implementation("androidx.media3:media3-ui:1.0.0")
+
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-navigation-animation:0.29.2-rc")
@@ -91,7 +98,7 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.2.2")
 
     // Profile Installer
-    implementation("androidx.profileinstaller:profileinstaller:1.3.0-rc01")
+    implementation("androidx.profileinstaller:profileinstaller:1.3.0")
 
     // Test
     testImplementation("junit:junit:4.13.2")

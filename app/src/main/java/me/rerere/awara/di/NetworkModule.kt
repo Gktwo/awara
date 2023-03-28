@@ -17,7 +17,7 @@ val networkModule = module {
             .addInterceptor {
                 val request = it.request()
                 val newRequest = request.newBuilder()
-                    .addHeader("User-Agent", "Awara/1.0.0")
+                    .addHeader("User-Agent", "Awara Android Client")
                     .apply {
                         if (mmkvPreference.contains("token")) {
                             addHeader(

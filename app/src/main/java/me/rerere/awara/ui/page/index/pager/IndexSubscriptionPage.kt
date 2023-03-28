@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.component.iwara.PaginationBar
+import me.rerere.awara.ui.hooks.rememberDebounce
 import me.rerere.awara.ui.page.index.IndexVM
 
 @Composable
@@ -46,10 +47,13 @@ fun IndexSubscriptionPage(
                 }
             }
         }
+        val pageJumpDebounce = rememberDebounce(delay = 500L) { page: Int ->
+            vm.jumpToSubscriptionPage(page)
+        }
         PaginationBar(
             page = vm.state.subscriptionPage,
             onPageChange = {
-                vm.jumpToSubscriptionPage(it)
+                pageJumpDebounce(it)
             },
             leading = {
                 var showDropdown by remember {

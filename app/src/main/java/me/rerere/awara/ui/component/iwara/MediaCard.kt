@@ -33,7 +33,9 @@ import coil.compose.AsyncImage
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import me.rerere.awara.data.entity.Media
+import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.thumbnailUrl
+import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.SkeletonBox
 
 @Composable
@@ -41,9 +43,14 @@ fun MediaCard(
     modifier: Modifier = Modifier,
     media: Media
 ) {
+    val router = LocalRouterProvider.current
     Card(
         modifier = modifier,
-        onClick = {}
+        onClick = {
+            if(media is Video) {
+                router.navigate("video/${media.id}")
+            }
+        }
     ) {
         Column {
             val painter = rememberAsyncImagePainter(

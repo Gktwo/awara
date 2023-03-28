@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -26,6 +28,7 @@ import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.login.LoginPage
 import me.rerere.awara.ui.page.search.SearchPage
 import me.rerere.awara.ui.page.setting.SettingPage
+import me.rerere.awara.ui.page.video.VideoPage
 import me.rerere.awara.ui.stores.UserStoreProvider
 import me.rerere.awara.ui.theme.AwaraTheme
 
@@ -72,6 +75,17 @@ class RouterActivity : ComponentActivity() {
 
                                 composable("login") {
                                     LoginPage()
+                                }
+
+                                composable(
+                                    route ="video/{id}",
+                                    arguments = listOf(
+                                        navArgument("id"){
+                                            type = NavType.StringType
+                                        }
+                                    )
+                                ){
+                                    VideoPage()
                                 }
 
                                 composable("setting") {
