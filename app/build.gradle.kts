@@ -76,7 +76,7 @@ dependencies {
     implementation("com.google.accompanist:accompanist-navigation-animation:0.29.2-rc")
 
     // Setting
-    implementation("com.github.re-ovo:compose-setting:1.0.15")
+    implementation("com.github.re-ovo:compose-setting:1.1")
 
     // Koin
     implementation("io.insert-koin:koin-androidx-compose:3.4.2")

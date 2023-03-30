@@ -3,6 +3,7 @@ package me.rerere.awara.ui.page.setting
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Source
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
@@ -18,8 +19,9 @@ import androidx.compose.ui.res.stringResource
 import me.rerere.awara.R
 import me.rerere.awara.ui.component.common.BackButton
 import me.rerere.compose_setting.components.SettingItemCategory
-import me.rerere.compose_setting.components.types.SettingBooleanItem
 import me.rerere.compose_setting.components.types.SettingLinkItem
+import me.rerere.compose_setting.components.types.SettingPickerItem
+import me.rerere.compose_setting.preference.rememberIntPreference
 
 @Composable
 fun SettingPage() {
@@ -44,18 +46,36 @@ fun SettingPage() {
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             item {
-                val dark = remember {
-                    mutableStateOf(false)
-                }
                 SettingItemCategory(
                     title = {
                         Text("外观设置")
                     }
                 ) {
-                    SettingBooleanItem(
-                        state = dark,
+                    val darkMode = rememberIntPreference(
+                        key = "setting.dark_mode",
+                        default = 0
+                    )
+                    SettingPickerItem(
+                        state = darkMode,
+                        items = listOf(0, 1, 2),
+                        itemLabel = { mode ->
+                            Text(
+                                text = when (mode) {
+                                    0 -> "跟随系统"
+                                    1 -> "深色模式"
+                                    2 -> "浅色模式"
+                                    else -> "未知"
+                                }
+                            )
+                        },
                         title = {
-                            Text("夜间模式")
+                            Text("颜色模式")
+                        },
+                        icon = {
+                            Icon(Icons.Outlined.LightMode, "Light/Dark Mode")
+                        },
+                        text = {
+                            Text("设置应用的颜色模式")
                         }
                     )
                 }

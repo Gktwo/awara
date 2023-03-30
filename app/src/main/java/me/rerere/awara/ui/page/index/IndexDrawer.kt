@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.FeaturedPlayList
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -136,6 +137,18 @@ fun ColumnScope.IndexDrawer() {
         },
         onClick = {}
     )
+
+    DrawerItem(
+        icon = {
+            Icon(Icons.Outlined.Settings, "Settings")
+        },
+        label = {
+            Text("设置")
+        },
+        onClick = {
+            router.navigate("setting")
+        }
+    )
 }
 
 @Composable
@@ -147,12 +160,13 @@ private fun DrawerItem(
 ) {
     ProvideTextStyle(MaterialTheme.typography.titleMedium) {
         Surface(
-            tonalElevation = 4.dp,
+            //tonalElevation = 4.dp,
+            // shadowElevation = 4.dp,
             shape = RoundedCornerShape(50),
             onClick = {
                 onClick()
             },
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
