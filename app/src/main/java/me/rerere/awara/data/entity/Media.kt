@@ -2,7 +2,10 @@ package me.rerere.awara.data.entity
 
 import kotlinx.serialization.Serializable
 import me.rerere.awara.util.InstantSerializer
+import me.rerere.awara.util.sha1
+import me.rerere.awara.util.toHex
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.time.Instant
 
@@ -41,6 +44,7 @@ data class Video(
     val status: String,
     val embedUrl: String?,
     val file: File?,
+    val fileUrl: String?,
 ): Media
 
 @Serializable
@@ -75,3 +79,11 @@ fun Media.thumbnailUrl(): String = when(this) {
     }
     is Image -> "https://files.iwara.tv/image/thumbnail/${thumbnail.id}/${thumbnail.name}"
 }
+
+val Video.signature: String
+    get() {
+        val url = fileUrl?.toHttpUrl() ?: return ""
+        val id = url.pathSegments.lastOrNull() ?: return ""
+        val expire = url.queryParameter("expires") ?: return ""
+        return "${id}_${expire}_5nFp9kmbNnHdAFhaqMvt".toByteArray().sha1().toHex().lowercase()
+    }

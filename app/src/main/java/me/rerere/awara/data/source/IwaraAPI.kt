@@ -39,4 +39,8 @@ interface IwaraAPI {
         @QueryMap queryMap: Map<String, String>
     ): Pager<Image>
 
+    @GET("/video/{id}")
+    suspend fun getVideo(
+        @Path("id") id: String
+    ): Video
 }

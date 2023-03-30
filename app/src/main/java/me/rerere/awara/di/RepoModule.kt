@@ -10,6 +10,6 @@ val repoModule = module {
     }
 
     single {
-        MediaRepo(get())
+        MediaRepo(get(), get())
     }
 }

@@ -1,6 +1,5 @@
 package me.rerere.awara.util
 
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -17,24 +16,19 @@ import retrofit2.Converter
 import retrofit2.Retrofit
 import java.io.IOException
 import java.lang.reflect.Type
-import java.text.DateFormat
-import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Base64
-import java.util.Date
-import java.util.Locale
+
+val JsonInstance = Json {
+    ignoreUnknownKeys = true
+    isLenient = true
+    explicitNulls = false
+    prettyPrint = true
+}
 
 class SerializationConverterFactory(private val json: Json) : Converter.Factory() {
     companion object {
-        @OptIn(ExperimentalSerializationApi::class)
-        fun create(json: Json = Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-            explicitNulls = false
-            prettyPrint = true
-        }): SerializationConverterFactory = SerializationConverterFactory(json)
+        fun create(json: Json = JsonInstance): SerializationConverterFactory = SerializationConverterFactory(json)
     }
 
     override fun responseBodyConverter(
