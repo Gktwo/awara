@@ -30,7 +30,7 @@ fun rememberPlayerState(
         val playbackListener = object : Player.Listener {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
-                state.state = when(playbackState) {
+                state.state = when (playbackState) {
                     Player.STATE_IDLE -> PlayerState.State.IDLE
                     Player.STATE_BUFFERING -> PlayerState.State.BUFFERING
                     Player.STATE_READY -> PlayerState.State.READY
@@ -39,7 +39,7 @@ fun rememberPlayerState(
                         Log.w(TAG, "onPlaybackStateChanged: unknown state $playbackState")
                     }
                 }
-                if(playbackState == Player.STATE_READY){
+                if (playbackState == Player.STATE_READY) {
                     state.duration = state.player.duration
                     state.currentMediaItem = state.player.currentMediaItem
                 }
@@ -64,7 +64,7 @@ fun rememberPlayerState(
         }
         state.player.addListener(playbackListener)
         state.playing = state.player.isPlaying
-        state.state = when(state.player.playbackState) {
+        state.state = when (state.player.playbackState) {
             Player.STATE_IDLE -> PlayerState.State.IDLE
             Player.STATE_BUFFERING -> PlayerState.State.BUFFERING
             Player.STATE_READY -> PlayerState.State.READY
@@ -96,14 +96,41 @@ class PlayerState(val player: Player) {
     var videoSize by mutableStateOf(VideoSize.UNKNOWN)
     var duration by mutableStateOf(0L)
 
+    var playerItems by mutableStateOf<List<PlayerItem>>(emptyList())
+        private set
+    var currentQuality by mutableStateOf("Loading")
+
+    fun prepare() {
+        player.prepare()
+    }
+
     fun seekTo(newPosition: Long) {
         player.seekTo(newPosition.coerceIn(0..duration))
     }
-    
+
+    fun updatePlayerItems(items: List<PlayerItem>) {
+        playerItems = items
+    }
+
+    fun updateCurrentQuality(quality: String) {
+        currentQuality = quality
+        if (playerItems.isNotEmpty()) {
+            val item = playerItems.find { it.quality == quality }
+            if (item != null) {
+                player.setMediaItem(item.mediaItem)
+            }
+        }
+    }
+
     enum class State {
         IDLE,
         BUFFERING,
         READY,
         ENDED
     }
+
+    data class PlayerItem(
+        val quality: String,
+        val mediaItem: MediaItem,
+    )
 }

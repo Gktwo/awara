@@ -37,7 +37,9 @@ class VideoVM(
             state = state.copy(loading = true)
             runAPICatching {
                 val video = mediaRepo.getVideo(id)
-                val urls = mediaRepo.parseVideoUrl(video)
+                val urls = mediaRepo.parseVideoUrl(video).filter {
+                    it.name != "preview" // 忽略预览视频
+                }
                 video to urls
             }.onSuccess {
                 state = state.copy(video = it.first, urls = it.second)

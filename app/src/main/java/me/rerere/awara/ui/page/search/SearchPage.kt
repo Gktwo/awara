@@ -1,7 +1,7 @@
 package me.rerere.awara.ui.page.search
 
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -12,6 +12,7 @@ import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.BackButton
 import me.rerere.awara.ui.component.common.Button
 import me.rerere.awara.ui.hooks.rememberFullScreenState
+import me.rerere.awara.ui.hooks.rememberRequestedScreenOrientation
 
 @Composable
 fun SearchPage() {
@@ -43,6 +44,15 @@ fun SearchPage() {
                 }
             ) {
                 Text("F: ${fullScreenState.isFullScreen}")
+            }
+
+            val orientation = rememberRequestedScreenOrientation()
+            Button(
+                onClick = {
+                    orientation.value = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+                }
+            ) {
+                Text("Orientation: ${orientation.value}")
             }
         }
     }
