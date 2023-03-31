@@ -1,6 +1,8 @@
 # Awara
 Next generation Android app for iwara.
 
+> Still in development, not ready for use!
+
 ## Features
 - 🎨 Material You Design
 - 💻 Automatic screen adaptation
@@ -14,6 +16,7 @@ Next generation Android app for iwara.
 
 ## Contributing
 - 架构指南: [Architecture Guide](https://developer.android.com/topic/architecture)
+- Android Studio 2022.3.1 Canary 9
 
 ## License
 GPLv3 [LICENSE](LICENSE)
