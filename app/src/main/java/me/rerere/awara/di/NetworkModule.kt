@@ -46,9 +46,6 @@ val networkModule = module {
             .baseUrl("https://api.iwara.tv")
             .addConverterFactory(SerializationConverterFactory.create())
             .build()
-    }
-
-    single {
-        get<Retrofit>().create(IwaraAPI::class.java)
+            .create(IwaraAPI::class.java)
     }
 }
