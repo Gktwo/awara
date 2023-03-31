@@ -34,7 +34,7 @@ import me.rerere.awara.ui.LocalDialogProvider
 @Composable
 fun FilterAndSort(
     modifier: Modifier = Modifier,
-    sort: String? = null,
+    sort: String?,
     onSortChange: (String) -> Unit,
     sortOptions: List<SortOption>,
     filters: List<FilterValue>,
@@ -52,7 +52,7 @@ fun FilterAndSort(
             )
         }
 
-        if(filterOptions.isNotEmpty()){
+        if (filterOptions.isNotEmpty()) {
             FilterButton(
                 filters = filters,
                 filterOptions = filterOptions
@@ -82,7 +82,9 @@ private fun SortButton(
         },
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             if (currentSort.icon != null) {
                 currentSort.icon.invoke()
@@ -138,44 +140,44 @@ private fun FilterButton(
     val scope = rememberCoroutineScope()
     FilledTonalButton(
         onClick = {
-           dialog.show {
-               val pager = rememberPagerState()
-               Column {
-                   ScrollableTabRow(
-                       selectedTabIndex = pager.currentPage,
-                       modifier = Modifier
-                           .fillMaxWidth()
-                   ) {
-                       filterOptions.forEachIndexed { index, option ->
-                           Tab(
-                               text = {
-                                   option.label.invoke()
-                               },
-                               selected = pager.currentPage == index,
-                               onClick = {
-                                   scope.launch {
-                                       pager.animateScrollToPage(index)
-                                   }
-                               }
-                           )
-                       }
-                   }
+            dialog.show {
+                val pager = rememberPagerState()
+                Column {
+                    ScrollableTabRow(
+                        selectedTabIndex = pager.currentPage,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        filterOptions.forEachIndexed { index, option ->
+                            Tab(
+                                text = {
+                                    option.label.invoke()
+                                },
+                                selected = pager.currentPage == index,
+                                onClick = {
+                                    scope.launch {
+                                        pager.animateScrollToPage(index)
+                                    }
+                                }
+                            )
+                        }
+                    }
 
-                   HorizontalPager(
-                       pageCount = filterOptions.size,
-                       modifier = Modifier
-                           .fillMaxWidth()
-                           .height(400.dp)
-                   ) {
-                       Box(
+                    HorizontalPager(
+                        pageCount = filterOptions.size,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(400.dp)
+                    ) {
+                        Box(
                             modifier = Modifier
-                                 .fillMaxSize()
-                       ){
-                           filterOptions[it].render.invoke()
-                       }
-                   }
-               }
-           }
+                                .fillMaxSize()
+                        ) {
+                            filterOptions[it].render.invoke()
+                        }
+                    }
+                }
+            }
         },
     ) {
         Row(

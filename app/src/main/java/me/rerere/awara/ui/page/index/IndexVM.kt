@@ -12,6 +12,7 @@ import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.repo.UserRepo
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
+import me.rerere.awara.ui.component.iwara.sort.MediaSortOptions
 
 private const val TAG = "IndexVM"
 
@@ -21,6 +22,11 @@ class IndexVM(
 ) : ViewModel() {
     var state by mutableStateOf(IndexState())
         private set
+
+    init {
+        loadSubscriptions()
+        loadVideoList()
+    }
 
     private fun loadSubscriptions() {
         viewModelScope.launch {
@@ -55,8 +61,35 @@ class IndexVM(
         loadSubscriptions()
     }
 
-    init {
-        loadSubscriptions()
+    fun loadVideoList() {
+        viewModelScope.launch {
+            state = state.copy(videoLoading = true)
+            runAPICatching {
+                mediaRepo.getVideoList(
+                    mapOf(
+                        "limit" to "24",
+                        "page" to (state.videoPage - 1).toString(),
+                        "sort" to state.videoSort,
+                    )
+                )
+            }.onSuccess {
+                state = state.copy(
+                    videoList = it.results
+                )
+            }
+            state = state.copy(videoLoading = false)
+        }
+    }
+
+    fun updateVideoSort(sort: String){
+        state = state.copy(videoSort = sort)
+        loadVideoList()
+    }
+
+    fun updateVideoPage(it: Int) {
+        if(it == state.videoPage || it < 1) return
+        state = state.copy(videoPage = it)
+        loadVideoList()
     }
 
     data class IndexState(
@@ -64,6 +97,10 @@ class IndexVM(
         val subscriptionPage: Int = 1,
         val subscriptionType : SubscriptionType = SubscriptionType.VIDEO,
         val subscriptions: List<Media> = emptyList(),
+        val videoLoading: Boolean = false,
+        val videoPage: Int = 1,
+        val videoList: List<Media> = emptyList(),
+        val videoSort: String = MediaSortOptions.first().name,
     )
 
     enum class SubscriptionType(

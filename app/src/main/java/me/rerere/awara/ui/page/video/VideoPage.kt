@@ -23,7 +23,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import kotlinx.coroutines.flow.collectLatest
 import me.rerere.awara.data.entity.fixUrl
 import me.rerere.awara.ui.component.common.BackButton
@@ -35,7 +37,14 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun VideoPage(vm: VideoVM = koinViewModel()) {
-    val state = rememberPlayerState()
+    val state = rememberPlayerState {
+        ExoPlayer.Builder(it)
+            .setHandleAudioBecomingNoisy(true)
+            .build()
+            .apply {
+                playWhenReady = true
+            }
+    }
     var fullscreen by remember {
         mutableStateOf(false)
     }
@@ -52,6 +61,7 @@ fun VideoPage(vm: VideoVM = koinViewModel()) {
                         }
                     )
                     state.updateCurrentQuality(it.urls.lastOrNull()?.name ?: "Unknown")
+                    state.prepare()
                     // TODO: Update current quality to user's preference
                 }
             }
