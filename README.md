@@ -1,7 +1,8 @@
 # Awara
+[中文说明](doc/README.zh.md) | [日本語説明](doc/README.ja.md) | [한국어 설명](doc/README.ko.md)
 Next generation Android app for iwara.
 
-> Still in development, not ready for use!
+> ⚠️Still in development, not ready for use!
 
 ## Features
 - 🎨 Material You Design
@@ -15,7 +16,7 @@ Next generation Android app for iwara.
 - TODO
 
 ## Contributing
-- 架构指南: [Architecture Guide](https://developer.android.com/topic/architecture)
+- [Architecture Guide](https://developer.android.com/topic/architecture)
 - Android Studio 2022.3.1 Canary 9
 
 ## License
