@@ -1,5 +1,5 @@
 # Awara
-[中文说明](doc/README.zh.md) | [日本語説明](doc/README.ja.md) | [한국어 설명](doc/README.ko.md)
+[中文说明](doc/README.zh.md) | [日本語説明](doc/README.ja.md) | [한국어 설명](doc/README.ko.md)   
 Next generation Android app for iwara.
 
 > ⚠️Still in development, not ready for use!
