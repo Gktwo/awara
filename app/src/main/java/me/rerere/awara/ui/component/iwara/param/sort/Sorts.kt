@@ -1,4 +1,4 @@
-package me.rerere.awara.ui.component.iwara.sort
+package me.rerere.awara.ui.component.iwara.param.sort
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarMonth
@@ -8,7 +8,7 @@ import androidx.compose.material.icons.outlined.RemoveRedEye
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import me.rerere.awara.ui.component.iwara.SortOption
+import me.rerere.awara.ui.component.iwara.param.SortOption
 
 val MediaSortOptions = listOf(
     SortOption(

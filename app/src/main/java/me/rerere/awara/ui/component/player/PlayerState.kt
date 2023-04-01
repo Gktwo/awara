@@ -19,7 +19,12 @@ private const val TAG = "PlayerState"
 @Composable
 fun rememberPlayerState(
     builder: (Context) -> ExoPlayer = {
-        ExoPlayer.Builder(it).build()
+        ExoPlayer.Builder(it)
+            .setHandleAudioBecomingNoisy(true)
+            .build()
+            .apply {
+                playWhenReady = true
+            }
     }
 ): PlayerState {
     val context = LocalContext.current

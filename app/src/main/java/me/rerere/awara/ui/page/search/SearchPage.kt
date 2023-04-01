@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.BackButton
 import me.rerere.awara.ui.component.common.Button
@@ -18,6 +19,7 @@ import me.rerere.awara.ui.hooks.rememberRequestedScreenOrientation
 fun SearchPage() {
     val router = LocalRouterProvider.current
     val fullScreenState = rememberFullScreenState()
+    val message = LocalMessageProvider.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,6 +55,14 @@ fun SearchPage() {
                 }
             ) {
                 Text("Orientation: ${orientation.value}")
+            }
+
+            Button(onClick = {
+                message.warning {
+                    Text("Warning")
+                }
+            }) {
+                Text("Msg")
             }
         }
     }

@@ -59,6 +59,7 @@ fun MessageProvider(
     }
     LaunchedEffect(Unit) {
         while (true) {
+            print(messageHolder.messages.size)
             delay(50)
             messageHolder.messages.removeAll {
                 System.currentTimeMillis() - it.createTime > it.duration
@@ -72,7 +73,7 @@ fun MessageProvider(
             content()
         }
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .matchParentSize()
                 .safeContentPadding()
                 .padding(16.dp),
@@ -87,7 +88,7 @@ fun MessageProvider(
 }
 
 @Composable
-fun rememberMessageHolder() = remember {
+private fun rememberMessageHolder() = remember {
     MessageHolder()
 }
 

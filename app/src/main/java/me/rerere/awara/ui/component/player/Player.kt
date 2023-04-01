@@ -1,5 +1,6 @@
 package me.rerere.awara.ui.component.player
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -68,7 +69,7 @@ private fun PlayerController(
 ) {
     Column(
         modifier = modifier
-            .padding(8.dp)
+            .padding(horizontal = 8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -107,7 +108,6 @@ private fun RowScope.ProgressBar(state: PlayerState) {
             while (true) {
                 delay(1000)
                 value = state.player.currentPosition
-                println("Current progress: $value ${state.duration}")
             }
         }
     )

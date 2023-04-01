@@ -12,7 +12,7 @@ import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.repo.UserRepo
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
-import me.rerere.awara.ui.component.iwara.sort.MediaSortOptions
+import me.rerere.awara.ui.component.iwara.param.sort.MediaSortOptions
 
 private const val TAG = "IndexVM"
 

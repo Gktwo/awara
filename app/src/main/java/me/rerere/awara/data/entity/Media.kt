@@ -21,6 +21,7 @@ sealed interface Media {
     val deletedAt: Instant?
     val slug: String?
     val user: User
+    val body: String?
 }
 
 @Serializable
@@ -31,6 +32,7 @@ data class Video(
     override val numComments: Int,
     override val numLikes: Int,
     override val numViews: Int,
+    override val body: String?,
     @Serializable(with = InstantSerializer::class)
     override val createdAt: Instant,
     @Serializable(with = InstantSerializer::class)
@@ -55,6 +57,7 @@ data class Image(
     override val numComments: Int,
     override val numLikes: Int,
     override val numViews: Int,
+    override val body: String?,
     @Serializable(with = InstantSerializer::class)
     override val createdAt: Instant,
     @Serializable(with = InstantSerializer::class)

@@ -29,7 +29,7 @@ fun PaginationBar(
     page: Int,
     onPageChange: (Int) -> Unit,
     leading: @Composable (() -> Unit)? = null,
-    tailing: @Composable (() -> Unit)? = null
+    trailing: @Composable (() -> Unit)? = null
 ) {
     val dialog = LocalDialogProvider.current
     val message = LocalMessageProvider.current
@@ -87,7 +87,7 @@ fun PaginationBar(
                 Icon(Icons.Outlined.KeyboardArrowRight, "Next page")
             }
 
-            tailing?.invoke()
+            trailing?.invoke()
         }
     }
 }

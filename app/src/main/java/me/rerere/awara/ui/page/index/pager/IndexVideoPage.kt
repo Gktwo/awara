@@ -11,10 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import me.rerere.awara.ui.component.common.Spin
-import me.rerere.awara.ui.component.iwara.FilterAndSort
+import me.rerere.awara.ui.component.iwara.param.FilterAndSort
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.component.iwara.PaginationBar
-import me.rerere.awara.ui.component.iwara.sort.MediaSortOptions
+import me.rerere.awara.ui.component.iwara.param.FilterValue
+import me.rerere.awara.ui.component.iwara.param.filter.RateFilter
+import me.rerere.awara.ui.component.iwara.param.sort.MediaSortOptions
 import me.rerere.awara.ui.page.index.IndexVM
 
 @Composable
@@ -23,7 +25,9 @@ fun IndexVideoPage(vm: IndexVM) {
     Column {
         Spin(
             show = state.videoLoading,
-            modifier = Modifier.weight(1f).fillMaxWidth()
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
         ) {
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Fixed(2),
@@ -50,8 +54,14 @@ fun IndexVideoPage(vm: IndexVM) {
                         vm.updateVideoSort(it)
                     },
                     sortOptions = MediaSortOptions,
-                    filters = emptyList(),
-                    filterOptions = emptyList()
+                    filters = listOf(
+                        FilterValue("rating", listOf("general"))
+                    ),
+                    filterOptions = listOf(
+                        RateFilter
+                    ),
+                    onFilterAdd = {},
+                    onFilterRemove = {}
                 )
             }
         )
