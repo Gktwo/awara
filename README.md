@@ -1,4 +1,5 @@
 # Awara
+[Discord](https://discord.gg/G22sSzJbzh)   
 [中文说明](doc/README.zh.md) | [日本語説明](doc/README.ja.md) | [한국어 설명](doc/README.ko.md)   
 Next generation Android app for iwara.
 
@@ -20,7 +21,6 @@ Next generation Android app for iwara.
 - Android Studio 2022.3.1 Canary 9
 
 ## License
-GPLv3 [LICENSE](LICENSE)
 ```text
                    GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
