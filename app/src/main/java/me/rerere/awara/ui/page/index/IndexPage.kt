@@ -11,7 +11,7 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import me.rerere.awara.R
-import me.rerere.awara.ui.hooks.rememberWindowSize
+import me.rerere.awara.ui.hooks.rememberWindowSizeClass
 import me.rerere.awara.ui.page.index.layout.IndexPagePhoneLayout
 import me.rerere.awara.ui.page.index.layout.IndexPageTabletLayout
 import org.koin.androidx.compose.koinViewModel
@@ -20,7 +20,7 @@ import org.koin.androidx.compose.koinViewModel
 fun IndexPage(
     vm: IndexVM = koinViewModel()
 ) {
-    val windowSizeClass = rememberWindowSize()
+    val windowSizeClass = rememberWindowSizeClass()
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Expanded, WindowWidthSizeClass.Medium -> {
             IndexPageTabletLayout(vm)

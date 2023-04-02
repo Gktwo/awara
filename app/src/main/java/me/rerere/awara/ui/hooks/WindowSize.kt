@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import me.rerere.awara.util.findActivity
 
 @Composable
-fun rememberWindowSize(): WindowSizeClass {
+fun rememberWindowSizeClass(): WindowSizeClass {
     val context = LocalContext.current
     return calculateWindowSizeClass(
         context.findActivity()

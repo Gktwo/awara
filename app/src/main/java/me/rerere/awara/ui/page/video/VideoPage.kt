@@ -36,7 +36,7 @@ import me.rerere.awara.ui.component.player.PlayerState
 import me.rerere.awara.ui.component.player.rememberPlayerState
 import me.rerere.awara.ui.hooks.ForceSystemBarColor
 import me.rerere.awara.ui.hooks.rememberRequestedScreenOrientation
-import me.rerere.awara.ui.hooks.rememberWindowSize
+import me.rerere.awara.ui.hooks.rememberWindowSizeClass
 import me.rerere.awara.ui.page.video.layout.VideoPagePhoneLayout
 import me.rerere.awara.ui.page.video.layout.VideoPageTabletLayout
 import org.koin.androidx.compose.koinViewModel
@@ -47,7 +47,7 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
     ForceSystemBarColor(appearanceLight = false)
 
     var requestOrientation by rememberRequestedScreenOrientation()
-    val windowSize = rememberWindowSize()
+    val windowSize = rememberWindowSizeClass()
     val state = rememberPlayerState()
     val message = LocalMessageProvider.current
 

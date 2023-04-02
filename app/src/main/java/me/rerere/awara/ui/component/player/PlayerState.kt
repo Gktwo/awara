@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -96,6 +97,7 @@ fun rememberPlayerState(
     return state
 }
 
+@Stable
 @SuppressLint("UnsafeOptInUsageError")
 class PlayerState(val player: Player) {
     var playing by mutableStateOf(false)
@@ -131,6 +133,14 @@ class PlayerState(val player: Player) {
                 player.setMediaItem(item.mediaItem)
             }
         }
+    }
+
+    fun pause() {
+        player.pause()
+    }
+
+    fun play() {
+        player.play()
     }
 
     enum class State {
