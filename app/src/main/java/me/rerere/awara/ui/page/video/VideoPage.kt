@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FitScreen
 import androidx.compose.material.icons.outlined.Fullscreen
 import androidx.compose.material.icons.outlined.FullscreenExit
 import androidx.compose.material3.DropdownMenu
@@ -23,7 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.media3.common.MediaItem
 import androidx.media3.common.VideoSize
+import androidx.media3.ui.AspectRatioFrameLayout
 import kotlinx.coroutines.flow.collectLatest
+import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.fixUrl
 import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.component.common.BackButton
@@ -38,8 +41,9 @@ import me.rerere.awara.ui.page.video.layout.VideoPagePhoneLayout
 import me.rerere.awara.ui.page.video.layout.VideoPageTabletLayout
 import org.koin.androidx.compose.koinViewModel
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
-fun VideoPage(vm: VideoVM = koinViewModel()) {
+fun  VideoPage(vm: VideoVM = koinViewModel()) {
     ForceSystemBarColor(appearanceLight = false)
 
     var requestOrientation by rememberRequestedScreenOrientation()
@@ -63,30 +67,28 @@ fun VideoPage(vm: VideoVM = koinViewModel()) {
         requestOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         fullscreen = false
     }
+    fun applyUrls(urls: List<VideoFile>) {
+        state.updatePlayerItems(
+            urls.map {
+                PlayerState.PlayerItem(
+                    quality = it.name,
+                    mediaItem = MediaItem.fromUri(it.src.view.fixUrl())
+                )
+            }
+        )
+        state.updateCurrentQuality(urls.lastOrNull()?.name ?: "Unknown")
+        state.prepare()
+        // TODO: Update current quality to user's preference
+    }
 
     // Handle VM Events
     LaunchedEffect(Unit) {
+        applyUrls(vm.state.urls)
         vm.events.collectLatest {
             when (it) {
                 // URL加载完成，更新播放器
                 is VideoVM.VideoEvent.UrlLoaded -> {
-                    if (it.urls.isEmpty()) {
-                        message.error {
-                            Text("No playable video found")
-                        }
-                        println("empty")
-                    }
-                    state.updatePlayerItems(
-                        it.urls.map {
-                            PlayerState.PlayerItem(
-                                quality = it.name,
-                                mediaItem = MediaItem.fromUri(it.src.view.fixUrl())
-                            )
-                        }
-                    )
-                    state.updateCurrentQuality(it.urls.lastOrNull()?.name ?: "Unknown")
-                    state.prepare()
-                    // TODO: Update current quality to user's preference
+                    applyUrls(it.urls)
                 }
             }
         }
@@ -112,6 +114,18 @@ fun VideoPage(vm: VideoVM = koinViewModel()) {
                             if(!fullscreen) Icons.Outlined.Fullscreen else Icons.Outlined.FullscreenExit,
                             "Fullscreen"
                         )
+                    }
+                    if(fullscreen) {
+                        IconButton(
+                            onClick = {
+                                state.resizeMode =
+                                    if (state.resizeMode == AspectRatioFrameLayout.RESIZE_MODE_FIT)
+                                        AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                                    else AspectRatioFrameLayout.RESIZE_MODE_FIT
+                            }
+                        ) {
+                            Icon(Icons.Outlined.FitScreen, null)
+                        }
                     }
 
                     Box {

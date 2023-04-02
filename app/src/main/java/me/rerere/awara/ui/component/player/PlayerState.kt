@@ -1,5 +1,6 @@
 package me.rerere.awara.ui.component.player
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.Composable
@@ -7,12 +8,15 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.AspectRatioFrameLayout
 
 private const val TAG = "PlayerState"
 
@@ -92,6 +96,7 @@ fun rememberPlayerState(
     return state
 }
 
+@SuppressLint("UnsafeOptInUsageError")
 class PlayerState(val player: Player) {
     var playing by mutableStateOf(false)
     var state by mutableStateOf(State.IDLE)
@@ -100,6 +105,7 @@ class PlayerState(val player: Player) {
     var currentMediaItem by mutableStateOf<MediaItem?>(null)
     var videoSize by mutableStateOf(VideoSize.UNKNOWN)
     var duration by mutableStateOf(0L)
+    var resizeMode by mutableStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT)
 
     var playerItems by mutableStateOf<List<PlayerItem>>(emptyList())
         private set
@@ -132,6 +138,10 @@ class PlayerState(val player: Player) {
         BUFFERING,
         READY,
         ENDED
+    }
+
+    enum class ContentScale {
+
     }
 
     data class PlayerItem(

@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Favorite
@@ -37,6 +39,7 @@ import me.rerere.awara.data.entity.Video
 import me.rerere.awara.ui.component.common.Button
 import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.iwara.Avatar
+import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.page.video.VideoVM
 import me.rerere.awara.util.toLocalDateTimeString
 
@@ -49,14 +52,22 @@ fun VideoOverviewPage(vm: VideoVM) {
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier
+                .padding(vertical = 8.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             state.video?.let {
                 VideoInfoCard(
                     video = it
                 )
 
-                AuthorCard(video = it)
+                AuthorCard(
+                    video = it
+                )
+
+                MoreLikeThis(
+                    vm = vm
+                )
             }
         }
     }
@@ -176,8 +187,36 @@ private fun AuthorCard(video: Video) {
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-            Button(onClick = { /*TODO*/ }) {
-                Text("关注")
+            Button(
+                onClick = { /*TODO*/ }
+            ) {
+                Text(
+                    text = if(video.user.following) "已关注" else "关注"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MoreLikeThis(vm: VideoVM) {
+    Column(
+        modifier = Modifier.padding(horizontal = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = "更多类似视频",
+            style = MaterialTheme.typography.titleSmall
+        )
+
+        // 2 columns
+        vm.state.relatedVideos.chunked(2).forEach { chunk ->
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                chunk.forEach {
+                    MediaCard(media = it, modifier = Modifier.weight(1f))
+                }
             }
         }
     }

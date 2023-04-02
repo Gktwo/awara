@@ -43,4 +43,9 @@ interface IwaraAPI {
     suspend fun getVideo(
         @Path("id") id: String
     ): Video
+
+    @GET("/video/{id}/related")
+    suspend fun getRelatedVideo(
+        @Path("id") id: String
+    ): Pager<Video>
 }

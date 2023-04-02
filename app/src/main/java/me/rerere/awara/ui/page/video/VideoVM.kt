@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import me.rerere.awara.data.entity.Video
@@ -45,18 +46,32 @@ class VideoVM(
                 state = state.copy(video = it.first, urls = it.second)
                 events.emit(VideoEvent.UrlLoaded(it.second))
             }.onError {
-                Log.w(TAG, "getVideo: $it", )
+                Log.w(TAG, "getVideo: $it")
             }.onException {
-                Log.w(TAG, "getVideo: ${it.exception}", )
+                Log.w(TAG, "getVideo: ${it.exception}")
             }
             state = state.copy(loading = false)
+        }
+
+        viewModelScope.launch {
+            runAPICatching {
+                val relatedVideos = async { mediaRepo.getRelatedVideos(id) }
+                relatedVideos.await()
+            }.onSuccess {
+                state = state.copy(relatedVideos = it.results)
+            }.onError {
+                Log.w(TAG, "getRelatedVideos: $it")
+            }.onException {
+                Log.w(TAG, "getRelatedVideos: ${it.exception}")
+            }
         }
     }
 
     data class VideoState(
         val loading: Boolean = false,
         val video: Video? = null,
-        val urls: List<VideoFile> = emptyList()
+        val urls: List<VideoFile> = emptyList(),
+        val relatedVideos: List<Video> = emptyList()
     )
 
     sealed class VideoEvent {

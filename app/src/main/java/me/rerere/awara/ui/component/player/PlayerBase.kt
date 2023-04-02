@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.ui.PlayerView
 
 private const val TAG = "PlayerBase"
 
@@ -18,19 +19,20 @@ fun  PlayerBase(
 ) {
     AndroidView(
         factory = {
-            SurfaceView(it).apply {
+            PlayerView(it).apply {
                 layoutParams = android.view.ViewGroup.LayoutParams(
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                state.player.setVideoSurfaceView(this)
+                player = state.player
+                resizeMode = state.resizeMode
+                useController = false
+                clipToOutline = true
             }
         },
         update = {
-            state.player.setVideoSurfaceView(it)
+                 it.resizeMode = state.resizeMode
         },
         modifier = modifier.background(Color.Black)
     )
 }
-
-

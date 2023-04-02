@@ -40,4 +40,6 @@ class MediaRepo(
         val bodyString = body.string()
         return JsonInstance.decodeFromString(bodyString)
     }
+
+    suspend fun getRelatedVideos(id: String) = iwaraAPI.getRelatedVideo(id)
 }

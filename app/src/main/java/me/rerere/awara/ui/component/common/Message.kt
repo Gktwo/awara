@@ -1,5 +1,6 @@
 package me.rerere.awara.ui.component.common
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -92,6 +93,7 @@ private fun rememberMessageHolder() = remember {
     MessageHolder()
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun BoxScope.MessageList(
     alignment: Alignment,
