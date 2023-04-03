@@ -22,8 +22,17 @@ android {
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -70,7 +79,6 @@ dependencies {
     implementation("androidx.media3:media3-cast:1.0.0")
     implementation("androidx.media3:media3-session:1.0.0")
     implementation("androidx.media3:media3-ui:1.0.0")
-
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-navigation-animation:0.29.2-rc")
