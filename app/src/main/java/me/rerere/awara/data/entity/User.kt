@@ -19,7 +19,7 @@ data class User(
     val premium: Boolean,
     val role: String,
     @Serializable(with = InstantSerializer::class)
-    val seenAt: Instant,
+    val seenAt: Instant?,
     val status: String,
     @Serializable(with = InstantSerializer::class)
     val updatedAt: Instant,

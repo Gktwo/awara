@@ -12,11 +12,13 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import me.rerere.compose_setting.preference.rememberIntPreference
 
 private const val TAG = "Theme"
 
@@ -26,29 +28,36 @@ private val LightColorScheme = lightColorScheme()
 
 @Composable
 fun AwaraTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val darkMode by rememberIntPreference(
+        key = "setting.dark_mode",
+        default = 0
+    )
+    val lightMode = when(darkMode) {
+        0 -> !isSystemInDarkTheme()
+        1 -> true
+        2 -> false
+        else -> error("Invalid dark mode: $darkMode")
+    }
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            if (!lightMode) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        lightMode -> LightColorScheme
+        else -> DarkColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {
-        LaunchedEffect(Unit) {
+        LaunchedEffect(lightMode) {
             val window = (view.context as Activity).window
             window.statusBarColor = Color.Transparent.toArgb()
             window.navigationBarColor = Color.Transparent.toArgb()
             WindowCompat.getInsetsController(window, view).apply {
-                isAppearanceLightStatusBars = !darkTheme
-                isAppearanceLightNavigationBars = !darkTheme
+                isAppearanceLightStatusBars = lightMode
+                isAppearanceLightNavigationBars = lightMode
                 Log.i(TAG, "AwaraTheme: isAppearanceLightStatusBars = $isAppearanceLightStatusBars")
             }
         }

@@ -60,70 +60,70 @@ fun ColumnScope.IndexDrawer() {
                 .blur(4.dp),
             contentScale = ContentScale.Crop,
         )
+    }
 
-        Card(
+    Card(
+        modifier = Modifier
+            //.align(Alignment.BottomCenter)
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
-                .align(Alignment.BottomCenter)
                 .padding(8.dp)
-                .fillMaxWidth()
+                .height(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            Avatar(
                 modifier = Modifier
-                    .padding(8.dp)
-                    .height(IntrinsicSize.Min),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Avatar(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .aspectRatio(1f),
-                    user = userState.user,
-                    onClick = {
-                        router.navigate("login")
-                    }
-                )
-                Column {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
-                        // User nick name
-                        Text(
-                            text = userState.user?.name ?: "未登录",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.primary,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                        )
-
-                        // ID
-                        if (userState.user?.username != null) {
-                            Text(
-                                text = "#${userState.user.username}",
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        }
-                    }
-
-                    // User description
+                    .fillMaxHeight()
+                    .aspectRatio(1f),
+                user = userState.user,
+                onClick = {
+                    router.navigate("login")
+                }
+            )
+            Column {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    // User nick name
                     Text(
-                        text = userState.profile?.body ?: "该用户是个神秘人，不喜欢被人围观。",
-                        style = MaterialTheme.typography.bodySmall,
+                        text = userState.user?.name ?: "未登录",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                     )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(
-                    onClick = {
-                        userStore(UserStoreAction.Logout)
-                        message.info {
-                            Text("已登出")
-                        }
+
+                    // ID
+                    if (userState.user?.username != null) {
+                        Text(
+                            text = "#${userState.user.username}",
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
                     }
-                ) {
-                    Icon(Icons.Outlined.ExitToApp, "Logout")
                 }
+
+                // User description
+                Text(
+                    text = userState.profile?.body ?: "该用户是个神秘人，不喜欢被人围观。",
+                    style = MaterialTheme.typography.bodySmall,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+            IconButton(
+                onClick = {
+                    userStore(UserStoreAction.Logout)
+                    message.info {
+                        Text("已登出")
+                    }
+                }
+            ) {
+                Icon(Icons.Outlined.ExitToApp, "Logout")
             }
         }
     }

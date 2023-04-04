@@ -76,11 +76,11 @@ fun Media.thumbnailUrl(): String = when(this) {
     is Video -> if (embedUrl != null) {
         val url = embedUrl.toHttpUrlOrNull()
         val id = url?.queryParameter("v") ?: url?.pathSegments?.lastOrNull() ?: ""
-        "https://files.iwara.tv/image/embed/thumbnail/youtube/$id"
+        "https://i.iwara.tv/image/embed/thumbnail/youtube/$id"
     } else run {
-        "https://files.iwara.tv/image/thumbnail/${file?.id}/thumbnail-00.jpg"
+        "https://i.iwara.tv/image/thumbnail/${file?.id}/thumbnail-00.jpg"
     }
-    is Image -> "https://files.iwara.tv/image/thumbnail/${thumbnail.id}/${thumbnail.name}"
+    is Image -> "https://i.iwara.tv/image/thumbnail/${thumbnail.id}/${thumbnail.name}"
 }
 
 val Video.signature: String
