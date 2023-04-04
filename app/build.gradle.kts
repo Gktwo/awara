@@ -96,6 +96,7 @@ dependencies {
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-svg:2.3.0")
 
     // Profile Installer
     implementation("androidx.profileinstaller:profileinstaller:1.3.0")

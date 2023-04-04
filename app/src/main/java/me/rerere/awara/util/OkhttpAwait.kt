@@ -6,7 +6,11 @@ import java.io.IOException
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
-
+/**
+ * Await for the response
+ *
+ * @return The response
+ */
 suspend fun Call.await() = suspendCancellableCoroutine { continuation ->
     continuation.invokeOnCancellation {
         cancel()
