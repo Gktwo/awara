@@ -18,8 +18,11 @@
     <string name="video">動画</string>
     <string name="image">画像</string>
     <string name="post">帖子</string>
-    <string name="rate_all">すべて</string>
-    <string name="rate_general">" 一般"</string>
-    <string name="rate_ecchi">エッチ</string>
-    <string name="rate">レーティング</string>
+    <string name="rating_all">すべて</string>
+    <string name="rating_general">" 一般"</string>
+    <string name="rating_ecchi">エッチ</string>
+    <string name="rating">レーティング</string>
+    <string name="date">日にち</string>
+    <string name="filters">フィルター</string>
+    <string name="tag">タグ</string>
 </resources>

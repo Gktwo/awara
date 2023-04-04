@@ -19,8 +19,11 @@
     <string name="video">Video</string>
     <string name="image">Image</string>
     <string name="post">Post</string>
-    <string name="rate_all">All</string>
-    <string name="rate_general">General</string>
-    <string name="rate_ecchi">Ecchi</string>
-    <string name="rate">Rating</string>
+    <string name="rating_all">All</string>
+    <string name="rating_general">General</string>
+    <string name="rating_ecchi">Ecchi</string>
+    <string name="rating">Rating</string>
+    <string name="date">Date</string>
+    <string name="filters">Filters</string>
+    <string name="tag">Tag</string>
 </resources>

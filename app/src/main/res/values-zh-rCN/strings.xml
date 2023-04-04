@@ -20,8 +20,11 @@
     <string name="video">视频</string>
     <string name="image">图片</string>
     <string name="post">帖子</string>
-    <string name="rate_all">所有</string>
-    <string name="rate_general">全年龄</string>
-    <string name="rate_ecchi">成人</string>
-    <string name="rate">评级</string>
+    <string name="rating_all">所有</string>
+    <string name="rating_general">全年龄</string>
+    <string name="rating_ecchi">成人</string>
+    <string name="rating">评级</string>
+    <string name="date">日期</string>
+    <string name="filters">过滤</string>
+    <string name="tag">标签</string>
 </resources>

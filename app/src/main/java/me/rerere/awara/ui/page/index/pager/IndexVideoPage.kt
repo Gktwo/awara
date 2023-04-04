@@ -14,8 +14,9 @@ import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.iwara.param.FilterAndSort
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.component.iwara.PaginationBar
-import me.rerere.awara.ui.component.iwara.param.FilterValue
+import me.rerere.awara.ui.component.iwara.param.filter.DateFilter
 import me.rerere.awara.ui.component.iwara.param.filter.RateFilter
+import me.rerere.awara.ui.component.iwara.param.filter.TagFilter
 import me.rerere.awara.ui.component.iwara.param.sort.MediaSortOptions
 import me.rerere.awara.ui.page.index.IndexVM
 
@@ -54,14 +55,19 @@ fun IndexVideoPage(vm: IndexVM) {
                         vm.updateVideoSort(it)
                     },
                     sortOptions = MediaSortOptions,
-                    filters = listOf(
-                        FilterValue("rating", listOf("general"))
-                    ),
+                    filters = state.videoFilters,
                     filterOptions = listOf(
-                        RateFilter
+                        RateFilter, DateFilter, TagFilter
                     ),
-                    onFilterAdd = {},
-                    onFilterRemove = {}
+                    onFilterAdd = {
+                        vm.addFilter(it)
+                    },
+                    onFilterRemove = {
+                        vm.removeFilter(it)
+                    },
+                    onFilterFinish = {
+                        vm.loadVideoList()
+                    }
                 )
             }
         )

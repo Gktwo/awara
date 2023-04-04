@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FilterList
@@ -18,18 +22,22 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import me.rerere.awara.R
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -41,6 +49,7 @@ fun FilterAndSort(
     filters: List<FilterValue> = emptyList(),
     onFilterAdd: (FilterValue) -> Unit = {},
     onFilterRemove: (FilterValue) -> Unit = {},
+    onFilterFinish: () -> Unit = {},
     filterOptions: List<Filter> = emptyList(),
 ) {
     var showFilterModal by remember {
@@ -88,26 +97,80 @@ fun FilterAndSort(
                 showFilterModal = false
             },
             title = {
-                Text("Filters")
+                Text(stringResource(R.string.filters))
             },
             text = {
+                val pagerState = rememberPagerState()
+                val scope = rememberCoroutineScope()
                 Column {
-                    filterOptions.forEach { filter ->
-                        ProvideTextStyle(
-                            MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold)
-                        ) {
-                            filter.label()
+                    ScrollableTabRow(
+                        selectedTabIndex = pagerState.currentPage,
+                        edgePadding = 4.dp,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        filterOptions.forEachIndexed { index, filter ->
+                            Tab(
+                                selected = index == pagerState.currentPage,
+                                onClick = {
+                                    scope.launch { pagerState.animateScrollToPage(index) }
+                                },
+                                modifier = Modifier.height(40.dp)
+                            ) {
+                                filter.label()
+                            }
                         }
-
+                    }
+                    HorizontalPager(
+                        pageCount = filterOptions.size,
+                        state = pagerState,
+                    ) {
                         FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
+                            val filter = filterOptions[it]
                             filter.options.forEach { option ->
-                                val selected = filters.any { value -> value.key == filter.key && option.value in value.value }
+                                val selected = filters.any { value ->
+                                    value.key == filter.key && value.value == option.value
+                                }
                                 FilterChip(
                                     selected = selected,
                                     onClick = {
-                                        // TODO
+                                        when (filter.type) {
+                                            FilterType.SINGLE -> {
+                                                filters.filter { value ->
+                                                    value.key == filter.key
+                                                }.forEach { value ->
+                                                    onFilterRemove(value)
+                                                }
+                                                if (!selected) {
+                                                    onFilterAdd(
+                                                        FilterValue(
+                                                            key = filter.key,
+                                                            value = option.value
+                                                        )
+                                                    )
+                                                }
+                                            }
+
+                                            FilterType.MULTI -> {
+                                                if (selected) {
+                                                    onFilterRemove(
+                                                        FilterValue(
+                                                            key = filter.key,
+                                                            value = option.value
+                                                        )
+                                                    )
+                                                } else {
+                                                    onFilterAdd(
+                                                        FilterValue(
+                                                            key = filter.key,
+                                                            value = option.value
+                                                        )
+                                                    )
+                                                }
+                                            }
+                                        }
                                     },
                                     label = {
                                         option.label()
@@ -119,8 +182,11 @@ fun FilterAndSort(
                 }
             },
             confirmButton = {
-                TextButton(onClick = { /*TODO*/ }) {
-                    Text("确定")
+                TextButton(onClick = {
+                    onFilterFinish()
+                    showFilterModal = false
+                }) {
+                    Text(stringResource(R.string.confirm))
                 }
             },
         )

@@ -12,7 +12,9 @@ import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.repo.UserRepo
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
+import me.rerere.awara.ui.component.iwara.param.FilterValue
 import me.rerere.awara.ui.component.iwara.param.sort.MediaSortOptions
+import me.rerere.awara.ui.component.iwara.param.toParams
 
 private const val TAG = "IndexVM"
 
@@ -70,7 +72,7 @@ class IndexVM(
                         "limit" to "24",
                         "page" to (state.videoPage - 1).toString(),
                         "sort" to state.videoSort,
-                    )
+                    ) + state.videoFilters.toParams()
                 )
             }.onSuccess {
                 state = state.copy(
@@ -92,6 +94,14 @@ class IndexVM(
         loadVideoList()
     }
 
+    fun addFilter(filterValue: FilterValue) {
+        state = state.copy(videoFilters = state.videoFilters + filterValue)
+    }
+
+    fun removeFilter(filterValue: FilterValue) {
+        state = state.copy(videoFilters = state.videoFilters - filterValue)
+    }
+
     data class IndexState(
         val subscriptionLoading: Boolean = false,
         val subscriptionPage: Int = 1,
@@ -101,6 +111,7 @@ class IndexVM(
         val videoPage: Int = 1,
         val videoList: List<Media> = emptyList(),
         val videoSort: String = MediaSortOptions.first().name,
+        val videoFilters: List<FilterValue> = emptyList(),
     )
 
     enum class SubscriptionType(
