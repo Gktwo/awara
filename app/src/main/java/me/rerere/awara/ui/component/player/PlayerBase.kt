@@ -24,6 +24,7 @@ fun  PlayerBase(
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT,
                     android.view.ViewGroup.LayoutParams.MATCH_PARENT
                 )
+                keepScreenOn = true
                 player = state.player
                 resizeMode = state.resizeMode
                 useController = false
