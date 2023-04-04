@@ -11,7 +11,7 @@ fun <P> rememberDebounce(
     Debounce(delay, action)
 }
 
-class Debounce<T, Unit>(
+class Debounce<T>(
     private val delay: Long,
     private val action: (T) -> Unit
 ) {
