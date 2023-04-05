@@ -1,12 +1,15 @@
 package me.rerere.awara.data.source
 
+import me.rerere.awara.data.dto.AccessTokenRes
 import me.rerere.awara.data.dto.LoginReq
 import me.rerere.awara.data.dto.LoginRes
 import me.rerere.awara.data.dto.ProfileDto
 import me.rerere.awara.data.dto.Self
 import me.rerere.awara.data.entity.Image
 import me.rerere.awara.data.entity.Video
+import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -19,7 +22,7 @@ interface IwaraAPI {
     ): LoginRes
 
     @POST("/user/token")
-    suspend fun renewToken(): LoginRes
+    suspend fun renewToken(): AccessTokenRes
 
     @GET("/user")
     suspend fun getSelfProfile(): Self
@@ -48,4 +51,14 @@ interface IwaraAPI {
     suspend fun getRelatedVideo(
         @Path("id") id: String
     ): Pager<Video>
+
+    @POST("/video/{id}/like")
+    suspend fun likeVideo(
+        @Path("id") id: String
+    ): Response<Unit>
+
+    @DELETE("/video/{id}/like")
+    suspend fun unlikeVideo(
+        @Path("id") id: String
+    ): Response<Unit>
 }

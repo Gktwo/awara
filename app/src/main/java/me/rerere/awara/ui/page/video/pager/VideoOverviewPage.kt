@@ -33,10 +33,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.ui.component.common.Button
+import me.rerere.awara.ui.component.common.ButtonType
 import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.component.iwara.MediaCard
@@ -58,7 +60,8 @@ fun VideoOverviewPage(vm: VideoVM) {
         ) {
             state.video?.let {
                 VideoInfoCard(
-                    video = it
+                    video = it,
+                    vm = vm
                 )
 
                 AuthorCard(
@@ -74,7 +77,7 @@ fun VideoOverviewPage(vm: VideoVM) {
 }
 
 @Composable
-private fun VideoInfoCard(video: Video) {
+private fun VideoInfoCard(video: Video, vm: VideoVM) {
     val (expand, setExpand) = remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
@@ -97,12 +100,14 @@ private fun VideoInfoCard(video: Video) {
                         maxLines = 1
                     )
 
-                    Text(
-                        text = video.body ?: "",
-                        style = MaterialTheme.typography.bodySmall,
-                        maxLines = if (expand) Int.MAX_VALUE else 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    if (!video.body.isNullOrBlank()) {
+                        Text(
+                            text = video.body.trim(),
+                            style = MaterialTheme.typography.bodySmall,
+                            maxLines = if (expand) Int.MAX_VALUE else 2,
+                            overflow = TextOverflow.Ellipsis,
+                        )
+                    }
                 }
 
                 IconButton(
@@ -155,8 +160,14 @@ private fun VideoInfoCard(video: Video) {
                     Icon(Icons.Outlined.PlaylistAdd, null)
                 }
 
-                Button(onClick = { /*TODO*/ }) {
-                    Text("喜欢")
+                Button(
+                    onClick = {
+                        vm.likeOrUnlike()
+                    },
+                    type = if (video.liked) ButtonType.Outlined else ButtonType.Default,
+                    loading = vm.state.likeLoading
+                ) {
+                    Text(if (video.liked) "取消喜欢" else "喜欢")
                 }
             }
         }
@@ -191,7 +202,7 @@ private fun AuthorCard(video: Video) {
                 onClick = { /*TODO*/ }
             ) {
                 Text(
-                    text = if(video.user.following) "已关注" else "关注"
+                    text = if (video.user.following) "已关注" else "关注"
                 )
             }
         }

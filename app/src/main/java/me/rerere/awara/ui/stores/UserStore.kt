@@ -27,7 +27,7 @@ val LocalUserStore = staticCompositionLocalOf {
     ReduxStore(
         initialState = UserStoreState(),
         reducer = object : Reducer<UserStoreState, UserStoreAction>, KoinComponent {
-            private val userRepo by inject<UserRepo>()
+            // private val userRepo by inject<UserRepo>()
             override fun reduce(
                 prevState: UserStoreState,
                 action: UserStoreAction
@@ -36,7 +36,8 @@ val LocalUserStore = staticCompositionLocalOf {
                     is UserStoreAction.SetUser -> prevState.copy(user = action.user)
                     is UserStoreAction.SetTagBlacklist -> prevState.copy(tagBlacklist = action.tagBlacklist)
                     is UserStoreAction.Logout -> {
-                        mmkvPreference.remove("token")
+                        mmkvPreference.remove("refresh_token")
+                        mmkvPreference.remove("access_token")
                         prevState.copy(
                             user = null,
                             tagBlacklist = emptyList(),
@@ -52,6 +53,10 @@ val LocalUserStore = staticCompositionLocalOf {
                     is UserStoreAction.SetLoading -> {
                         prevState.copy(loading = action.loading)
                     }
+
+                    is UserStoreAction.SetRefreshing -> {
+                        prevState.copy(refreshing = action.refreshing)
+                    }
                 }
             }
         }
@@ -59,6 +64,7 @@ val LocalUserStore = staticCompositionLocalOf {
 }
 
 data class UserStoreState(
+    val refreshing: Boolean = false,
     val loading: Boolean = false,
     val user: User? = null,
     val profile: ProfileDto? = null,
@@ -70,6 +76,7 @@ sealed class UserStoreAction {
     data class SetTagBlacklist(val tagBlacklist: List<Tag>) : UserStoreAction()
     data class SetProfile(val profile: ProfileDto) : UserStoreAction()
     data class SetLoading(val loading: Boolean) : UserStoreAction()
+    data class SetRefreshing(val refreshing: Boolean) : UserStoreAction()
     object Logout : UserStoreAction()
 }
 
@@ -79,21 +86,30 @@ fun UserStoreProvider(
     content: @Composable () -> Unit
 ) {
     val store = LocalUserStore.current
-    val token by rememberStringPreference(key = "token", default = "")
-    // 尝试续签token
-    LaunchedEffect(Unit) {
-        if (token.isNotEmpty()) {
-            Log.i(TAG, "UserStoreProvider: renew token")
+    val refreshToken by rememberStringPreference(key = "refresh_token", default = "")
+    val accessToken by rememberStringPreference(key = "access_token", default = "")
+    // 尝试刷新AccessToken
+    LaunchedEffect(refreshToken) {
+        if (refreshToken.isNotEmpty()) {
+            Log.i(TAG, "UserStoreProvider: renew access token start")
+            store.dispatch(UserStoreAction.SetRefreshing(true))
             runAPICatching {
                 userRepo.renewToken()
             }.onSuccess {
-                mmkvPreference.putString("token", it.token)
+                mmkvPreference.putString("access_token", it.accessToken)
+                Log.i(TAG, "UserStoreProvider: renew access token success")
+            }.onError {
+                Log.w(TAG, "UserStoreProvider: renew access token error: $it")
+            }.onException {
+                Log.w(TAG, "UserStoreProvider: renew access token exception", it.exception)
             }
+            store.dispatch(UserStoreAction.SetRefreshing(false))
+            Log.i(TAG, "UserStoreProvider: finish renew access token")
         }
     }
     // 当Token变化时，重新获取用户信息
-    LaunchedEffect(token) {
-        if (token.isEmpty()) return@LaunchedEffect
+    LaunchedEffect(accessToken) {
+        if (accessToken.isEmpty()) return@LaunchedEffect
         Log.i(TAG, "UserStoreProvider: get user info")
         store.dispatch(UserStoreAction.SetLoading(true))
         awaitAll(

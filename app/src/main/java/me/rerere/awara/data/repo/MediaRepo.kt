@@ -42,4 +42,8 @@ class MediaRepo(
     }
 
     suspend fun getRelatedVideos(id: String) = iwaraAPI.getRelatedVideo(id)
+
+    suspend fun likeVideo(id: String) = iwaraAPI.likeVideo(id)
+
+    suspend fun unlikeVideo(id: String) = iwaraAPI.unlikeVideo(id)
 }

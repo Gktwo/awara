@@ -60,7 +60,7 @@ fun LoginPage(
                     messageProvider.success {
                         Text("登录成功")
                     }
-                    mmkvPreference.putString("token", it.token)
+                    mmkvPreference.putString("refresh_token", it.token)
                     router.navigate("index") {
                         popUpTo("login") {
                             inclusive = true

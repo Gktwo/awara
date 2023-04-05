@@ -75,6 +75,9 @@ dependencies {
     // Accompanist
     implementation("com.google.accompanist:accompanist-navigation-animation:0.29.2-rc")
 
+    // Splash
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
     // Setting
     implementation("com.github.re-ovo:compose-setting:1.1")
 

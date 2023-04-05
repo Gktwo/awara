@@ -67,11 +67,33 @@ class VideoVM(
         }
     }
 
+    fun likeOrUnlike() {
+        viewModelScope.launch {
+            state = state.copy(likeLoading = true)
+            runAPICatching {
+                val video = state.video ?: return@runAPICatching
+                state = if (video.liked) {
+                    mediaRepo.unlikeVideo(video.id)
+                    state.copy(video = video.copy(liked = false))
+                } else {
+                    mediaRepo.likeVideo(video.id)
+                    state.copy(video = video.copy(liked = true))
+                }
+            }.onError {
+                Log.w(TAG, "likeOrUnlike(error): $it")
+            }.onException {
+                Log.w(TAG, "likeOrUnlike(exception)", it.exception)
+            }
+            state = state.copy(likeLoading = false)
+        }
+    }
+
     data class VideoState(
         val loading: Boolean = false,
         val video: Video? = null,
         val urls: List<VideoFile> = emptyList(),
-        val relatedVideos: List<Video> = emptyList()
+        val relatedVideos: List<Video> = emptyList(),
+        val likeLoading: Boolean = false,
     )
 
     sealed class VideoEvent {

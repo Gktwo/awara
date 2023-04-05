@@ -12,3 +12,8 @@ data class LoginReq(
     val email: String,
     val password: String,
 )
+
+@Serializable
+data class AccessTokenRes(
+    val accessToken: String
+)

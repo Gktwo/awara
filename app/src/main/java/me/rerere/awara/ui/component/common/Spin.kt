@@ -34,7 +34,7 @@ fun Spin(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.small)
                         .background(
-                            color = MaterialTheme.colorScheme.primary.copy(
+                            color = MaterialTheme.colorScheme.background.copy(
                                 alpha = 0.15f
                             )
                         )

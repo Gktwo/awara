@@ -1,5 +1,6 @@
 package me.rerere.awara.util
 
+import android.util.Log
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
@@ -18,6 +19,8 @@ import java.io.IOException
 import java.lang.reflect.Type
 import java.time.Instant
 import java.time.format.DateTimeFormatter
+
+private const val TAG = "SerializationConverter"
 
 val JsonInstance = Json {
     ignoreUnknownKeys = true
@@ -75,7 +78,11 @@ internal class SerializationResponseBodyConverter<T>(
     @Throws(IOException::class)
     override fun convert(body: ResponseBody): T {
         val string = body.string()
-        return json.decodeFromString(type, string)
+        return kotlin.runCatching { json.decodeFromString(type, string) }
+            .onFailure {
+                Log.w(TAG, "bad json: $string")
+            }
+            .getOrThrow()
     }
 }
 

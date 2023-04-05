@@ -25,6 +25,8 @@ import me.rerere.awara.ui.component.common.DialogProvider
 import me.rerere.awara.ui.component.common.MessageProvider
 import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.login.LoginPage
+import me.rerere.awara.ui.page.login.PreparePage
+import me.rerere.awara.ui.page.login.shouldShowPreparePage
 import me.rerere.awara.ui.page.search.SearchPage
 import me.rerere.awara.ui.page.setting.SettingPage
 import me.rerere.awara.ui.page.video.VideoPage
@@ -49,7 +51,7 @@ class RouterActivity : ComponentActivity() {
                                     // 防止夜间模式下切换页面闪白屏
                                     .background(MaterialTheme.colorScheme.background),
                                 navController = navController,
-                                startDestination = "index",
+                                startDestination = if(shouldShowPreparePage()) "prepare" else "index",
                                 enterTransition = {
                                     slideInVertically(
                                         initialOffsetY = { 1000 },
@@ -69,6 +71,10 @@ class RouterActivity : ComponentActivity() {
                                     ) + fadeOut(animationSpec = tween(100))
                                 }
                             ) {
+                                composable("prepare") {
+                                    PreparePage()
+                                }
+
                                 composable("index") {
                                     IndexPage()
                                 }

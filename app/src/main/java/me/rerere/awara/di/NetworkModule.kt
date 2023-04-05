@@ -19,12 +19,20 @@ val networkModule = module {
                 val newRequest = request.newBuilder()
                     .addHeader("User-Agent", "Awara Android Client")
                     .apply {
-                        if (mmkvPreference.contains("token")) {
-                            addHeader(
-                                "Authorization",
-                                "Bearer ${mmkvPreference.getString("token", "")}"
-                            )
-                            // Log.i(TAG, "Auth: Bearer ${mmkvPreference.getString("token", "")}")
+                        if(request.url.toString() == "https://api.iwara.tv/user/token") {
+                            if (mmkvPreference.contains("refresh_token")) {
+                                addHeader(
+                                    "Authorization",
+                                    "Bearer ${mmkvPreference.getString("refresh_token", "")}"
+                                )
+                            }
+                        } else {
+                            if (mmkvPreference.contains("access_token")) {
+                                addHeader(
+                                    "Authorization",
+                                    "Bearer ${mmkvPreference.getString("access_token", "")}"
+                                )
+                            }
                         }
                     }
                     .build()
