@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.rerere.awara.data.entity.Video
@@ -44,6 +45,7 @@ import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.ui.page.video.VideoVM
+import me.rerere.awara.util.openUrl
 import me.rerere.awara.util.toLocalDateTimeString
 
 @Composable
@@ -80,6 +82,7 @@ fun VideoOverviewPage(vm: VideoVM) {
 @Composable
 private fun VideoInfoCard(video: Video, vm: VideoVM) {
     val (expand, setExpand) = remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp)
@@ -107,6 +110,9 @@ private fun VideoInfoCard(video: Video, vm: VideoVM) {
                             style = MaterialTheme.typography.bodySmall,
                             maxLines = if (expand) Int.MAX_VALUE else 2,
                             overflow = TextOverflow.Ellipsis,
+                            onLinkClick = {
+                                context.openUrl(it)
+                            }
                         )
                     }
                 }

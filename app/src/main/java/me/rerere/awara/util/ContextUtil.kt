@@ -13,8 +13,10 @@ import android.net.Uri
  * @param url String
  */
 fun Context.openUrl(url: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    startActivity(intent)
+    if(url.matches(Regex("https?://.*"))) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
+    }
 }
 
 /**
