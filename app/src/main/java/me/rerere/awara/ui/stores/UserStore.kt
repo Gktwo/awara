@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import me.rerere.awara.data.dto.ProfileDto
 import me.rerere.awara.data.entity.Tag
 import me.rerere.awara.data.entity.User
@@ -94,6 +95,7 @@ fun UserStoreProvider(
             Log.i(TAG, "UserStoreProvider: renew access token start")
             store.dispatch(UserStoreAction.SetRefreshing(true))
             runAPICatching {
+                delay(100)
                 userRepo.renewToken()
             }.onSuccess {
                 mmkvPreference.putString("access_token", it.accessToken)

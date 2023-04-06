@@ -9,13 +9,19 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -26,6 +32,7 @@ import me.rerere.awara.R
 import me.rerere.awara.ui.component.common.DialogProvider
 import me.rerere.awara.ui.component.common.LottieAnimation
 import me.rerere.awara.ui.component.common.MessageProvider
+import me.rerere.awara.ui.component.hitokoto.Hitokoto
 import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.login.LoginPage
 import me.rerere.awara.ui.page.search.SearchPage
@@ -53,7 +60,19 @@ class RouterActivity : ComponentActivity() {
                             contentAlignment = Alignment.Center
                         ) {
                             if (userState.refreshing) {
-                                LottieAnimation(resource = R.raw.giblitribute)
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally,
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    LottieAnimation(resource = R.raw.giblitribute)
+                                    CompositionLocalProvider(
+                                        LocalContentColor provides MaterialTheme.colorScheme.onBackground
+                                    ) {
+                                        Hitokoto(
+                                            modifier = Modifier.padding(32.dp)
+                                        )
+                                    }
+                                }
                             } else {
                                 Routes()
                             }
