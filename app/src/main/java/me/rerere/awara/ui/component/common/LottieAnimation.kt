@@ -25,6 +25,6 @@ fun LottieAnimation(
         composition = composition,
         progress = { progress },
         modifier = modifier.size(200.dp),
-        contentScale = ContentScale.FillBounds
+        contentScale = ContentScale.Crop
     )
 }

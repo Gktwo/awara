@@ -50,12 +50,12 @@ fun MediaCard(
                 show = painter.state is AsyncImagePainter.State.Loading,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(16f / 9f),
+                    .aspectRatio(220f / 160f),
             ) {
                 Image(
                     painter = painter,
                     contentDescription = "Media Cover",
-                    contentScale = ContentScale.FillBounds,
+                    contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
             }

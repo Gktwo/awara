@@ -33,7 +33,7 @@ fun BoxScope.TodoStatus() {
             composition = composition,
             progress = { progress },
             modifier = Modifier.size(200.dp),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop
         )
 
         Text("Still in Developing", style = MaterialTheme.typography.titleLarge)
