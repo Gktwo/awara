@@ -1,6 +1,5 @@
 package me.rerere.awara.di
 
-import android.util.Log
 import me.rerere.awara.data.source.HitokotoAPI
 import me.rerere.awara.data.source.IwaraAPI
 import me.rerere.awara.util.SerializationConverterFactory
@@ -43,9 +42,7 @@ val networkModule = module {
                 it.proceed(newRequest)
             }
             .addInterceptor(
-                HttpLoggingInterceptor {
-                    Log.i(TAG, it)
-                }.apply {
+                HttpLoggingInterceptor().apply {
                     setLevel(HttpLoggingInterceptor.Level.BASIC)
                 }
             )

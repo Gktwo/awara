@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.FeaturedPlayList
+import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
@@ -47,86 +49,53 @@ fun ColumnScope.IndexDrawer() {
     val router = LocalRouterProvider.current
     val message = LocalMessageProvider.current
 
-    Spin(
-        show = userState.loading
-    ) {
-        // Header Image
-        AsyncImage(
-            model = userState.profile?.header.toHeaderUrl(),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .blur(4.dp),
-            contentScale = ContentScale.Crop,
-        )
-    }
-
-    Card(
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            //.align(Alignment.BottomCenter)
-            .padding(8.dp)
-            .fillMaxWidth()
+            .padding(16.dp)
+            .height(IntrinsicSize.Min),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        Avatar(
             modifier = Modifier
-                .padding(8.dp)
-                .height(IntrinsicSize.Min),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            Avatar(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .aspectRatio(1f),
-                user = userState.user,
-                onClick = {
-                    router.navigate("login")
-                }
+                .fillMaxHeight()
+                .aspectRatio(1f),
+            user = userState.user,
+            onClick = {
+                router.navigate("login")
+            }
+        )
+        Column {
+            // User nick name
+            Text(
+                text = userState.user?.name ?: "未登录",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
             )
-            Column {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    // User nick name
-                    Text(
-                        text = userState.user?.name ?: "未登录",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.primary,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1,
-                    )
 
-                    // ID
-                    if (userState.user?.username != null) {
-                        Text(
-                            text = "#${userState.user.username}",
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    }
-                }
-
-                // User description
+            // ID
+            if (userState.user?.username != null) {
                 Text(
-                    text = userState.profile?.body ?: "该用户是个神秘人，不喜欢被人围观。",
-                    style = MaterialTheme.typography.bodySmall,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
+                    text = "@${userState.user.username}",
+                    style = MaterialTheme.typography.titleMedium,
                 )
             }
-            Spacer(modifier = Modifier.weight(1f))
-            IconButton(
-                onClick = {
-                    userStore(UserStoreAction.Logout)
-                    message.info {
-                        Text("已登出")
-                    }
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(
+            onClick = {
+                userStore(UserStoreAction.Logout)
+                message.info {
+                    Text("已登出")
                 }
-            ) {
-                Icon(Icons.Outlined.ExitToApp, "Logout")
             }
+        ) {
+            Icon(Icons.Outlined.ExitToApp, "Logout")
         }
     }
+
 
     DrawerItem(
         icon = {
@@ -134,6 +103,26 @@ fun ColumnScope.IndexDrawer() {
         },
         label = {
             Text("播单")
+        },
+        onClick = {}
+    )
+
+    DrawerItem(
+        icon = {
+            Icon(Icons.Outlined.Download, "Downloads")
+        },
+        label = {
+            Text("下载")
+        },
+        onClick = {}
+    )
+
+    DrawerItem(
+        icon = {
+            Icon(Icons.Outlined.History, "History")
+        },
+        label = {
+            Text("历史记录")
         },
         onClick = {}
     )
