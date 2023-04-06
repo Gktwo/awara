@@ -42,6 +42,7 @@ import me.rerere.awara.ui.component.common.ButtonType
 import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.component.iwara.MediaCard
+import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.ui.page.video.VideoVM
 import me.rerere.awara.util.toLocalDateTimeString
 
@@ -101,7 +102,7 @@ private fun VideoInfoCard(video: Video, vm: VideoVM) {
                     )
 
                     if (!video.body.isNullOrBlank()) {
-                        Text(
+                        RichText(
                             text = video.body.trim(),
                             style = MaterialTheme.typography.bodySmall,
                             maxLines = if (expand) Int.MAX_VALUE else 2,
