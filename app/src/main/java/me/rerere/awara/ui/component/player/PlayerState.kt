@@ -118,6 +118,7 @@ class PlayerState(val player: Player) {
     }
 
     fun seekTo(newPosition: Long) {
+        if(duration <= 0L) return
         player.seekTo(newPosition.coerceIn(0..duration))
     }
 
