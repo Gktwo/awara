@@ -1,5 +1,5 @@
 # Awara
-[中文说明](doc/README.zh.md) | [English Docs](/) | [한국어 설명](doc/README.ko.md)   
+[中文说明](doc/README.zh.md) | [English Docs](https://github.com/re-ovo/awara) | [한국어 설명](doc/README.ko.md)   
 Iwaraのための次世代Androidアプリ
 
 * [[Discord]](https://discord.gg/G22sSzJbzh)
