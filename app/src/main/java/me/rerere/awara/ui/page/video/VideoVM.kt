@@ -17,12 +17,14 @@ import me.rerere.awara.data.source.onError
 import me.rerere.awara.data.source.onException
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
+import me.rerere.awara.domain.GetVideoInfoCase
 
 private const val TAG = "VideoVM"
 
 class VideoVM(
     savedStateHandle: SavedStateHandle,
-    private val mediaRepo: MediaRepo
+    private val mediaRepo: MediaRepo,
+    private val getVideoInfoCase: GetVideoInfoCase
 ) : ViewModel() {
     val id = checkNotNull(savedStateHandle.get<String>("id"))
     var state by mutableStateOf(VideoState())
