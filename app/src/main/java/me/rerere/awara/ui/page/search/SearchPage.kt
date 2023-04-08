@@ -66,6 +66,13 @@ fun SearchPage() {
             }) {
                 Text("Msg")
             }
+            
+            
+            Button(onClick = {
+                throw RuntimeException("Crash")
+            }) {
+                Text("Crash")
+            }
 
             RichText(
                 text = """

@@ -9,6 +9,7 @@ import me.rerere.awara.di.networkModule
 import me.rerere.awara.di.repoModule
 import me.rerere.awara.di.userCaseModule
 import me.rerere.awara.di.viewModelModule
+import me.rerere.awara.ui.registerErrorHandler
 import me.rerere.compose_setting.preference.initComposeSetting
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -17,6 +18,7 @@ import org.koin.core.context.startKoin
 class App : Application(), ImageLoaderFactory {
     override fun onCreate() {
         super.onCreate()
+        registerErrorHandler()
         initComposeSetting()
         startKoin {
             androidLogger()

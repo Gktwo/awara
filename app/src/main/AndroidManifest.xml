@@ -30,6 +30,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.ErrorActivity"
+            android:theme="@style/Theme.Awara"
+            />
+
         <service
             android:name=".service.DownloadService"
             android:foregroundServiceType="dataSync" />

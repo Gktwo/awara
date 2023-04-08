@@ -33,3 +33,9 @@ fun Context.findActivity(): Activity = when (this) {
     }
     else -> throw IllegalStateException("Context is not an Activity")
 }
+
+fun Context.writeToClipboard(label: String, text: String) {
+    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+    val clip = android.content.ClipData.newPlainText(label, text)
+    clipboard.setPrimaryClip(clip)
+}
