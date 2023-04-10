@@ -17,7 +17,9 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
@@ -27,6 +29,7 @@ import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.thumbnailUrl
 import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.SkeletonBox
+import me.rerere.compose_setting.preference.rememberBooleanPreference
 
 @Composable
 fun MediaCard(
@@ -34,6 +37,10 @@ fun MediaCard(
     media: Media
 ) {
     val router = LocalRouterProvider.current
+    val workMode by rememberBooleanPreference(
+        key = "setting.work_mode",
+        default = false
+    )
     Card(
         modifier = modifier,
         onClick = {
@@ -56,7 +63,9 @@ fun MediaCard(
                     painter = painter,
                     contentDescription = "Media Cover",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .then(if (workMode) Modifier.blur(8.dp) else Modifier)
                 )
             }
 

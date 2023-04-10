@@ -39,6 +39,7 @@ import me.rerere.awara.ui.hooks.rememberRequestedScreenOrientation
 import me.rerere.awara.ui.hooks.rememberWindowSizeClass
 import me.rerere.awara.ui.page.video.layout.VideoPagePhoneLayout
 import me.rerere.awara.ui.page.video.layout.VideoPageTabletLayout
+import me.rerere.compose_setting.preference.mmkvPreference
 import org.koin.androidx.compose.koinViewModel
 
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
@@ -77,7 +78,9 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
             }
         )
         state.updateCurrentQuality(urls.lastOrNull()?.name ?: "Unknown")
-        state.prepare()
+        if(mmkvPreference.getBoolean("setting.auto_play", true)) {
+            state.prepare()
+        }
         // TODO: Update current quality to user's preference
     }
 

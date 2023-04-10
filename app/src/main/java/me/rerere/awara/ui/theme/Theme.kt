@@ -22,9 +22,9 @@ import me.rerere.compose_setting.preference.rememberIntPreference
 
 private const val TAG = "Theme"
 
-private val DarkColorScheme = darkColorScheme()
+private val darkColorScheme = darkColorScheme()
 
-private val LightColorScheme = lightColorScheme()
+private val lightColorScheme = lightColorScheme()
 
 @Composable
 fun AwaraTheme(
@@ -46,8 +46,8 @@ fun AwaraTheme(
             if (!lightMode) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
 
-        lightMode -> LightColorScheme
-        else -> DarkColorScheme
+        lightMode -> lightColorScheme
+        else -> darkColorScheme
     }
     val view = LocalView.current
     if (!view.isInEditMode) {

@@ -3,7 +3,9 @@ package me.rerere.awara.ui.page.setting
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.HomeWork
 import androidx.compose.material.icons.outlined.LightMode
+import androidx.compose.material.icons.outlined.Replay
 import androidx.compose.material.icons.outlined.Source
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LargeTopAppBar
@@ -15,16 +17,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import me.rerere.awara.R
 import me.rerere.awara.ui.component.common.BackButton
+import me.rerere.awara.util.openUrl
 import me.rerere.compose_setting.components.SettingItemCategory
+import me.rerere.compose_setting.components.types.SettingBooleanItem
 import me.rerere.compose_setting.components.types.SettingLinkItem
 import me.rerere.compose_setting.components.types.SettingPickerItem
+import me.rerere.compose_setting.preference.rememberBooleanPreference
 import me.rerere.compose_setting.preference.rememberIntPreference
 
 @Composable
 fun SettingPage() {
+    val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         topBar = {
@@ -55,6 +62,10 @@ fun SettingPage() {
                         key = "setting.dark_mode",
                         default = 0
                     )
+                    val workMode = rememberBooleanPreference(
+                        key = "setting.work_mode",
+                        default = false
+                    )
                     SettingPickerItem(
                         state = darkMode,
                         items = listOf(0, 1, 2),
@@ -78,6 +89,40 @@ fun SettingPage() {
                             Text("设置应用的颜色模式")
                         }
                     )
+
+                    SettingBooleanItem(
+                        state = workMode,
+                        title = {
+                            Text("工作模式")
+                        },
+                        text = {
+                            Text("工作模式下，将会模糊视频封面")
+                        },
+                        icon = {
+                            Icon(Icons.Outlined.HomeWork,  null)
+                        }
+                    )
+                }
+            }
+
+            item {
+                val autoPlay = rememberBooleanPreference(
+                    key = "setting.auto_play",
+                    default = true
+                )
+                SettingItemCategory(title = { Text("播放器设置") }) {
+                    SettingBooleanItem(
+                        state = autoPlay,
+                        title = {
+                            Text("自动播放")
+                        },
+                        text = {
+                            Text("自动播放视频")
+                        },
+                        icon = {
+                            Icon(Icons.Outlined.Replay,  null)
+                        }
+                    )
                 }
             }
 
@@ -95,9 +140,11 @@ fun SettingPage() {
                             Text("Github")
                         },
                         icon = {
-                            Icon(Icons.Outlined.Source, "Source Code")
+                            Icon(Icons.Outlined.Source, null)
                         },
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            context.openUrl("https://github.com/re-ovo/awara")
+                        }
                     )
                 }
             }

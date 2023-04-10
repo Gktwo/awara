@@ -226,7 +226,7 @@ private fun RowScope.ProgressBar(state: PlayerState, onTouch: () -> Unit) {
     if (state.playing) {
         IconButton(
             onClick = {
-                state.player.pause()
+                state.pause()
             }
         ) {
             Icon(Icons.Outlined.Pause, "Pause")
@@ -234,7 +234,7 @@ private fun RowScope.ProgressBar(state: PlayerState, onTouch: () -> Unit) {
     } else {
         IconButton(
             onClick = {
-                state.player.play()
+                state.play()
             }
         ) {
             Icon(Icons.Outlined.PlayArrow, "Play")

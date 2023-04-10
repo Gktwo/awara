@@ -141,6 +141,7 @@ class PlayerState(val player: Player) {
     }
 
     fun play() {
+        player.prepare()
         player.play()
     }
 

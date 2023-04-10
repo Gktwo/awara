@@ -95,7 +95,6 @@ fun UserStoreProvider(
             Log.i(TAG, "UserStoreProvider: renew access token start")
             store.dispatch(UserStoreAction.SetRefreshing(true))
             runAPICatching {
-                delay(100)
                 userRepo.renewToken()
             }.onSuccess {
                 mmkvPreference.putString("access_token", it.accessToken)
