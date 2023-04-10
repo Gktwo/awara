@@ -31,7 +31,7 @@ fun IndexVideoPage(vm: IndexVM) {
                 .fillMaxWidth()
         ) {
             LazyVerticalStaggeredGrid(
-                columns = DynamicStaggeredGridCells(200.dp, 2, 4),
+                columns = DynamicStaggeredGridCells(150.dp, 2, 4),
                 contentPadding = PaddingValues(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalItemSpacing = 8.dp,

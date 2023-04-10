@@ -38,7 +38,7 @@ fun IndexSubscriptionPage(
         ) {
             LazyVerticalStaggeredGrid(
                 modifier = Modifier.fillMaxSize(),
-                columns = DynamicStaggeredGridCells(200.dp, 2, 4),
+                columns = DynamicStaggeredGridCells(150.dp, 2, 4),
                 verticalItemSpacing = 8.dp,
                 contentPadding = PaddingValues(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
