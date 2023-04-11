@@ -45,6 +45,8 @@ fun IndexVideoPage(vm: IndexVM) {
 
         PaginationBar(
             page = state.videoPage,
+            limit = 24,
+            total = state.videoCount,
             onPageChange = {
                 vm.updateVideoPage(it)
             },

@@ -10,8 +10,10 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import me.rerere.awara.data.entity.Comment
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
+import me.rerere.awara.data.repo.CommentRepo
 import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.source.onError
 import me.rerere.awara.data.source.onException
@@ -24,7 +26,7 @@ private const val TAG = "VideoVM"
 class VideoVM(
     savedStateHandle: SavedStateHandle,
     private val mediaRepo: MediaRepo,
-    private val getVideoInfoCase: GetVideoInfoCase
+    private val commentRepo: CommentRepo,
 ) : ViewModel() {
     val id = checkNotNull(savedStateHandle.get<String>("id"))
     var state by mutableStateOf(VideoState())
@@ -33,6 +35,7 @@ class VideoVM(
 
     init {
         getVideo()
+        loadComments(1)
     }
 
     private fun getVideo() {
@@ -90,12 +93,34 @@ class VideoVM(
         }
     }
 
+    fun loadComments(page: Int) {
+        if (state.commentsLoading) return
+        if (page < 1) return
+        state = state.copy(commentsPage = page)
+        viewModelScope.launch {
+            state = state.copy(commentsLoading = true)
+            runAPICatching {
+                commentRepo.getVideoComments(id, page - 1)
+            }.onSuccess {
+                state = state.copy(comments = it.results)
+            }.onError {
+                Log.w(TAG, "loadComments(error): $it")
+            }.onException {
+                Log.w(TAG, "loadComments(exception)", it.exception)
+            }
+            state = state.copy(commentsLoading = false)
+        }
+    }
+
     data class VideoState(
         val loading: Boolean = false,
         val video: Video? = null,
         val urls: List<VideoFile> = emptyList(),
         val relatedVideos: List<Video> = emptyList(),
         val likeLoading: Boolean = false,
+        val comments: List<Comment> = emptyList(),
+        val commentsLoading: Boolean = false,
+        val commentsPage: Int = 1,
     )
 
     sealed class VideoEvent {

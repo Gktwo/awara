@@ -53,6 +53,8 @@ fun IndexSubscriptionPage(
         }
         PaginationBar(
             page = vm.state.subscriptionPage,
+            limit = 24,
+            total = vm.state.subscriptionTotal,
             onPageChange = {
                 pageJumpDebounce(it)
             },

@@ -3,10 +3,12 @@ package me.rerere.awara.ui.page.video.pager
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -58,8 +60,9 @@ fun VideoOverviewPage(vm: VideoVM) {
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier
-                .padding(vertical = 8.dp)
                 .verticalScroll(rememberScrollState())
+                .padding(vertical = 4.dp)
+                .navigationBarsPadding()
         ) {
             state.video?.let {
                 VideoInfoCard(

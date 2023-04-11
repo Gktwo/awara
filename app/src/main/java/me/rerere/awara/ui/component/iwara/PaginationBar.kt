@@ -27,12 +27,18 @@ import me.rerere.awara.ui.LocalMessageProvider
 fun PaginationBar(
     modifier: Modifier = Modifier,
     page: Int,
+    limit: Int,
+    total: Int,
     onPageChange: (Int) -> Unit,
     leading: @Composable (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)? = null
 ) {
+    require(page > 0) { "Page number must be greater than 0" }
+
     val dialog = LocalDialogProvider.current
     val message = LocalMessageProvider.current
+    val maxPage = (total + limit - 1) / limit
+
     Surface(
         modifier = modifier,
         tonalElevation = 4.dp
@@ -50,7 +56,7 @@ fun PaginationBar(
 
             // Current page
             Text(
-                text = stringResource(R.string.pagination_current, page),
+                text = stringResource(R.string.pagination_current, page, maxPage),
                 modifier = Modifier.clickable {
                     dialog.input(
                         title = {
@@ -72,8 +78,10 @@ fun PaginationBar(
             // Previous page
             FilledTonalIconButton(
                 onClick = {
-                    onPageChange(page - 1)
-                }
+                    if (page > 1) {
+                        onPageChange(page - 1)
+                    }
+                },
             ) {
                 Icon(Icons.Outlined.KeyboardArrowLeft, "Previous page")
             }
@@ -81,7 +89,9 @@ fun PaginationBar(
             // Next page
             FilledTonalIconButton(
                 onClick = {
-                    onPageChange(page + 1)
+                    if (page < maxPage) {
+                        onPageChange(page + 1)
+                    }
                 }
             ) {
                 Icon(Icons.Outlined.KeyboardArrowRight, "Next page")
@@ -95,5 +105,5 @@ fun PaginationBar(
 @Preview
 @Composable
 private fun PaginationPreview() {
-    PaginationBar(page = 1, onPageChange = {})
+    PaginationBar(page = 1, limit = 24, total = 43, onPageChange = {})
 }

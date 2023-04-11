@@ -45,7 +45,8 @@ class IndexVM(
                 }
             }.onSuccess {
                 state = state.copy(
-                    subscriptions = it.results
+                    subscriptions = it.results,
+                    subscriptionTotal = it.count
                 )
             }
             state = state.copy(subscriptionLoading = false)
@@ -76,7 +77,8 @@ class IndexVM(
                 )
             }.onSuccess {
                 state = state.copy(
-                    videoList = it.results
+                    videoList = it.results,
+                    videoCount = it.count
                 )
             }
             state = state.copy(videoLoading = false)
@@ -105,10 +107,12 @@ class IndexVM(
     data class IndexState(
         val subscriptionLoading: Boolean = false,
         val subscriptionPage: Int = 1,
+        val subscriptionTotal: Int = 0,
         val subscriptionType : SubscriptionType = SubscriptionType.VIDEO,
         val subscriptions: List<Media> = emptyList(),
         val videoLoading: Boolean = false,
         val videoPage: Int = 1,
+        val videoCount: Int = 0,
         val videoList: List<Media> = emptyList(),
         val videoSort: String = MediaSortOptions.first().name,
         val videoFilters: List<FilterValue> = emptyList(),

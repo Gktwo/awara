@@ -21,7 +21,7 @@ fun File?.toHeaderUrl(): String {
 
 fun File?.toAvatarUrl(): String {
     return if(this != null) {
-        "https://files.iwara.tv/image/avatar/$id/$name"
+        "https://i.iwara.tv/image/avatar/$id/$name"
     } else {
         "https://iwara.tv/images/default-avatar.jpg"
     }
