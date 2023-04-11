@@ -58,7 +58,6 @@ class ErrorActivity : ComponentActivity() {
 
 fun Application.registerErrorHandler() {
     Thread.setDefaultUncaughtExceptionHandler { t, e ->
-        println("uncaught exception: $t, $e")
         e.printStackTrace()
         val intent = Intent(this, ErrorActivity::class.java)
             .apply {

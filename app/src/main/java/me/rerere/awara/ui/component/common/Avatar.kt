@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,5 +43,12 @@ fun Avatar(
             contentDescription = "avatar",
             modifier = Modifier.fillMaxSize()
         )
+
+        if(state.state is AsyncImagePainter.State.Error) {
+            Text(
+                text = "Error: ${(state.state as AsyncImagePainter.State.Error).result.throwable}",
+            )
+            (state.state as AsyncImagePainter.State.Error).result.throwable.printStackTrace()
+        }
     }
 }

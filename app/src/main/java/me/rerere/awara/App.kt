@@ -11,9 +11,11 @@ import me.rerere.awara.di.userCaseModule
 import me.rerere.awara.di.viewModelModule
 import me.rerere.awara.ui.registerErrorHandler
 import me.rerere.compose_setting.preference.initComposeSetting
+import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import java.util.concurrent.TimeUnit
 
 class App : Application(), ImageLoaderFactory {
     override fun onCreate() {
@@ -34,6 +36,20 @@ class App : Application(), ImageLoaderFactory {
 
     override fun newImageLoader(): ImageLoader {
         return ImageLoader.Builder(this)
+            .okHttpClient {
+                OkHttpClient.Builder()
+                    .connectTimeout(15, TimeUnit.SECONDS)
+                    .readTimeout(15, TimeUnit.SECONDS)
+                    .addInterceptor {
+                        // Refer: https://www.iwara.tv
+                        val request = it.request()
+                        val newRequest = request.newBuilder()
+                            .addHeader("Referer", "https://www.iwara.tv")
+                            .build()
+                        it.proceed(newRequest)
+                    }
+                    .build()
+            }
             .components {
                 add(SvgDecoder.Factory())
             }
