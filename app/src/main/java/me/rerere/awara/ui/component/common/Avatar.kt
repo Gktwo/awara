@@ -43,12 +43,5 @@ fun Avatar(
             contentDescription = "avatar",
             modifier = Modifier.fillMaxSize()
         )
-
-        if(state.state is AsyncImagePainter.State.Error) {
-            Text(
-                text = "Error: ${(state.state as AsyncImagePainter.State.Error).result.throwable}",
-            )
-            (state.state as AsyncImagePainter.State.Error).result.throwable.printStackTrace()
-        }
     }
 }
