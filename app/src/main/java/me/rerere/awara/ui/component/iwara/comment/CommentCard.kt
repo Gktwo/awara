@@ -1,4 +1,4 @@
-package me.rerere.awara.ui.component.iwara
+package me.rerere.awara.ui.component.iwara.comment
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import me.rerere.awara.data.entity.Comment
+import me.rerere.awara.ui.component.iwara.Avatar
 
 @Composable
 fun CommentCard(
