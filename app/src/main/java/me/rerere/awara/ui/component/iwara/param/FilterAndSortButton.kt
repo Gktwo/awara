@@ -40,6 +40,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
+import me.rerere.awara.ui.component.common.BetterTabBar
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
@@ -105,9 +106,8 @@ fun FilterAndSort(
                 val pagerState = rememberPagerState()
                 val scope = rememberCoroutineScope()
                 Column {
-                    ScrollableTabRow(
+                    BetterTabBar(
                         selectedTabIndex = pagerState.currentPage,
-                        edgePadding = 4.dp,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         filterOptions.forEachIndexed { index, filter ->
