@@ -10,7 +10,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import me.rerere.awara.data.entity.Comment
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.repo.CommentRepo
@@ -19,7 +18,11 @@ import me.rerere.awara.data.source.onError
 import me.rerere.awara.data.source.onException
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
-import me.rerere.awara.domain.GetVideoInfoCase
+import me.rerere.awara.ui.component.iwara.comment.CommentState
+import me.rerere.awara.ui.component.iwara.comment.pop
+import me.rerere.awara.ui.component.iwara.comment.push
+import me.rerere.awara.ui.component.iwara.comment.updatePage
+import me.rerere.awara.ui.component.iwara.comment.updateTopStack
 
 private const val TAG = "VideoVM"
 
@@ -35,7 +38,7 @@ class VideoVM(
 
     init {
         getVideo()
-        loadComments(1)
+        loadComments()
     }
 
     private fun getVideo() {
@@ -93,23 +96,50 @@ class VideoVM(
         }
     }
 
-    fun loadComments(page: Int) {
-        if (state.commentsLoading) return
-        if (page < 1) return
-        state = state.copy(commentsPage = page)
+    fun jumpCommentPage(page: Int) {
+        state = state.copy(commentState = state.commentState.updatePage(page))
+        loadComments()
+    }
+
+    fun loadComments() {
+        state = state.copy(commentState = state.commentState.copy(loading = true))
         viewModelScope.launch {
-            state = state.copy(commentsLoading = true)
+            val currentCommentState = state.commentState.stack.last()
             runAPICatching {
-                commentRepo.getVideoComments(id, page - 1)
+                if(currentCommentState.parent != null ) {
+                    commentRepo.getVideoCommentReplies(id, currentCommentState.page - 1, currentCommentState.parent)
+                } else {
+                    commentRepo.getVideoComments(id, currentCommentState.page - 1)
+                }
             }.onSuccess {
-                state = state.copy(comments = it.results)
+                state = state.copy(
+                    commentState = state.commentState.updateTopStack(currentCommentState.copy(
+                        comments = it.results,
+                        limit = it.limit,
+                        total = it.count,
+                    ))
+                )
+                Log.i(TAG, "loadComments: $it")
             }.onError {
                 Log.w(TAG, "loadComments(error): $it")
             }.onException {
                 Log.w(TAG, "loadComments(exception)", it.exception)
             }
-            state = state.copy(commentsLoading = false)
+            state = state.copy(commentState = state.commentState.copy(loading = false))
         }
+    }
+
+    fun pushComment(id: String) {
+        state = state.copy(
+            commentState = state.commentState.push(id)
+        )
+        loadComments()
+    }
+
+    fun popComment() {
+        state = state.copy(
+            commentState = state.commentState.pop()
+        )
     }
 
     data class VideoState(
@@ -118,9 +148,7 @@ class VideoVM(
         val urls: List<VideoFile> = emptyList(),
         val relatedVideos: List<Video> = emptyList(),
         val likeLoading: Boolean = false,
-        val comments: List<Comment> = emptyList(),
-        val commentsLoading: Boolean = false,
-        val commentsPage: Int = 1,
+        val commentState : CommentState = CommentState(),
     )
 
     sealed class VideoEvent {

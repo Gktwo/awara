@@ -46,3 +46,35 @@ fun PaddingValues.excludeBottom() : PaddingValues = PaddingValues(
     bottom = 0.dp,
     end = this.calculateEndPadding(LocalLayoutDirection.current),
 )
+
+@Composable
+fun PaddingValues.onlyStart() : PaddingValues = PaddingValues(
+    start = this.calculateStartPadding(LocalLayoutDirection.current),
+    top = 0.dp,
+    bottom = 0.dp,
+    end = 0.dp,
+)
+
+@Composable
+fun PaddingValues.onlyEnd() : PaddingValues = PaddingValues(
+    start = 0.dp,
+    top = 0.dp,
+    bottom = 0.dp,
+    end = this.calculateEndPadding(LocalLayoutDirection.current),
+)
+
+@Composable
+fun PaddingValues.onlyTop() : PaddingValues = PaddingValues(
+    start = 0.dp,
+    top = this.calculateTopPadding(),
+    bottom = 0.dp,
+    end = 0.dp,
+)
+
+@Composable
+fun PaddingValues.onlyBottom() : PaddingValues = PaddingValues(
+    start = 0.dp,
+    top = 0.dp,
+    bottom = this.calculateBottomPadding(),
+    end = 0.dp,
+)

@@ -13,6 +13,6 @@ data class Comment(
     val updatedAt: Instant,
     val id: String,
     val numReplies: Int,
-    val user: User,
+    val user: User?,
     val parent: Comment? = null,
 )

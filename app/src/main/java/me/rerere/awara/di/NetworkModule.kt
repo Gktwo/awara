@@ -22,14 +22,14 @@ val networkModule = module {
                     .apply {
                         if(url.host == "api.iwara.tv") {
                             if (url.toString() == "https://api.iwara.tv/user/token") {
-                                if (mmkvPreference.contains("refresh_token")) {
+                                if ("refresh_token" in mmkvPreference) {
                                     addHeader(
                                         "Authorization",
                                         "Bearer ${mmkvPreference.getString("refresh_token", "")}"
                                     )
                                 }
                             } else {
-                                if (mmkvPreference.contains("access_token")) {
+                                if ("access_token" in mmkvPreference) {
                                     addHeader(
                                         "Authorization",
                                         "Bearer ${mmkvPreference.getString("access_token", "")}"

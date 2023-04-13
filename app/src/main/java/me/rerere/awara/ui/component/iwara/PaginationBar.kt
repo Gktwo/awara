@@ -2,10 +2,15 @@ package me.rerere.awara.ui.component.iwara
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.outlined.KeyboardArrowRight
@@ -30,8 +35,9 @@ fun PaginationBar(
     limit: Int,
     total: Int,
     onPageChange: (Int) -> Unit,
-    leading: @Composable (() -> Unit)? = null,
-    trailing: @Composable (() -> Unit)? = null
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    leading: (@Composable RowScope.() -> Unit)? = null,
+    trailing: (@Composable RowScope.() -> Unit)? = null
 ) {
     require(page > 0) { "Page number must be greater than 0" }
 
@@ -47,10 +53,13 @@ fun PaginationBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier
+                .padding(contentPadding)
                 .padding(vertical = 4.dp, horizontal = 8.dp)
                 .fillMaxWidth()
         ) {
-            leading?.invoke()
+            if (leading != null) {
+                leading()
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
@@ -97,7 +106,9 @@ fun PaginationBar(
                 Icon(Icons.Outlined.KeyboardArrowRight, "Next page")
             }
 
-            trailing?.invoke()
+            if (trailing != null) {
+                trailing()
+            }
         }
     }
 }
