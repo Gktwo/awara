@@ -13,7 +13,7 @@ private const val TAG = "PlayerBase"
 // 纯粹的播放器组件，无UI附加
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
-fun  PlayerBase(
+fun PlayerBase(
     modifier: Modifier = Modifier,
     state: PlayerState,
 ) {
@@ -32,7 +32,7 @@ fun  PlayerBase(
             }
         },
         update = {
-                 it.resizeMode = state.resizeMode
+            it.resizeMode = state.resizeMode
         },
         modifier = modifier.background(Color.Black)
     )
