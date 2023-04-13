@@ -4,19 +4,29 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import me.rerere.awara.data.entity.Comment
 import me.rerere.awara.ui.component.iwara.Avatar
+import me.rerere.awara.ui.component.iwara.RichText
+import me.rerere.awara.util.openUrl
+import me.rerere.awara.util.toLocalDateTimeString
 
 @Composable
 fun CommentCard(
@@ -25,6 +35,7 @@ fun CommentCard(
     onLoadReplies: (Comment) -> Unit,
     onReply: (Comment) -> Unit
 ) {
+    val context = LocalContext.current
     Card(
         modifier = modifier,
     ) {
@@ -32,14 +43,15 @@ fun CommentCard(
             modifier = Modifier
                 .animateContentSize()
                 .padding(8.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Avatar(user = comment.user)
+                Avatar(user = comment.user, modifier = Modifier.size(32.dp))
                 Text(
                     text = comment.user?.name ?: "",
                     color = MaterialTheme.colorScheme.secondary,
@@ -47,32 +59,52 @@ fun CommentCard(
                 )
             }
 
-            Text(
+            RichText(
                 text = comment.body,
+                onLinkClick = {
+                    context.openUrl(it)
+                }
             )
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
             ) {
+                Text(
+                    text = comment.createdAt.toLocalDateTimeString(),
+                    style = MaterialTheme.typography.labelMedium
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
                 AnimatedVisibility(
                     visible = comment.numReplies > 0
                 ) {
                     TextButton(
                         onClick = {
                             onLoadReplies(comment)
-                        }
+                        },
+                        contentPadding = PaddingValues(4.dp),
                     ) {
-                        Text("共${comment.numReplies}条回复")
+                        Text(
+                            text = "共${comment.numReplies}条回复",
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                        Icon(Icons.Outlined.KeyboardArrowDown, null)
                     }
                 }
 
                 TextButton(
                     onClick = {
                         onReply(comment)
-                    }
+                    },
+                    contentPadding = PaddingValues(4.dp)
                 ) {
-                    Text("回复")
+                    Text(
+                        text = "回复",
+                        style = MaterialTheme.typography.labelMedium,
+                    )
                 }
             }
         }

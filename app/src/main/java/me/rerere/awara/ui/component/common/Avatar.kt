@@ -31,12 +31,10 @@ fun Avatar(
     SkeletonBox(
         show = state.state is AsyncImagePainter.State.Loading,
         modifier = modifier
-            .padding(4.dp)
             .clip(CircleShape)
             .clickable {
                 onClick()
             }
-            .size(32.dp)
     ) {
         Image(
             painter = state,

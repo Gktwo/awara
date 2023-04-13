@@ -39,7 +39,7 @@ fun RichText(
     text: String,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    onLinkClick: (String) -> Unit = {},
+    onLinkClick: (String) -> Unit,
     style: TextStyle = LocalTextStyle.current
 ) {
     val richTextTheme = RichTextTheme(

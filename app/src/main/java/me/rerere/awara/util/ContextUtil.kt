@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
+
+private const val TAG = "ContextUtil"
 
 /**
  * Open the url in browser
@@ -16,6 +19,8 @@ fun Context.openUrl(url: String) {
     if(url.matches(Regex("https?://.*"))) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         startActivity(intent)
+    } else {
+        Log.w(TAG, "openUrl: url is not valid: $url")
     }
 }
 
