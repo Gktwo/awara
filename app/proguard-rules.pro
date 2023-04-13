@@ -16,6 +16,8 @@
 # debugging stack traces.
 -keepattributes SourceFile,LineNumberTable
 
+-dontobfuscate
+
 # Don't warn
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
