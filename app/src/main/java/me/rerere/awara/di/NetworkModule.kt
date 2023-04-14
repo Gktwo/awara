@@ -8,6 +8,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
+import java.util.concurrent.TimeUnit
 
 private const val TAG = "NetworkModule"
 
@@ -43,7 +44,7 @@ val networkModule = module {
             }
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    setLevel(HttpLoggingInterceptor.Level.BASIC)
+                    setLevel(HttpLoggingInterceptor.Level.BODY)
                 }
             )
             .build()

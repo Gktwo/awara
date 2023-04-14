@@ -25,5 +25,8 @@ fun VideoCommentPage(vm: VideoVM) {
         onBack = {
             vm.popComment()
         },
+        onPostReply = {
+            vm.postComment(it)
+        }
     )
 }

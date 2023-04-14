@@ -28,6 +28,7 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import kotlinx.coroutines.flow.collectLatest
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.fixUrl
+import me.rerere.awara.data.source.stringResource
 import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.component.common.BackButton
 import me.rerere.awara.ui.component.player.Player
@@ -92,6 +93,22 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
                 // URL加载完成，更新播放器
                 is VideoVM.VideoEvent.UrlLoaded -> {
                     applyUrls(it.urls)
+                }
+
+                is VideoVM.VideoEvent.CommentPostException -> {
+                    message.error {
+                        Text("评论失败: ${it.throwable.message ?: it.throwable.javaClass.simpleName}")
+                    }
+                }
+                is VideoVM.VideoEvent.CommentPostFailed -> {
+                    message.error {
+                        Text("评论失败: " + stringResource(it.error))
+                    }
+                }
+                VideoVM.VideoEvent.CommentPosted -> {
+                    message.success {
+                        Text("评论成功")
+                    }
                 }
             }
         }

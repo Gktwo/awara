@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -25,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import me.rerere.awara.data.entity.Comment
 import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.component.iwara.RichText
+import me.rerere.awara.ui.stores.LocalUserStore
+import me.rerere.awara.ui.stores.collectAsState
 import me.rerere.awara.util.openUrl
 import me.rerere.awara.util.toLocalDateTimeString
 
@@ -36,6 +40,7 @@ fun CommentCard(
     onReply: (Comment) -> Unit
 ) {
     val context = LocalContext.current
+    val user = LocalUserStore.current.collectAsState()
     Card(
         modifier = modifier,
     ) {
@@ -57,6 +62,20 @@ fun CommentCard(
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.titleLarge
                 )
+
+                // "Me" Tag
+                if(comment.user?.id == user.user?.id) {
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        tonalElevation = 4.dp
+                    ) {
+                        Text(
+                            text = "我",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)
+                        )
+                    }
+                }
             }
 
             RichText(
@@ -95,16 +114,18 @@ fun CommentCard(
                     }
                 }
 
-                TextButton(
-                    onClick = {
-                        onReply(comment)
-                    },
-                    contentPadding = PaddingValues(4.dp)
-                ) {
-                    Text(
-                        text = "回复",
-                        style = MaterialTheme.typography.labelMedium,
-                    )
+                if(comment.parent == null) {
+                    TextButton(
+                        onClick = {
+                            onReply(comment)
+                        },
+                        contentPadding = PaddingValues(4.dp)
+                    ) {
+                        Text(
+                            text = "回复",
+                            style = MaterialTheme.typography.labelMedium,
+                        )
+                    }
                 }
             }
         }

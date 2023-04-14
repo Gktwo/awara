@@ -10,10 +10,12 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import me.rerere.awara.data.entity.CommentCreationDto
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.repo.CommentRepo
 import me.rerere.awara.data.repo.MediaRepo
+import me.rerere.awara.data.source.APIResult
 import me.rerere.awara.data.source.onError
 import me.rerere.awara.data.source.onException
 import me.rerere.awara.data.source.onSuccess
@@ -142,6 +144,25 @@ class VideoVM(
         )
     }
 
+    fun postComment(it: CommentCreationDto) {
+        viewModelScope.launch {
+            runAPICatching {
+                commentRepo.postVideoComment(id, it.body, it.parentId)
+            }.onSuccess {
+                events.emit(VideoEvent.CommentPosted)
+                Log.i(TAG, "postComment: $it")
+                // 重新加载评论
+                loadComments()
+            }.onError {
+                events.emit(VideoEvent.CommentPostFailed(it))
+                Log.w(TAG, "postComment(error): $it")
+            }.onException {
+                events.emit(VideoEvent.CommentPostException(it.exception))
+                Log.w(TAG, "postComment(exception)", it.exception)
+            }
+        }
+    }
+
     data class VideoState(
         val loading: Boolean = false,
         val video: Video? = null,
@@ -153,5 +174,9 @@ class VideoVM(
 
     sealed class VideoEvent {
         class UrlLoaded(val urls: List<VideoFile>) : VideoEvent()
+
+        object CommentPosted : VideoEvent()
+        class CommentPostFailed(val error: APIResult.Error) : VideoEvent()
+        class CommentPostException(val throwable: Throwable) : VideoEvent()
     }
 }

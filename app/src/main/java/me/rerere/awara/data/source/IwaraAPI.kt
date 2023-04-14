@@ -6,6 +6,7 @@ import me.rerere.awara.data.dto.LoginRes
 import me.rerere.awara.data.dto.ProfileDto
 import me.rerere.awara.data.dto.Self
 import me.rerere.awara.data.entity.Comment
+import me.rerere.awara.data.entity.CommentCreationDto
 import me.rerere.awara.data.entity.Image
 import me.rerere.awara.data.entity.Video
 import retrofit2.Response
@@ -68,4 +69,10 @@ interface IwaraAPI {
         @Path("id") id: String,
         @QueryMap queryMap: Map<String, String>
     ): Pager<Comment>
+
+    @POST("/video/{id}/comments")
+    suspend fun postVideoComment(
+        @Path("id") id: String,
+        @Body comment: CommentCreationDto
+    ): Comment
 }

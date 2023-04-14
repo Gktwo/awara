@@ -16,3 +16,9 @@ data class Comment(
     val user: User?,
     val parent: Comment? = null,
 )
+
+@Serializable
+data class CommentCreationDto(
+    val body: String,
+    val parentId: String? = null,
+)

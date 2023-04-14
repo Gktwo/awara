@@ -3,13 +3,9 @@ package me.rerere.awara.ui.component.iwara.comment
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.with
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,12 +16,14 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Comment
+import androidx.compose.material.icons.outlined.ModeComment
 import androidx.compose.material.icons.outlined.Send
-import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -39,9 +37,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import me.rerere.awara.data.entity.Comment
+import me.rerere.awara.data.entity.CommentCreationDto
 import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.iwara.PaginationBar
 
@@ -53,14 +53,19 @@ fun CommentList(
     onPageChange: (Int) -> Unit,
     onBack: () -> Unit,
     onPush: (String) -> Unit,
+    onPostReply: (CommentCreationDto) -> Unit,
 ) {
     val currentComment = state.stack.last()
     var repling by remember {
         mutableStateOf(false)
     }
+    var replyTo by remember {
+        mutableStateOf<Comment?>(null)
+    }
 
     BackHandler(state.stack.size > 1) {
         onBack()
+        replyTo = null
     }
 
     Column(
@@ -76,7 +81,10 @@ fun CommentList(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     IconButton(
-                        onClick = { onBack() }
+                        onClick = {
+                            onBack()
+                            replyTo = null
+                        }
                     ) {
                         Icon(Icons.Outlined.ArrowBack, null)
                     }
@@ -103,9 +111,11 @@ fun CommentList(
                         comment = comment,
                         onLoadReplies = {
                             onPush(it.id)
+                            replyTo = it
                         },
                         onReply = {
-                            // TODO
+                            repling = true
+                            replyTo = it
                         }
                     )
                 }
@@ -150,21 +160,49 @@ fun CommentList(
                             Icon(Icons.Outlined.Close, null)
                         }
 
+                        var body by remember {
+                            mutableStateOf("")
+                        }
                         TextField(
-                            value = "",
-                            onValueChange = {},
+                            value = body,
+                            onValueChange = { body = it },
                             modifier = Modifier
                                 .weight(1f),
                             placeholder = {
-                                Text("回复")
+                                Text(
+                                    text = if (replyTo == null) {
+                                        "回复"
+                                    } else {
+                                        "回复 ${replyTo?.user?.name}"
+                                    }
+                                )
                             },
                             colors = TextFieldDefaults.textFieldColors(
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
+                            ),
+                            keyboardOptions = KeyboardOptions(
+                                autoCorrect = false,
+                                imeAction = ImeAction.Send,
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onSend = {
+                                    onPostReply(CommentCreationDto(
+                                        body = body,
+                                        parentId = replyTo?.id,
+                                    ))
+                                }
                             )
                         )
 
-                        FilledTonalIconButton(onClick = { /*TODO*/ }) {
+                        FilledTonalButton(
+                            onClick = {
+                                onPostReply(CommentCreationDto(
+                                    body = body,
+                                    parentId = replyTo?.id,
+                                ))
+                            }
+                        ) {
                             Icon(Icons.Outlined.Send, null)
                         }
                     }
@@ -178,14 +216,15 @@ fun CommentList(
                     modifier = Modifier
                         .fillMaxWidth(),
                     contentPadding = contentPadding,
-                    leading = {
-                        FilledTonalIconButton(
+                    trailing = {
+                        FilledTonalButton(
                             onClick = {
                                 repling = true
+                                replyTo = null
                             },
                         ) {
                             Icon(
-                                imageVector = Icons.Outlined.Comment,
+                                imageVector = Icons.Outlined.ModeComment,
                                 contentDescription = null
                             )
                         }
