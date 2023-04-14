@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.BackButton
+import me.rerere.awara.ui.component.common.BetterTabBar
 import me.rerere.awara.ui.component.common.Button
 import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.ui.hooks.rememberFullScreenState
@@ -88,6 +90,12 @@ fun SearchPage() {
                 },
                 style = MaterialTheme.typography.titleLarge
             )
+
+            BetterTabBar(selectedTabIndex = 0) {
+                Tab(selected = true, onClick = { /*TODO*/ }) {
+                    Text("测试")
+                }
+            }
         }
     }
 }

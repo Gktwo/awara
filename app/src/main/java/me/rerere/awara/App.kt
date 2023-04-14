@@ -4,7 +4,6 @@ import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.decode.SvgDecoder
-import coil.imageLoader
 import me.rerere.awara.di.networkModule
 import me.rerere.awara.di.repoModule
 import me.rerere.awara.di.userCaseModule
