@@ -75,4 +75,9 @@ interface IwaraAPI {
         @Path("id") id: String,
         @Body comment: CommentCreationDto
     ): Comment
+
+    @GET("/image/{id}")
+    suspend fun getImage(
+        @Path("id") id: String
+    ): Image
 }

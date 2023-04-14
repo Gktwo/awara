@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
+import me.rerere.awara.data.entity.Image
 import me.rerere.awara.data.entity.Media
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.thumbnailUrl
@@ -44,8 +45,9 @@ fun MediaCard(
     Card(
         modifier = modifier,
         onClick = {
-            if(media is Video) {
-                router.navigate("video/${media.id}")
+            when (media) {
+                is Video -> router.navigate("video/${media.id}")
+                is Image -> router.navigate("image/${media.id}")
             }
         }
     ) {

@@ -78,6 +78,9 @@ dependencies {
     // Splash
     implementation("androidx.core:core-splashscreen:1.0.0")
 
+    // Zoom
+    implementation("net.engawapg.lib:zoomable:1.4.1")
+
     // Setting
     implementation("com.github.re-ovo:compose-setting:1.1")
 

@@ -33,10 +33,12 @@ import me.rerere.awara.ui.component.common.DialogProvider
 import me.rerere.awara.ui.component.common.LottieAnimation
 import me.rerere.awara.ui.component.common.MessageProvider
 import me.rerere.awara.ui.component.hitokoto.Hitokoto
+import me.rerere.awara.ui.page.image.ImagePage
 import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.login.LoginPage
 import me.rerere.awara.ui.page.search.SearchPage
 import me.rerere.awara.ui.page.setting.SettingPage
+import me.rerere.awara.ui.page.user.UserPage
 import me.rerere.awara.ui.page.video.VideoPage
 import me.rerere.awara.ui.stores.LocalUserStore
 import me.rerere.awara.ui.stores.UserStoreProvider
@@ -147,6 +149,14 @@ class RouterActivity : ComponentActivity() {
                     )
                 ) {
                     VideoPage()
+                }
+
+                composable("image/{id}") {
+                    ImagePage()
+                }
+
+                composable("user/{id}") {
+                    UserPage()
                 }
 
                 composable("setting") {

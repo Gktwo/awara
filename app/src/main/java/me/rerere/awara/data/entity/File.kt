@@ -26,3 +26,11 @@ fun File?.toAvatarUrl(): String {
         "https://iwara.tv/images/default-avatar.jpg"
     }
 }
+
+fun File?.toImageLarge(): String? {
+    return if(this != null) {
+        "https://i.iwara.tv/image/large/$id/$name"
+    } else {
+        null
+    }
+}
