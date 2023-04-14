@@ -220,7 +220,6 @@ fun CommentList(
                         FilledTonalButton(
                             onClick = {
                                 repling = true
-                                replyTo = null
                             },
                         ) {
                             Icon(
