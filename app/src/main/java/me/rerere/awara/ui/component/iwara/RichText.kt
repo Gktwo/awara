@@ -37,6 +37,7 @@ private const val TAG = "RichText"
 @Composable
 fun RichText(
     text: String,
+    modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
     onLinkClick: (String) -> Unit,
@@ -54,7 +55,7 @@ fun RichText(
         }
     }
     val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
-    val pressIndicator = Modifier.pointerInput(onLinkClick) {
+    val pressIndicator = modifier.pointerInput(onLinkClick) {
         detectTapGestures { pos ->
             layoutResult.value?.let { layoutResult ->
                 val offset = layoutResult.getOffsetForPosition(pos)

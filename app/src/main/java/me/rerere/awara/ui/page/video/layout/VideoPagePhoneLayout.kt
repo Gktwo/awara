@@ -1,5 +1,6 @@
 package me.rerere.awara.ui.page.video.layout
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,8 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
@@ -65,27 +64,29 @@ fun VideoPagePhoneLayout(vm: VideoVM, state: PlayerState, player: @Composable ()
     }
     Scaffold(
         topBar = {
-            if (offset != 0f && !state.playing) {
-                TopAppBar(
-                    title = {
-                        Text(text = "视频详情")
-                    },
-                    navigationIcon = {
-                        BackButton()
-                    },
-                    modifier = Modifier
-                        .background(Color.Black)
-                        .statusBarsPadding()
-                )
-            } else {
-                Box(
-                    modifier = Modifier
-                        .background(Color.Black)
-                        .statusBarsPadding()
-                        .fillMaxWidth()
-                        .aspectRatio(16 / 9f)
-                ) {
-                    player()
+            Box(modifier = Modifier.animateContentSize()) {
+                if (offset != 0f && !state.playing) {
+                    TopAppBar(
+                        title = {
+                            Text(text = "视频详情")
+                        },
+                        navigationIcon = {
+                            BackButton()
+                        },
+                        modifier = Modifier
+                            .background(Color.Black)
+                            .statusBarsPadding()
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.Black)
+                            .statusBarsPadding()
+                            .fillMaxWidth()
+                            .aspectRatio(16 / 9f)
+                    ) {
+                        player()
+                    }
                 }
             }
         }

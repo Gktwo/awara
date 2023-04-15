@@ -62,6 +62,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.4.1")
     implementation("androidx.compose.ui:ui-graphics:1.4.1")
     implementation("androidx.compose.ui:ui-tooling-preview:1.4.1")
+    implementation("androidx.compose.ui:ui-util:1.4.1")
     implementation("androidx.compose.material3:material3:1.1.0-beta02")
     implementation("androidx.compose.material3:material3-window-size-class:1.1.0-beta02")
     implementation("androidx.compose.material:material-icons-extended:1.4.1")
@@ -77,9 +78,6 @@ dependencies {
 
     // Splash
     implementation("androidx.core:core-splashscreen:1.0.0")
-
-    // Zoom
-    implementation("net.engawapg.lib:zoomable:1.4.1")
 
     // Setting
     implementation("com.github.re-ovo:compose-setting:1.1")
