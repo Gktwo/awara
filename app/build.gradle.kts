@@ -79,6 +79,9 @@ dependencies {
     // Splash
     implementation("androidx.core:core-splashscreen:1.0.0")
 
+    // MMUPnP
+    implementation("net.mm2d.mmupnp:mmupnp:3.1.3")
+
     // Setting
     implementation("com.github.re-ovo:compose-setting:1.1")
 

@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Cast
 import androidx.compose.material.icons.outlined.FitScreen
 import androidx.compose.material.icons.outlined.Fullscreen
 import androidx.compose.material.icons.outlined.FullscreenExit
@@ -19,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,14 +28,17 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.VideoSize
 import androidx.media3.ui.AspectRatioFrameLayout
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.fixUrl
 import me.rerere.awara.data.source.stringResource
 import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.component.common.BackButton
+import me.rerere.awara.ui.component.player.DlnaSelector
 import me.rerere.awara.ui.component.player.Player
 import me.rerere.awara.ui.component.player.PlayerScaffold
 import me.rerere.awara.ui.component.player.PlayerState
+import me.rerere.awara.ui.component.player.rememberDlnaCastState
 import me.rerere.awara.ui.component.player.rememberPlayerState
 import me.rerere.awara.ui.hooks.ForceSystemBarColor
 import me.rerere.awara.ui.hooks.rememberRequestedScreenOrientation
@@ -52,6 +57,37 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
     val windowSize = rememberWindowSizeClass()
     val state = rememberPlayerState()
     val message = LocalMessageProvider.current
+    val scope = rememberCoroutineScope()
+
+    val dlnaCastState = rememberDlnaCastState()
+    var dlnaCastSheetShow by remember {
+        mutableStateOf(false)
+    }
+    DlnaSelector(
+        show = dlnaCastSheetShow,
+        onDismiss = { dlnaCastSheetShow = false },
+        state = dlnaCastState,
+        onDeviceSelected = { device ->
+            state.pause()
+            state.currentMediaItem?.let { mediaItem ->
+                scope.launch {
+                    kotlin.runCatching {
+                        dlnaCastState.playUrl(
+                            device = device,
+                            url = mediaItem.localConfiguration?.uri.toString()
+                        )
+                        message.success {
+                            Text("已发送到 ${device.friendlyName}")
+                        }
+                    }.onFailure {
+                        message.error {
+                            Text("发送失败: ${it.message ?: it.javaClass.simpleName}")
+                        }
+                    }
+                }
+            }
+        }
+    )
 
     // Full Screen
     var fullscreen by remember { mutableStateOf(false) }
@@ -78,11 +114,10 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
                 )
             }
         )
-        state.updateCurrentQuality(urls.lastOrNull()?.name ?: "Unknown")
+        //state.updateCurrentQuality(urls.lastOrNull()?.name ?: "Source")
         if(mmkvPreference.getBoolean("setting.auto_play", true)) {
             state.prepare()
         }
-        // TODO: Update current quality to user's preference
     }
 
     // Handle VM Events
@@ -125,6 +160,12 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
                     BackButton()
                 },
                 actions = {
+                    if(!fullscreen) {
+                        IconButton(onClick = { dlnaCastSheetShow = !dlnaCastSheetShow }) {
+                            Icon(Icons.Outlined.Cast, null)
+                        }
+                    }
+
                     IconButton(
                         onClick = {
                             if(!fullscreen) enterFullScreen() else exitFullScreen()
@@ -171,7 +212,6 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
                                     onClick = {
                                         expandedVideoQuality = false
                                         state.updateCurrentQuality(url.name)
-                                        state.prepare()
                                     },
                                     text = {
                                         Text(url.name)

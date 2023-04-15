@@ -18,6 +18,7 @@ import androidx.media3.common.VideoSize
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.AspectRatioFrameLayout
+import me.rerere.compose_setting.preference.mmkvPreference
 
 private const val TAG = "PlayerState"
 
@@ -104,14 +105,15 @@ class PlayerState(val player: Player) {
     var state by mutableStateOf(State.IDLE)
     var loading by mutableStateOf(false)
 
-    var currentMediaItem by mutableStateOf<MediaItem?>(null)
+
     var videoSize by mutableStateOf(VideoSize.UNKNOWN)
     var duration by mutableStateOf(0L)
     var resizeMode by mutableStateOf(AspectRatioFrameLayout.RESIZE_MODE_FIT)
 
     var playerItems by mutableStateOf<List<PlayerItem>>(emptyList())
         private set
-    var currentQuality by mutableStateOf("Loading")
+    var currentQuality by mutableStateOf(mmkvPreference.getString("setting.player_quality","Source")!!)
+    var currentMediaItem by mutableStateOf<MediaItem?>(null)
 
     fun prepare() {
         player.prepare()
@@ -124,14 +126,25 @@ class PlayerState(val player: Player) {
 
     fun updatePlayerItems(items: List<PlayerItem>) {
         playerItems = items
+        if (playerItems.isNotEmpty()) {
+            val item = playerItems.find { it.quality == currentQuality }
+            if (item != null) {
+                player.setMediaItem(item.mediaItem)
+                currentMediaItem = item.mediaItem
+            }
+        }
     }
 
     fun updateCurrentQuality(quality: String) {
         currentQuality = quality
+        mmkvPreference.putString("setting.player_quality",quality)
         if (playerItems.isNotEmpty()) {
             val item = playerItems.find { it.quality == quality }
             if (item != null) {
                 player.setMediaItem(item.mediaItem)
+                player.prepare()
+
+                currentMediaItem = item.mediaItem
             }
         }
     }
