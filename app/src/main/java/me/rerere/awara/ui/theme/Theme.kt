@@ -10,9 +10,11 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
@@ -26,6 +28,10 @@ private val darkColorScheme = darkColorScheme()
 
 private val lightColorScheme = lightColorScheme()
 
+val LocalDarkMode = staticCompositionLocalOf<Boolean> {
+    error("No dark mode provided")
+}
+
 @Composable
 fun AwaraTheme(
     content: @Composable () -> Unit
@@ -34,7 +40,7 @@ fun AwaraTheme(
         key = "setting.dark_mode",
         default = 0
     )
-    val lightMode = when(darkMode) {
+    val lightMode = when (darkMode) {
         0 -> !isSystemInDarkTheme()
         1 -> true
         2 -> false
@@ -58,14 +64,21 @@ fun AwaraTheme(
             WindowCompat.getInsetsController(window, view).apply {
                 isAppearanceLightStatusBars = lightMode
                 isAppearanceLightNavigationBars = lightMode
-                Log.i(TAG, "AwaraTheme: isAppearanceLightStatusBars = $isAppearanceLightStatusBars")
+                Log.i(
+                    TAG,
+                    "AwaraTheme: isAppearanceLightStatusBars = $isAppearanceLightStatusBars"
+                )
             }
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalDarkMode provides !lightMode
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
 }

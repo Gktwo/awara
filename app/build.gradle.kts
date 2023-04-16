@@ -57,6 +57,9 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.0")
 
+    // MDC
+    implementation("com.google.android.material:material:1.8.0")
+
     // Compose
     // implementation(platform("androidx.compose:compose-bom:2023.01.00"))
     implementation("androidx.compose.ui:ui:1.4.1")

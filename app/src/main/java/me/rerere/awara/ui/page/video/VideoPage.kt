@@ -24,13 +24,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.common.VideoSize
 import androidx.media3.ui.AspectRatioFrameLayout
+import coil.compose.LocalImageLoader
+import coil.imageLoader
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.fixUrl
+import me.rerere.awara.data.entity.thumbnailUrl
 import me.rerere.awara.data.source.stringResource
 import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.component.common.BackButton
@@ -45,6 +49,8 @@ import me.rerere.awara.ui.hooks.rememberRequestedScreenOrientation
 import me.rerere.awara.ui.hooks.rememberWindowSizeClass
 import me.rerere.awara.ui.page.video.layout.VideoPagePhoneLayout
 import me.rerere.awara.ui.page.video.layout.VideoPageTabletLayout
+import me.rerere.awara.ui.theme.DynamicColorTheme
+import me.rerere.awara.ui.theme.rememberDynamicColorSchemeState
 import me.rerere.compose_setting.preference.mmkvPreference
 import org.koin.androidx.compose.koinViewModel
 
@@ -58,7 +64,15 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
     val state = rememberPlayerState()
     val message = LocalMessageProvider.current
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
+    // M3
+    val colorState = rememberDynamicColorSchemeState()
+    LaunchedEffect(vm.state.video) {
+        colorState.updateColorScheme(ctx = context, url = vm.state.video?.thumbnailUrl() ?: "")
+    }
+
+    // Dlna
     val dlnaCastState = rememberDlnaCastState()
     var dlnaCastSheetShow by remember {
         mutableStateOf(false)
@@ -150,83 +164,85 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
     }
 
     // UI
-    PlayerScaffold(
-        fullscreen = fullscreen,
-        player = {
-            Player(
-                state = state,
-                modifier = Modifier.fillMaxSize(),
-                navigationIcon = {
-                    BackButton()
-                },
-                actions = {
-                    if(!fullscreen) {
-                        IconButton(onClick = { dlnaCastSheetShow = !dlnaCastSheetShow }) {
-                            Icon(Icons.Outlined.Cast, null)
+    DynamicColorTheme(state = colorState) {
+        PlayerScaffold(
+            fullscreen = fullscreen,
+            player = {
+                Player(
+                    state = state,
+                    modifier = Modifier.fillMaxSize(),
+                    navigationIcon = {
+                        BackButton()
+                    },
+                    actions = {
+                        if (!fullscreen) {
+                            IconButton(onClick = { dlnaCastSheetShow = !dlnaCastSheetShow }) {
+                                Icon(Icons.Outlined.Cast, null)
+                            }
                         }
-                    }
 
-                    IconButton(
-                        onClick = {
-                            if(!fullscreen) enterFullScreen() else exitFullScreen()
-                        }
-                    ) {
-                        Icon(
-                            if(!fullscreen) Icons.Outlined.Fullscreen else Icons.Outlined.FullscreenExit,
-                            "Fullscreen"
-                        )
-                    }
-                    if(fullscreen) {
                         IconButton(
                             onClick = {
-                                state.resizeMode =
-                                    if (state.resizeMode == AspectRatioFrameLayout.RESIZE_MODE_FIT)
-                                        AspectRatioFrameLayout.RESIZE_MODE_ZOOM
-                                    else AspectRatioFrameLayout.RESIZE_MODE_FIT
+                                if (!fullscreen) enterFullScreen() else exitFullScreen()
                             }
                         ) {
-                            Icon(Icons.Outlined.FitScreen, null)
-                        }
-                    }
-
-                    Box {
-                        var expandedVideoQuality by remember {
-                            mutableStateOf(false)
-                        }
-                        TextButton(
-                            onClick = {
-                                expandedVideoQuality = true
-                            }
-                        ) {
-                            Text(
-                                text = state.currentQuality,
-                                color = Color.White
+                            Icon(
+                                if (!fullscreen) Icons.Outlined.Fullscreen else Icons.Outlined.FullscreenExit,
+                                "Fullscreen"
                             )
                         }
-                        DropdownMenu(
-                            expanded = expandedVideoQuality,
-                            onDismissRequest = { expandedVideoQuality = false }
-                        ) {
-                            vm.state.urls.forEach { url ->
-                                DropdownMenuItem(
-                                    onClick = {
-                                        expandedVideoQuality = false
-                                        state.updateCurrentQuality(url.name)
-                                    },
-                                    text = {
-                                        Text(url.name)
-                                    }
+                        if (fullscreen) {
+                            IconButton(
+                                onClick = {
+                                    state.resizeMode =
+                                        if (state.resizeMode == AspectRatioFrameLayout.RESIZE_MODE_FIT)
+                                            AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+                                        else AspectRatioFrameLayout.RESIZE_MODE_FIT
+                                }
+                            ) {
+                                Icon(Icons.Outlined.FitScreen, null)
+                            }
+                        }
+
+                        Box {
+                            var expandedVideoQuality by remember {
+                                mutableStateOf(false)
+                            }
+                            TextButton(
+                                onClick = {
+                                    expandedVideoQuality = true
+                                }
+                            ) {
+                                Text(
+                                    text = state.currentQuality,
+                                    color = Color.White
                                 )
+                            }
+                            DropdownMenu(
+                                expanded = expandedVideoQuality,
+                                onDismissRequest = { expandedVideoQuality = false }
+                            ) {
+                                vm.state.urls.forEach { url ->
+                                    DropdownMenuItem(
+                                        onClick = {
+                                            expandedVideoQuality = false
+                                            state.updateCurrentQuality(url.name)
+                                        },
+                                        text = {
+                                            Text(url.name)
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
-                }
-            )
-        }
-    ) { player ->
-        when(windowSize.widthSizeClass) {
-            WindowWidthSizeClass.Compact -> VideoPagePhoneLayout(vm, state, player)
-            else -> VideoPageTabletLayout(vm, state, player)
+                )
+            }
+        ) { player ->
+            when (windowSize.widthSizeClass) {
+                WindowWidthSizeClass.Compact -> VideoPagePhoneLayout(vm, state, player)
+                else -> VideoPageTabletLayout(vm, state, player)
+            }
         }
     }
 }

@@ -21,7 +21,6 @@ val networkModule = module {
                 val request = it.request()
                 val url = request.url
                 val newRequest = request.newBuilder()
-                    .addHeader("User-Agent", "Awara Android Client")
                     .apply {
                         if(url.host == "api.iwara.tv") {
                             if (url.toString() == "https://api.iwara.tv/user/token") {
