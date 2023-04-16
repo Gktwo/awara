@@ -5,10 +5,12 @@ import me.rerere.awara.data.source.IwaraAPI
 import me.rerere.awara.util.SerializationConverterFactory
 import me.rerere.compose_setting.preference.mmkvPreference
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
+import okhttp3.ResponseBody.Companion.toResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
+import retrofit2.Response
 import retrofit2.Retrofit
-import java.util.concurrent.TimeUnit
 
 private const val TAG = "NetworkModule"
 
@@ -47,6 +49,25 @@ val networkModule = module {
                     setLevel(HttpLoggingInterceptor.Level.BODY)
                 }
             )
+//            .addInterceptor {
+//                val request = it.request()
+//                val url = request.url
+//                if(url.pathSegments.contains("video")){
+//                    // 403模拟
+//                    val response = okhttp3.Response.Builder()
+//                        .request(request)
+//                        .protocol(okhttp3.Protocol.HTTP_1_1)
+//                        .code(403)
+//                        .message("Forbidden")
+//                        .body(
+//                            "".toResponseBody()
+//                        )
+//                        .build()
+//                    response
+//                } else {
+//                    it.proceed(request)
+//                }
+//            }
             .build()
     }
 

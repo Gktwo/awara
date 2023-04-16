@@ -7,12 +7,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import me.rerere.awara.data.entity.CommentCreationDto
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
+import me.rerere.awara.data.entity.fixUrl
 import me.rerere.awara.data.repo.CommentRepo
 import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.source.APIResult
@@ -55,6 +57,9 @@ class VideoVM(
             }.onSuccess {
                 state = state.copy(video = it.first, urls = it.second)
                 events.emit(VideoEvent.UrlLoaded(it.second))
+                it.second.forEach {
+                    Log.i(TAG, "getVideo: ${it.name} ${it.src.view.fixUrl()}")
+                }
             }.onError {
                 Log.w(TAG, "getVideo: $it")
             }.onException {
@@ -65,8 +70,7 @@ class VideoVM(
 
         viewModelScope.launch {
             runAPICatching {
-                val relatedVideos = async { mediaRepo.getRelatedVideos(id) }
-                relatedVideos.await()
+                mediaRepo.getRelatedVideos(id)
             }.onSuccess {
                 state = state.copy(relatedVideos = it.results)
             }.onError {
@@ -108,18 +112,24 @@ class VideoVM(
         viewModelScope.launch {
             val currentCommentState = state.commentState.stack.last()
             runAPICatching {
-                if(currentCommentState.parent != null ) {
-                    commentRepo.getVideoCommentReplies(id, currentCommentState.page - 1, currentCommentState.parent)
+                if (currentCommentState.parent != null) {
+                    commentRepo.getVideoCommentReplies(
+                        id,
+                        currentCommentState.page - 1,
+                        currentCommentState.parent
+                    )
                 } else {
                     commentRepo.getVideoComments(id, currentCommentState.page - 1)
                 }
             }.onSuccess {
                 state = state.copy(
-                    commentState = state.commentState.updateTopStack(currentCommentState.copy(
-                        comments = it.results,
-                        limit = it.limit,
-                        total = it.count,
-                    ))
+                    commentState = state.commentState.updateTopStack(
+                        currentCommentState.copy(
+                            comments = it.results,
+                            limit = it.limit,
+                            total = it.count,
+                        )
+                    )
                 )
                 Log.i(TAG, "loadComments: $it")
             }.onError {
@@ -169,7 +179,7 @@ class VideoVM(
         val urls: List<VideoFile> = emptyList(),
         val relatedVideos: List<Video> = emptyList(),
         val likeLoading: Boolean = false,
-        val commentState : CommentState = CommentState(),
+        val commentState: CommentState = CommentState(),
     )
 
     sealed class VideoEvent {

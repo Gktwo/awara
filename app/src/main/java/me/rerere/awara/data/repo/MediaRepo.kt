@@ -5,6 +5,7 @@ import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.signature
 import me.rerere.awara.data.source.IwaraAPI
+import me.rerere.awara.data.source.runAPICatching
 import me.rerere.awara.util.JsonInstance
 import me.rerere.awara.util.await
 import okhttp3.OkHttpClient
@@ -13,7 +14,7 @@ import okhttp3.Request
 class MediaRepo(
     private val okHttpClient: OkHttpClient,
     private val iwaraAPI: IwaraAPI
-){
+) {
     suspend fun getVideoList(
         queryMap: Map<String, String>
     ) = iwaraAPI.getVideoList(queryMap)

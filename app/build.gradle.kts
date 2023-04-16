@@ -88,6 +88,10 @@ dependencies {
     // Koin
     implementation("io.insert-koin:koin-androidx-compose:3.4.2")
 
+    // OkHttp
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
 
@@ -96,10 +100,6 @@ dependencies {
 
     // Kotlinx Serialization
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-
-    // OkHttp
-    implementation("com.squareup.okhttp3:okhttp:4.10.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
 
     // Markdown
     implementation("org.jetbrains:markdown:0.4.1")

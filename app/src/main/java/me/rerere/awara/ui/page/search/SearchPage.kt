@@ -22,6 +22,7 @@ import me.rerere.awara.ui.component.common.BetterTabBar
 import me.rerere.awara.ui.component.common.Button
 import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.ui.component.player.DlnaSelector
+import me.rerere.awara.ui.component.player.TiktokPlayer
 import me.rerere.awara.ui.component.player.rememberDlnaCastState
 import me.rerere.awara.ui.hooks.rememberFullScreenState
 import me.rerere.awara.ui.hooks.rememberRequestedScreenOrientation
@@ -29,6 +30,11 @@ import me.rerere.compose_setting.preference.mmkvPreference
 
 @Composable
 fun SearchPage() {
+    TiktokPlayer {
+        "https://sukone.iwara.tv/view?filename=83274907-0160-4c85-86ee-e9b5cf3db5cf_Source.mp4&path=2023%2F04%2F15&expires=1681583690&hash=68694a1043be6bcbdf80c57a6e48ac5fc136defb0d0c1ec6069f6d3b6541c193"
+    }
+    return
+
     val router = LocalRouterProvider.current
     val fullScreenState = rememberFullScreenState()
     val message = LocalMessageProvider.current
