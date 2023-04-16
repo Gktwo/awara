@@ -1,6 +1,7 @@
 package me.rerere.awara.ui.page.video.pager
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,6 +42,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import me.rerere.awara.data.entity.Video
+import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.Button
 import me.rerere.awara.ui.component.common.ButtonType
 import me.rerere.awara.ui.component.common.Spin
@@ -187,17 +189,24 @@ private fun VideoInfoCard(video: Video, vm: VideoVM) {
 
 @Composable
 private fun AuthorCard(video: Video) {
+    val router = LocalRouterProvider.current
     Card(
         modifier = Modifier
             .padding(horizontal = 8.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        onClick = {
+            router.navigate("user/${video.user.username}")
+        }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
         ) {
-            Avatar(user = video.user, modifier = Modifier.size(32.dp))
+            Avatar(
+                user = video.user,
+                modifier = Modifier.size(32.dp)
+            )
             Column {
                 Text(
                     text = video.user.name,

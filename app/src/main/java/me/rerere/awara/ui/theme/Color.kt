@@ -5,7 +5,11 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import me.rerere.awara.ui.component.common.Skeleton
+
+val Color.bestTextColor: Color
+    get() = if (luminance() > 0.5f) Color.Black else Color.White
 
 val ColorScheme.warning: Color
     @Composable

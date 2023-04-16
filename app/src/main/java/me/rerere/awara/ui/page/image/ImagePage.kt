@@ -1,5 +1,6 @@
 package me.rerere.awara.ui.page.image
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,12 +16,21 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -64,23 +74,41 @@ fun ImagePage(vm: ImageVM = koinViewModel()) {
                         .navigationBarsPadding()
                         .padding(8.dp)
                 ) {
-                    Text(
-                        text = state.state?.title ?: "",
-                        style = MaterialTheme.typography.titleLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    var expaned by remember { mutableStateOf(false) }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .animateContentSize()
+                                .weight(1f)
+                        ) {
+                            Text(
+                                text = state.state?.title ?: "",
+                                style = MaterialTheme.typography.titleLarge,
+                                maxLines = if (expaned) Int.MAX_VALUE else 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
 
-                    RichText(
-                        text = state.state?.body ?: "",
-                        overflow = TextOverflow.Ellipsis,
-                        onLinkClick = {
-                            context.openUrl(it)
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        maxLines = 3
-                    )
+                            RichText(
+                                text = state.state?.body ?: "",
+                                overflow = TextOverflow.Ellipsis,
+                                onLinkClick = {
+                                    context.openUrl(it)
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                maxLines = if (expaned) Int.MAX_VALUE else 2,
+                            )
+                        }
+
+                        IconButton(onClick = { expaned = !expaned }) {
+                            Icon(
+                                if (expaned) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
+                                null,
+                            )
+                        }
+                    }
 
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
