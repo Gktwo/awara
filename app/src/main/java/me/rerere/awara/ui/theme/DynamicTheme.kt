@@ -22,6 +22,8 @@ import com.google.android.material.color.utilities.Scheme
 import com.google.android.material.color.utilities.Score
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.rerere.compose_setting.preference.mmkvPreference
+import me.rerere.compose_setting.preference.rememberBooleanPreference
 
 private const val TAG = "DynamicTheme"
 
@@ -30,13 +32,16 @@ fun DynamicColorTheme(
     state: DynamicThemeState,
     content: @Composable () -> Unit
 ) {
-    val scheme = if (LocalDarkMode.current) {
-        state.darkScheme ?: MaterialTheme.colorScheme
-    } else {
-        state.lightScheme ?: MaterialTheme.colorScheme
-    }
+    val dynamicColor by rememberBooleanPreference(
+        key = "setting.dynamic_color",
+        default = true
+    )
+    val darkMode = LocalDarkMode.current
+    val scheme = if (dynamicColor) {
+        if (darkMode) state.darkScheme else state.lightScheme
+    } else null
     MaterialTheme(
-        colorScheme = scheme,
+        colorScheme = scheme ?: MaterialTheme.colorScheme,
     ) {
         content()
     }
@@ -56,6 +61,7 @@ class DynamicThemeState {
         url: String
     ) {
         if (url.isEmpty()) return
+        if(mmkvPreference.getBoolean("setting.dynamic_color", true).not()) return
         Log.i(TAG, "updateColorScheme: 开始设置 $url")
         withContext(Dispatchers.IO) {
             val request = ImageRequest.Builder(ctx)

@@ -3,6 +3,7 @@ package me.rerere.awara.ui.page.setting
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.HomeWork
 import androidx.compose.material.icons.outlined.LightMode
 import androidx.compose.material.icons.outlined.Replay
@@ -66,6 +67,10 @@ fun SettingPage() {
                         key = "setting.work_mode",
                         default = false
                     )
+                    val dynamicColor = rememberBooleanPreference(
+                        key = "setting.dynamic_color",
+                        default = true
+                    )
                     SettingPickerItem(
                         state = darkMode,
                         items = listOf(0, 1, 2),
@@ -87,6 +92,19 @@ fun SettingPage() {
                         },
                         text = {
                             Text("设置应用的颜色模式")
+                        }
+                    )
+
+                    SettingBooleanItem(
+                        state = dynamicColor,
+                        title = {
+                            Text("动态颜色")
+                        },
+                        text = {
+                            Text("是否根据视频封面动态调整颜色")
+                        },
+                        icon = {
+                            Icon(Icons.Outlined.ColorLens,  null)
                         }
                     )
 
