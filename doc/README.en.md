@@ -1,7 +1,4 @@
 # Awara
-[English](doc/README.en.md) | [日本語説明](doc/README.ja.md) | [한국어 설명](doc/README.ko.md)
-[[Discord Server]](https://discord.gg/G22sSzJbzh)
-
 Next generation Iwara client, using Material You design, using Jetpack Compose to build UI.
 
 ## Features

@@ -1,6 +1,5 @@
 # Awara
-[English](doc/README.en.md) | [日本語説明](doc/README.ja.md) | [한국어 설명](doc/README.ko.md)   
-[[Discord Server]](https://discord.gg/G22sSzJbzh)
+[English](doc/README.en.md) | [日本語説明](doc/README.ja.md) | [한국어 설명](doc/README.ko.md) | [[Discord Server]](https://discord.gg/G22sSzJbzh)
 
 下一代I站客户端，使用Material You设计，使用Jetpack Compose构建UI。
 
