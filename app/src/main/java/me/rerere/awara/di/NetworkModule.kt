@@ -1,12 +1,11 @@
 package me.rerere.awara.di
 
-import android.util.Log
 import me.rerere.awara.data.source.HitokotoAPI
 import me.rerere.awara.data.source.IwaraAPI
 import me.rerere.awara.util.SerializationConverterFactory
 import me.rerere.compose_setting.preference.mmkvPreference
+import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
-import okhttp3.internal.closeQuietly
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -23,8 +22,13 @@ val networkModule = module {
                 val url = request.url
                 val newRequest = request.newBuilder()
                     .apply {
-                        if(url.host == "api.iwara.tv") {
+                        if(url.host == "api.iwara.tv" || url.host == "i.iwara.tv") {
                             addHeader("User-Agent", UA)
+                            addHeader("Origin", "https://www.iwara.tv")
+                            addHeader("Referer", "https://www.iwara.tv/")
+                            addHeader("Accept", "application/json")
+                            addHeader("Accept-Language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
+                            addHeader("Content-Type", "application/json")
 
                             if (url.toString() == "https://api.iwara.tv/user/token") {
                                 if ("refresh_token" in mmkvPreference) {
@@ -70,19 +74,6 @@ val networkModule = module {
 //                    it.proceed(request)
 //                }
 //            }
-            .addInterceptor {
-                var retryCount = 0
-                val request = it.request()
-                var response = it.proceed(request)
-                while (!response.isSuccessful && retryCount < 3) {
-                    Log.w(TAG, "Request is not successful - $retryCount - ${response.code}")
-                    retryCount++
-                    // retry the request
-                    response.closeQuietly()
-                    response = it.proceed(request)
-                }
-                response
-            }
             .build()
     }
 

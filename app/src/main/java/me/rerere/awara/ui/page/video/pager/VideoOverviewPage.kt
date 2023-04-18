@@ -201,7 +201,7 @@ private fun AuthorCard(video: Video) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp),
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
         ) {
             Avatar(
                 user = video.user,
@@ -215,14 +215,6 @@ private fun AuthorCard(video: Video) {
                 Text(
                     text = "@" + video.user.username,
                     style = MaterialTheme.typography.labelSmall
-                )
-            }
-            Spacer(modifier = Modifier.weight(1f))
-            Button(
-                onClick = { /*TODO*/ }
-            ) {
-                Text(
-                    text = if (video.user.following) "已关注" else "关注"
                 )
             }
         }

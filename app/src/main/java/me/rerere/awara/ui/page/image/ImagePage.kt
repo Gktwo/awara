@@ -2,6 +2,7 @@ package me.rerere.awara.ui.page.image
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import me.rerere.awara.data.entity.toImageLarge
+import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.BackButton
 import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.common.zoomable.rememberZoomState
@@ -52,6 +54,7 @@ import org.koin.androidx.compose.koinViewModel
 fun ImagePage(vm: ImageVM = koinViewModel()) {
     val state = vm.state
     val context = LocalContext.current
+    val router = LocalRouterProvider.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -114,7 +117,10 @@ fun ImagePage(vm: ImageVM = koinViewModel()) {
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(IntrinsicSize.Min),
+                            .height(IntrinsicSize.Min)
+                            .clickable {
+                                router.navigate("user/${state.state?.user?.username}")
+                            },
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Avatar(
