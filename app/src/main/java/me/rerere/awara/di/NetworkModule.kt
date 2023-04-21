@@ -22,13 +22,11 @@ val networkModule = module {
                 val url = request.url
                 val newRequest = request.newBuilder()
                     .apply {
-                        if(url.host == "api.iwara.tv" || url.host == "i.iwara.tv") {
+                        if(url.host.contains("iwara.tv")) {
                             addHeader("User-Agent", UA)
                             addHeader("Origin", "https://www.iwara.tv")
                             addHeader("Referer", "https://www.iwara.tv/")
-                            addHeader("Accept", "application/json")
                             addHeader("Accept-Language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
-                            addHeader("Content-Type", "application/json")
 
                             if (url.toString() == "https://api.iwara.tv/user/token") {
                                 if ("refresh_token" in mmkvPreference) {
