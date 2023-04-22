@@ -22,6 +22,7 @@ sealed interface Media {
     val slug: String?
     val user: User
     val body: String?
+    val tags: List<Tag>
 }
 
 @Serializable
@@ -41,6 +42,7 @@ data class Video(
     override val deletedAt: Instant?,
     override val slug: String?,
     override val user: User,
+    override val tags: List<Tag>,
     val private: Boolean,
     val rating: String,
     val status: String,
@@ -66,6 +68,7 @@ data class Image(
     override val deletedAt: Instant?,
     override val slug: String?,
     override val user: User,
+    override val tags: List<Tag>,
     val numImages: Int,
     val rating: String,
     val files: List<File>,

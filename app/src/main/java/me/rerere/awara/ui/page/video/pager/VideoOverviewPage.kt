@@ -49,6 +49,7 @@ import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.component.iwara.RichText
+import me.rerere.awara.ui.component.iwara.TagRow
 import me.rerere.awara.ui.page.video.VideoVM
 import me.rerere.awara.util.openUrl
 import me.rerere.awara.util.toLocalDateTimeString
@@ -75,6 +76,11 @@ fun VideoOverviewPage(vm: VideoVM) {
 
                 AuthorCard(
                     video = it
+                )
+
+                TagRow(
+                    tags = state.video.tags,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
                 MoreLikeThis(
