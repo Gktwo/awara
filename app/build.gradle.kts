@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     kotlin("android")
     kotlin("plugin.serialization")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -37,6 +38,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    kotlin {
+        jvmToolchain(8)
     }
     buildFeatures {
         compose = true
@@ -76,6 +80,16 @@ dependencies {
     implementation("androidx.media3:media3-cast:1.0.1")
     implementation("androidx.media3:media3-session:1.0.1")
     implementation("androidx.media3:media3-ui:1.0.1")
+
+    // Room
+    implementation("androidx.room:room-runtime:2.5.1")
+    implementation("androidx.room:room-paging:2.5.1")
+    implementation("androidx.room:room-ktx:2.5.1")
+    ksp("androidx.room:room-compiler:2.5.1")
+
+    // Paging3
+    implementation("androidx.paging:paging-runtime:3.1.1")
+    implementation("androidx.paging:paging-compose:1.0.0-alpha18")
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-navigation-animation:0.29.2-rc")

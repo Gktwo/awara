@@ -18,7 +18,6 @@ import androidx.compose.material.icons.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.FeaturedPlayList
 import androidx.compose.material.icons.outlined.History
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,15 +27,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import me.rerere.awara.data.entity.toHeaderUrl
 import me.rerere.awara.ui.LocalMessageProvider
 import me.rerere.awara.ui.LocalRouterProvider
-import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.stores.LocalUserStore
 import me.rerere.awara.ui.stores.UserStoreAction
@@ -124,7 +118,9 @@ fun ColumnScope.IndexDrawer() {
         label = {
             Text("历史记录")
         },
-        onClick = {}
+        onClick = {
+            router.navigate("history")
+        }
     )
 
     DrawerItem(

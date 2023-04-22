@@ -4,6 +4,7 @@ import android.app.Application
 import coil.ImageLoader
 import coil.ImageLoaderFactory
 import coil.decode.SvgDecoder
+import me.rerere.awara.di.databaseModule
 import me.rerere.awara.di.networkModule
 import me.rerere.awara.di.repoModule
 import me.rerere.awara.di.userCaseModule
@@ -27,6 +28,7 @@ class App : Application(), ImageLoaderFactory, KoinComponent {
             androidContext(this@App)
             modules(
                 networkModule,
+                databaseModule,
                 repoModule,
                 viewModelModule,
                 userCaseModule

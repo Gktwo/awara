@@ -32,6 +32,7 @@ import me.rerere.awara.ui.component.common.DialogProvider
 import me.rerere.awara.ui.component.common.LottieAnimation
 import me.rerere.awara.ui.component.common.MessageProvider
 import me.rerere.awara.ui.component.hitokoto.Hitokoto
+import me.rerere.awara.ui.page.history.HistoryPage
 import me.rerere.awara.ui.page.image.ImagePage
 import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.lab.LabPage
@@ -165,6 +166,10 @@ class RouterActivity : ComponentActivity() {
 
                 composable("search") {
                     SearchPage()
+                }
+
+                composable("history") {
+                    HistoryPage()
                 }
 
                 composable("lab") {
