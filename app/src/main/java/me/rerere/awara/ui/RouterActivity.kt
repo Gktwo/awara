@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -35,6 +34,7 @@ import me.rerere.awara.ui.component.common.MessageProvider
 import me.rerere.awara.ui.component.hitokoto.Hitokoto
 import me.rerere.awara.ui.page.image.ImagePage
 import me.rerere.awara.ui.page.index.IndexPage
+import me.rerere.awara.ui.page.lab.LabPage
 import me.rerere.awara.ui.page.login.LoginPage
 import me.rerere.awara.ui.page.search.SearchPage
 import me.rerere.awara.ui.page.setting.SettingPage
@@ -165,6 +165,10 @@ class RouterActivity : ComponentActivity() {
 
                 composable("search") {
                     SearchPage()
+                }
+
+                composable("lab") {
+                    LabPage()
                 }
             }
         }
