@@ -2,6 +2,7 @@ package me.rerere.awara.di
 
 import me.rerere.awara.data.source.HitokotoAPI
 import me.rerere.awara.data.source.IwaraAPI
+import me.rerere.awara.data.source.UpdateChecker
 import me.rerere.awara.util.SerializationConverterFactory
 import me.rerere.compose_setting.preference.mmkvPreference
 import okhttp3.Dispatcher
@@ -91,5 +92,9 @@ val networkModule = module {
             .addConverterFactory(SerializationConverterFactory.create())
             .build()
             .create(HitokotoAPI::class.java)
+    }
+
+    single {
+        UpdateChecker(get())
     }
 }

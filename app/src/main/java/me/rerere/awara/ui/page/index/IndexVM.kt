@@ -5,11 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
 import me.rerere.awara.data.entity.Media
 import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.repo.UserRepo
+import me.rerere.awara.data.source.UpdateChecker
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
 import me.rerere.awara.ui.component.iwara.param.FilterValue
@@ -20,14 +22,27 @@ private const val TAG = "IndexVM"
 
 class IndexVM(
     private val userRepo: UserRepo,
-    private val mediaRepo: MediaRepo
+    private val mediaRepo: MediaRepo,
+    private val updateChecker: UpdateChecker
 ) : ViewModel() {
     var state by mutableStateOf(IndexState())
         private set
 
+    val events = MutableSharedFlow<IndexEvent>()
+
     init {
         loadSubscriptions()
         loadVideoList()
+        checkUpdate()
+    }
+
+    private fun checkUpdate() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                val (code, name, changes) = updateChecker.getLatestVersion()
+                events.emit(IndexEvent.ShowUpdateDialog(code, name, changes))
+            }
+        }
     }
 
     private fun loadSubscriptions() {
@@ -123,6 +138,10 @@ class IndexVM(
     ) {
         VIDEO(R.string.video),
         IMAGE(R.string.image),
+    }
+
+    sealed class IndexEvent {
+        data class ShowUpdateDialog(val code: Int, val version: String, val changes: String) : IndexEvent()
     }
 }
 

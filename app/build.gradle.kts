@@ -55,32 +55,32 @@ dependencies {
     // Android KTX
     implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
-    implementation("androidx.activity:activity-compose:1.7.0")
+    implementation("androidx.activity:activity-compose:1.7.1")
 
     // MDC
     implementation("com.google.android.material:material:1.8.0")
 
     // Compose
     // implementation(platform("androidx.compose:compose-bom:2023.01.00"))
-    implementation("androidx.compose.ui:ui:1.4.1")
-    implementation("androidx.compose.ui:ui-graphics:1.4.1")
-    implementation("androidx.compose.ui:ui-tooling-preview:1.4.1")
-    implementation("androidx.compose.ui:ui-util:1.4.1")
-    implementation("androidx.compose.material3:material3:1.1.0-beta02")
-    implementation("androidx.compose.material3:material3-window-size-class:1.1.0-beta02")
-    implementation("androidx.compose.material:material-icons-extended:1.4.1")
+    implementation("androidx.compose.ui:ui:1.4.2")
+    implementation("androidx.compose.ui:ui-graphics:1.4.2")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.4.2")
+    implementation("androidx.compose.ui:ui-util:1.4.2")
+    implementation("androidx.compose.material3:material3:1.1.0-rc01")
+    implementation("androidx.compose.material3:material3-window-size-class:1.1.0-rc01")
+    implementation("androidx.compose.material:material-icons-extended:1.4.2")
 
     // Media
-    implementation("androidx.media3:media3-exoplayer:1.0.0")
-    implementation("androidx.media3:media3-cast:1.0.0")
-    implementation("androidx.media3:media3-session:1.0.0")
-    implementation("androidx.media3:media3-ui:1.0.0")
+    implementation("androidx.media3:media3-exoplayer:1.0.1")
+    implementation("androidx.media3:media3-cast:1.0.1")
+    implementation("androidx.media3:media3-session:1.0.1")
+    implementation("androidx.media3:media3-ui:1.0.1")
 
     // Accompanist
     implementation("com.google.accompanist:accompanist-navigation-animation:0.29.2-rc")
 
     // Splash
-    implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
 
     // MMUPnP
     implementation("net.mm2d.mmupnp:mmupnp:3.1.3")

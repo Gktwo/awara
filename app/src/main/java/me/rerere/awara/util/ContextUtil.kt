@@ -9,6 +9,9 @@ import android.util.Log
 
 private const val TAG = "ContextUtil"
 
+val Context.versionCode: Int
+    get() = packageManager.getPackageInfo(packageName, 0).versionCode
+
 /**
  * Open the url in browser
  *

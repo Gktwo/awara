@@ -9,8 +9,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.stringResource
+import kotlinx.coroutines.flow.collectLatest
 import me.rerere.awara.R
+import me.rerere.awara.ui.LocalDialogProvider
 import me.rerere.awara.ui.hooks.rememberWindowSizeClass
 import me.rerere.awara.ui.page.index.layout.IndexPagePhoneLayout
 import me.rerere.awara.ui.page.index.layout.IndexPageTabletLayout
@@ -28,6 +31,29 @@ fun IndexPage(
 
         WindowWidthSizeClass.Compact -> {
             IndexPagePhoneLayout(vm)
+        }
+    }
+
+    UpdateCheck(vm)
+}
+
+@Composable
+private fun UpdateCheck(vm: IndexVM) {
+    val dialog = LocalDialogProvider.current
+    LaunchedEffect(Unit) {
+        vm.events.collectLatest {
+            when(it){
+                is IndexVM.IndexEvent.ShowUpdateDialog -> {
+                    dialog.show(
+                        title = {
+                            Text("更新")
+                        },
+                        content = {
+                            Text(it.toString())
+                        }
+                    )
+                }
+            }
         }
     }
 }
