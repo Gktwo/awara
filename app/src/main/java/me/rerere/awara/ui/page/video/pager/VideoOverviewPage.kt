@@ -3,22 +3,25 @@ package me.rerere.awara.ui.page.video.pager
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
@@ -26,6 +29,7 @@ import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.PlaylistAdd
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material.icons.outlined.Translate
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,6 +50,8 @@ import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.Button
 import me.rerere.awara.ui.component.common.ButtonType
 import me.rerere.awara.ui.component.common.Spin
+import me.rerere.awara.ui.component.ext.DynamicStaggeredGridCells
+import me.rerere.awara.ui.component.ext.plus
 import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.component.iwara.RichText
@@ -61,31 +67,35 @@ fun VideoOverviewPage(vm: VideoVM) {
         show = state.loading,
         modifier = Modifier.fillMaxSize()
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .padding(vertical = 4.dp)
-                .navigationBarsPadding()
+        LazyVerticalStaggeredGrid(
+            modifier = Modifier.fillMaxSize(),
+            columns = DynamicStaggeredGridCells(),
+            verticalItemSpacing = 8.dp,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            contentPadding = PaddingValues(8.dp) + WindowInsets.navigationBars.asPaddingValues()
         ) {
             state.video?.let {
-                VideoInfoCard(
-                    video = it,
-                    vm = vm
-                )
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    VideoInfoCard(
+                        video = it,
+                        vm = vm
+                    )
+                }
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    AuthorCard(
+                        video = it
+                    )
+                }
 
-                AuthorCard(
-                    video = it
-                )
+                item(span = StaggeredGridItemSpan.FullLine) {
+                    TagRow(
+                        tags = state.video.tags,
+                    )
+                }
 
-                TagRow(
-                    tags = state.video.tags,
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                )
-
-                MoreLikeThis(
-                    vm = vm
-                )
+                items(state.relatedVideos) {
+                    MediaCard(media = it)
+                }
             }
         }
     }
@@ -95,9 +105,8 @@ fun VideoOverviewPage(vm: VideoVM) {
 private fun VideoInfoCard(video: Video, vm: VideoVM) {
     val (expand, setExpand) = remember { mutableStateOf(false) }
     val context = LocalContext.current
-    Box(
+    Card(
         modifier = Modifier
-            .padding(horizontal = 8.dp)
             .animateContentSize()
             .fillMaxWidth()
     ) {
@@ -202,7 +211,6 @@ private fun AuthorCard(video: Video) {
     val router = LocalRouterProvider.current
     OutlinedCard(
         modifier = Modifier
-            .padding(horizontal = 8.dp)
             .fillMaxWidth(),
         onClick = {
             router.navigate("user/${video.user.username}")
@@ -226,30 +234,6 @@ private fun AuthorCard(video: Video) {
                     text = "@" + video.user.username,
                     style = MaterialTheme.typography.labelSmall
                 )
-            }
-        }
-    }
-}
-
-@Composable
-private fun MoreLikeThis(vm: VideoVM) {
-    Column(
-        modifier = Modifier.padding(horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = "更多类似视频",
-            style = MaterialTheme.typography.titleSmall
-        )
-
-        // 2 columns
-        vm.state.relatedVideos.chunked(2).forEach { chunk ->
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                chunk.forEach {
-                    MediaCard(media = it, modifier = Modifier.weight(1f))
-                }
             }
         }
     }
