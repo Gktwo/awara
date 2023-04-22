@@ -22,4 +22,8 @@ class UserRepo(private val iwaraAPI: IwaraAPI) {
     suspend fun getProfile(
         username: String
     ): ProfileDto = iwaraAPI.getProfile(username)
+
+    suspend fun followUser(id: String) = iwaraAPI.followUser(id)
+
+    suspend fun unfollowUser(id: String) = iwaraAPI.unfollowUser(id)
 }

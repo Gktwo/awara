@@ -73,7 +73,7 @@ fun PaginationBar(
                         }
                     ) {
                         val target = it.toIntOrNull()
-                        if (target != null) {
+                        if (target != null && target in 1..maxPage) {
                             onPageChange(target)
                         } else {
                             message.error {
@@ -98,7 +98,7 @@ fun PaginationBar(
             // Next page
             FilledTonalIconButton(
                 onClick = {
-                    if (page < maxPage) {
+                    if (page in 1 until maxPage) {
                         onPageChange(page + 1)
                     }
                 }

@@ -4,12 +4,13 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 
 @Stable
 class DynamicStaggeredGridCells(
-    val minSize: Dp,
-    private val min: Int = 1,
-    private val max: Int = Int.MAX_VALUE,
+    val minSize: Dp = 150.dp,
+    private val min: Int = 2,
+    private val max: Int = 4,
 ) : StaggeredGridCells {
     init {
         require(minSize.value > 0)

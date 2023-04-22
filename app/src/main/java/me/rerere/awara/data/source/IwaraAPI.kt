@@ -80,4 +80,14 @@ interface IwaraAPI {
     suspend fun getImage(
         @Path("id") id: String
     ): Image
+
+    @POST("/user/{id}/followers")
+    suspend fun followUser(
+        @Path("id") id: String
+    ): Response<Unit>
+
+    @DELETE("/user/{id}/followers")
+    suspend fun unfollowUser(
+        @Path("id") id: String
+    ): Response<Unit>
 }

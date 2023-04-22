@@ -41,7 +41,7 @@ fun ImageAppBar(
     windowInsets: WindowInsets = TopAppBarDefaults.windowInsets,
     maxHeight: Dp = 152.dp,
     pinnedHeight: Dp = 64.dp,
-    scrollBehavior: TopAppBarScrollBehavior?
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     if (maxHeight <= pinnedHeight) {
         throw IllegalArgumentException(
