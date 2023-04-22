@@ -10,13 +10,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.flow.collectLatest
 import me.rerere.awara.R
 import me.rerere.awara.ui.LocalDialogProvider
+import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.ui.hooks.rememberWindowSizeClass
 import me.rerere.awara.ui.page.index.layout.IndexPagePhoneLayout
 import me.rerere.awara.ui.page.index.layout.IndexPageTabletLayout
+import me.rerere.awara.util.openUrl
+import me.rerere.awara.util.versionCode
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -37,21 +41,32 @@ fun IndexPage(
     UpdateCheck(vm)
 }
 
+private const val DOWNLOAD_LINK = "https://github.com/re-ovo/awara/releases"
+
 @Composable
 private fun UpdateCheck(vm: IndexVM) {
     val dialog = LocalDialogProvider.current
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
         vm.events.collectLatest {
-            when(it){
+            when (it) {
                 is IndexVM.IndexEvent.ShowUpdateDialog -> {
-                    dialog.show(
-                        title = {
-                            Text("更新")
-                        },
-                        content = {
-                            Text(it.toString())
-                        }
-                    )
+                    if (it.code > context.versionCode) {
+                        dialog.show(
+                            title = {
+                                Text("New Version Available: ${it.version}")
+                            },
+                            content = {
+                                RichText(text = it.changes, onLinkClick = { context.openUrl(it) })
+                            },
+                            positiveAction = {
+                                context.openUrl(DOWNLOAD_LINK)
+                            },
+                            positiveText = {
+                                Text("Update")
+                            }
+                        )
+                    }
                 }
             }
         }
