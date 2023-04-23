@@ -8,7 +8,7 @@ import okhttp3.Request
 class UpdateChecker(private val okHttpClient: OkHttpClient) {
     suspend fun getLatestVersion(): VersionMeta {
         val req = Request.Builder()
-            .url("https://cdn.jsdelivr.net/gh/re-ovo/awara/app/build.gradle.kts")
+            .url("https://cdn.jsdelivr.net/gh/awara-app/awara/app/build.gradle.kts")
             .cacheControl(
                 CacheControl.FORCE_NETWORK
             )
@@ -33,7 +33,7 @@ class UpdateChecker(private val okHttpClient: OkHttpClient) {
 
     private suspend fun getChanges(): String {
         val req = Request.Builder()
-            .url("https://cdn.jsdelivr.net/gh/re-ovo/awara/doc/changes.txt")
+            .url("https://cdn.jsdelivr.net/gh/awara-app/awara/doc/changes.txt")
             .cacheControl(
                 CacheControl.FORCE_NETWORK
             )
