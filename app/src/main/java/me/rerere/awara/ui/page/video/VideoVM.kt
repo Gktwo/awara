@@ -12,9 +12,12 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import me.rerere.awara.data.entity.CommentCreationDto
+import me.rerere.awara.data.entity.HistoryItem
+import me.rerere.awara.data.entity.HistoryType
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.fixUrl
+import me.rerere.awara.data.entity.thumbnailUrl
 import me.rerere.awara.data.repo.CommentRepo
 import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.source.APIResult
@@ -22,11 +25,13 @@ import me.rerere.awara.data.source.onError
 import me.rerere.awara.data.source.onException
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
+import me.rerere.awara.di.AppDatabase
 import me.rerere.awara.ui.component.iwara.comment.CommentState
 import me.rerere.awara.ui.component.iwara.comment.pop
 import me.rerere.awara.ui.component.iwara.comment.push
 import me.rerere.awara.ui.component.iwara.comment.updatePage
 import me.rerere.awara.ui.component.iwara.comment.updateTopStack
+import java.time.Instant
 
 private const val TAG = "VideoVM"
 
@@ -34,6 +39,7 @@ class VideoVM(
     savedStateHandle: SavedStateHandle,
     private val mediaRepo: MediaRepo,
     private val commentRepo: CommentRepo,
+    private val appDatabase: AppDatabase
 ) : ViewModel() {
     val id = checkNotNull(savedStateHandle.get<String>("id"))
     var state by mutableStateOf(VideoState())
@@ -43,6 +49,22 @@ class VideoVM(
     init {
         getVideo()
         loadComments()
+    }
+
+    private fun writeHistory() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                appDatabase.historyDao().insertHistory(HistoryItem(
+                    time = Instant.now(),
+                    type = HistoryType.VIDEO,
+                    resourceId = id,
+                    title = state.video?.title ?: "",
+                    thumbnail = state.video?.thumbnailUrl() ?: ""
+                ))
+            }.onFailure {
+                it.printStackTrace()
+            }
+        }
     }
 
     private fun getVideo() {
@@ -57,9 +79,8 @@ class VideoVM(
             }.onSuccess {
                 state = state.copy(video = it.first, urls = it.second)
                 events.emit(VideoEvent.UrlLoaded(it.second))
-                it.second.forEach {
-                    Log.i(TAG, "getVideo: ${it.name} ${it.src.view.fixUrl()}")
-                }
+
+                writeHistory()
             }.onError {
                 Log.w(TAG, "getVideo: $it")
             }.onException {

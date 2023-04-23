@@ -1,10 +1,13 @@
 package me.rerere.awara.ui.component.ext
 
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 
 @Stable
 class DynamicStaggeredGridCells(
@@ -47,5 +50,25 @@ private fun calculateCellsCrossAxisSizeImpl(
     val remainingPixels = gridSizeWithoutSpacing % slotCount
     return List(slotCount) {
         slotSize + if (it < remainingPixels) 1 else 0
+    }
+}
+
+fun <T : Any> LazyStaggeredGridScope.items(
+    items: LazyPagingItems<T>,
+    key: ((item: T) -> Any)? = null,
+    itemContent: @Composable LazyStaggeredGridScope.(value: T?) -> Unit
+) {
+    items(
+        count = items.itemCount,
+        key = if (key == null) null else { index ->
+            val item = items.peek(index)
+            if (item == null) {
+                // PagingPlaceholderKey(index)
+            } else {
+                key(item)
+            }
+        }
+    ) { index ->
+        itemContent(items[index])
     }
 }

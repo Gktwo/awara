@@ -155,3 +155,7 @@ tasks {
         }
     }
 }
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas".toString())
+}

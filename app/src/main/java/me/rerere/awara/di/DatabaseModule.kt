@@ -1,5 +1,6 @@
 package me.rerere.awara.di
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -21,7 +22,7 @@ val databaseModule = module {
 @Database(
     entities = [HistoryItem::class],
     version = 1,
-    exportSchema = false
+    exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun historyDao(): HistoryDao

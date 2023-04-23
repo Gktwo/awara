@@ -12,12 +12,11 @@ import java.time.Instant
 )
 @TypeConverters(HistoryTypeConverter::class, HistoryInstantConverter::class)
 data class HistoryItem(
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0L,
     @ColumnInfo val time: Instant,
     @ColumnInfo val type: HistoryType,
     @ColumnInfo val resourceId: String,
     @ColumnInfo val title: String,
-    @ColumnInfo val description: String,
     @ColumnInfo val thumbnail: String
 )
 
