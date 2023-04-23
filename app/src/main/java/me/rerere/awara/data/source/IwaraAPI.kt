@@ -8,6 +8,7 @@ import me.rerere.awara.data.dto.Self
 import me.rerere.awara.data.entity.Comment
 import me.rerere.awara.data.entity.CommentCreationDto
 import me.rerere.awara.data.entity.Image
+import me.rerere.awara.data.entity.Tag
 import me.rerere.awara.data.entity.Video
 import retrofit2.Response
 import retrofit2.http.Body
@@ -15,6 +16,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Query
 import retrofit2.http.QueryMap
 
 interface IwaraAPI {
@@ -90,4 +92,9 @@ interface IwaraAPI {
     suspend fun unfollowUser(
         @Path("id") id: String
     ): Response<Unit>
+
+    @GET("/autocomplete/tags")
+    suspend fun autoCompleteTags(
+        @Query("query") query: String
+    ): Pager<Tag>
 }

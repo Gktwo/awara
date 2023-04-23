@@ -5,7 +5,6 @@ import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.signature
 import me.rerere.awara.data.source.IwaraAPI
-import me.rerere.awara.data.source.runAPICatching
 import me.rerere.awara.util.JsonInstance
 import me.rerere.awara.util.await
 import okhttp3.OkHttpClient
@@ -49,4 +48,6 @@ class MediaRepo(
     suspend fun unlikeVideo(id: String) = iwaraAPI.unlikeVideo(id)
 
     suspend fun getImage(id: String) = iwaraAPI.getImage(id)
+
+    suspend fun getTagsSuggestions(query: String) = iwaraAPI.autoCompleteTags(query)
 }

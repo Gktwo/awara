@@ -13,8 +13,10 @@ import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,6 +35,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HistoryPage(vm: HistoryVM = koinViewModel()) {
     val itemsPaged = vm.historyItems.collectAsLazyPagingItems()
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     Scaffold(
         topBar = {
             LargeTopAppBar(
@@ -41,12 +44,13 @@ fun HistoryPage(vm: HistoryVM = koinViewModel()) {
                 },
                 navigationIcon = {
                     BackButton()
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
         }
     ) {
         LazyVerticalStaggeredGrid(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
             contentPadding = it + PaddingValues(8.dp),
             columns = DynamicStaggeredGridCells(),
             verticalItemSpacing = 8.dp,
