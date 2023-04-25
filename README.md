@@ -13,6 +13,7 @@
 - 🎨 Material You 设计
 - 💻 自动多屏幕适配
 - 🌏 本地化语言支持
+- 📺 DLNA 投屏支持
 
 ## 开发
 - [架构指南](https://developer.android.com/topic/architecture)
