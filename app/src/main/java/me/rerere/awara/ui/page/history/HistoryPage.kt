@@ -72,6 +72,7 @@ private fun HistoryItem(item: HistoryItem) {
         onClick = {
             when(item.type) {
                 HistoryType.VIDEO -> router.navigate("video/${item.resourceId}")
+                HistoryType.IMAGE -> router.navigate("image/${item.resourceId}")
                 else -> /* TODO */ {}
             }
         }

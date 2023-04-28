@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,8 +20,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -48,6 +47,7 @@ import me.rerere.awara.ui.component.common.zoomable.zoomable
 import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.util.openUrl
+import me.rerere.awara.util.toLocalDateTimeString
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -75,68 +75,48 @@ fun ImagePage(vm: ImageVM = koinViewModel()) {
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier
                         .navigationBarsPadding()
-                        .padding(8.dp)
+                        .animateContentSize()
+                        .padding(16.dp),
                 ) {
                     var expaned by remember { mutableStateOf(false) }
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        Column(
+                        Text(
+                            text = state.state?.title ?: "",
+                            style = MaterialTheme.typography.titleLarge,
+                            maxLines = if (expaned) Int.MAX_VALUE else 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.weight(1f)
+                        )
+                        Icon(
+                            if (expaned) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
+                            contentDescription = null,
                             modifier = Modifier
-                                .animateContentSize()
-                                .weight(1f)
-                        ) {
-                            Text(
-                                text = state.state?.title ?: "",
-                                style = MaterialTheme.typography.titleLarge,
-                                maxLines = if (expaned) Int.MAX_VALUE else 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
+                                .clickable {
+                                    expaned = !expaned
+                                }
+                                .padding(4.dp)
+                        )
+                    }
 
-                            RichText(
-                                text = state.state?.body ?: "",
-                                overflow = TextOverflow.Ellipsis,
-                                onLinkClick = {
-                                    context.openUrl(it)
-                                },
-                                modifier = Modifier
-                                    .fillMaxWidth(),
-                                maxLines = if (expaned) Int.MAX_VALUE else 2,
-                            )
-                        }
-
-                        IconButton(onClick = { expaned = !expaned }) {
-                            Icon(
-                                if (expaned) Icons.Outlined.KeyboardArrowUp else Icons.Outlined.KeyboardArrowDown,
-                                null,
-                            )
-                        }
+                    if (expaned) {
+                        RichText(
+                            text = state.state?.body ?: "",
+                            overflow = TextOverflow.Ellipsis,
+                            onLinkClick = {
+                                context.openUrl(it)
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            maxLines = if (expaned) Int.MAX_VALUE else 2,
+                        )
                     }
 
                     Row(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min)
-                            .clickable {
-                                router.navigate("user/${state.state?.user?.username}")
-                            },
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Avatar(
-                            user = state.state?.user,
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .aspectRatio(1f)
-                        )
-
-                        Text(
-                            text = state.state?.user?.name ?: "",
-                            style = MaterialTheme.typography.titleMedium
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
                         Text(
                             text = "Views: ${state.state?.numViews?.toString() ?: ""}",
                             style = MaterialTheme.typography.labelMedium
@@ -146,6 +126,45 @@ fun ImagePage(vm: ImageVM = koinViewModel()) {
                             text = "Likes ${state.state?.numLikes?.toString() ?: ""}",
                             style = MaterialTheme.typography.labelMedium
                         )
+
+                        Text(
+                            text = state.state?.createdAt?.toLocalDateTimeString() ?: "",
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+
+                    OutlinedCard(
+                        onClick = {
+                            router.navigate("user/${state.state?.user?.username}")
+                        }
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .fillMaxWidth()
+                                .height(IntrinsicSize.Min),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            Avatar(
+                                user = state.state?.user,
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .aspectRatio(1f)
+                            )
+
+                            Column {
+                                Text(
+                                    text = state.state?.user?.name ?: "",
+                                    style = MaterialTheme.typography.titleLarge,
+                                )
+
+                                Text(
+                                    text = "@${state.state?.user?.username ?: ""}",
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -163,7 +182,10 @@ fun ImagePage(vm: ImageVM = koinViewModel()) {
                 show = state.loading
             ) {
                 val pagerState = rememberPagerState()
-                HorizontalPager(pageCount = state.state?.files?.size ?: 0, state = pagerState) {
+                HorizontalPager(
+                    pageCount = state.state?.files?.size ?: 0,
+                    state = pagerState
+                ) {
                     AsyncImage(
                         model = state.state!!.files[it].toImageLarge(),
                         contentDescription = null,
