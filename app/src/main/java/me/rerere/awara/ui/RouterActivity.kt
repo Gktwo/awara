@@ -33,6 +33,7 @@ import me.rerere.awara.ui.page.index.IndexPage
 import me.rerere.awara.ui.page.lab.LabPage
 import me.rerere.awara.ui.page.login.LoginPage
 import me.rerere.awara.ui.page.playlist.PlaylistDetailPage
+import me.rerere.awara.ui.page.playlist.PlaylistsPage
 import me.rerere.awara.ui.page.search.SearchPage
 import me.rerere.awara.ui.page.setting.SettingPage
 import me.rerere.awara.ui.page.user.UserPage
@@ -148,7 +149,25 @@ class RouterActivity : ComponentActivity() {
                     UserPage()
                 }
 
-                composable("playlist/{id}") {
+                composable(
+                    route = "playlists/{userId}",
+                    arguments = listOf(
+                        navArgument("userId") {
+                            type = NavType.StringType
+                        }
+                    )
+                ) {
+                    PlaylistsPage()
+                }
+
+                composable(
+                    route = "playlist/{id}",
+                    arguments = listOf(
+                        navArgument("id") {
+                            type = NavType.StringType
+                        }
+                    )
+                ) {
                     PlaylistDetailPage()
                 }
 

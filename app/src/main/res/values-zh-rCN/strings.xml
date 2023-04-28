@@ -28,4 +28,6 @@
     <string name="filters">过滤</string>
     <string name="tag">标签</string>
     <string name="history">历史</string>
+    <string name="playlist">播单</string>
+    <string name="playlist_num_videos">共 %d 个视频</string>
 </resources>

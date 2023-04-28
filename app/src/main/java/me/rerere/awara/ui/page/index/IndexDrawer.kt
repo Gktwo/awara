@@ -99,7 +99,9 @@ fun ColumnScope.IndexDrawer() {
             Text("播单")
         },
         onClick = {
-            router.navigate("playlists")
+            userState.user?.id?.let { userId ->
+                router.navigate("playlists/$userId")
+            }
         }
     )
 

@@ -26,4 +26,6 @@
     <string name="filters">フィルター</string>
     <string name="tag">タグ</string>
     <string name="history">記録</string>
+    <string name="playlist">プレイリスト</string>
+    <string name="playlist_num_videos">合計 %d ビデオ</string>
 </resources>
