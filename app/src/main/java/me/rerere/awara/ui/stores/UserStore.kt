@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import me.rerere.awara.data.dto.ProfileDto
 import me.rerere.awara.data.entity.Tag
 import me.rerere.awara.data.entity.User
@@ -20,7 +19,6 @@ import me.rerere.compose_setting.preference.mmkvPreference
 import me.rerere.compose_setting.preference.rememberStringPreference
 import org.koin.androidx.compose.get
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 
 private const val TAG = "UserStore"
 
@@ -65,7 +63,7 @@ val LocalUserStore = staticCompositionLocalOf {
 }
 
 data class UserStoreState(
-    val refreshing: Boolean = false,
+    val refreshing: Boolean = true,
     val loading: Boolean = false,
     val user: User? = null,
     val profile: ProfileDto? = null,
@@ -104,9 +102,9 @@ fun UserStoreProvider(
             }.onException {
                 Log.w(TAG, "UserStoreProvider: renew access token exception", it.exception)
             }
-            store.dispatch(UserStoreAction.SetRefreshing(false))
-            Log.i(TAG, "UserStoreProvider: finish renew access token")
         }
+        store.dispatch(UserStoreAction.SetRefreshing(false))
+        Log.i(TAG, "UserStoreProvider: finish renew access token")
     }
     // 当Token变化时，重新获取用户信息
     LaunchedEffect(accessToken) {
