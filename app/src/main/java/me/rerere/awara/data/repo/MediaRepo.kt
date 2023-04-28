@@ -50,4 +50,9 @@ class MediaRepo(
     suspend fun getImage(id: String) = iwaraAPI.getImage(id)
 
     suspend fun getTagsSuggestions(query: String) = iwaraAPI.autoCompleteTags(query)
+
+    suspend fun getPlaylistsOfUser(userId: String, page: Int) = iwaraAPI.getPlaylists(mapOf(
+        "page" to page.toString(),
+        "user" to userId
+    ))
 }

@@ -8,6 +8,7 @@ import me.rerere.awara.data.dto.Self
 import me.rerere.awara.data.entity.Comment
 import me.rerere.awara.data.entity.CommentCreationDto
 import me.rerere.awara.data.entity.Image
+import me.rerere.awara.data.entity.Playlist
 import me.rerere.awara.data.entity.Tag
 import me.rerere.awara.data.entity.Video
 import retrofit2.Response
@@ -97,4 +98,9 @@ interface IwaraAPI {
     suspend fun autoCompleteTags(
         @Query("query") query: String
     ): Pager<Tag>
+
+    @GET("/playlists")
+    suspend fun getPlaylists(
+        @QueryMap queryMap: Map<String, String>
+    ): Pager<Playlist>
 }

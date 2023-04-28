@@ -98,7 +98,9 @@ fun ColumnScope.IndexDrawer() {
         label = {
             Text("播单")
         },
-        onClick = {}
+        onClick = {
+            router.navigate("playlists")
+        }
     )
 
     DrawerItem(
