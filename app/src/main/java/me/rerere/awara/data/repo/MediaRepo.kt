@@ -60,4 +60,10 @@ class MediaRepo(
 
     suspend fun getPlaylistContent(playlistId: String, page: Int) =
         iwaraAPI.getPlaylist(id = playlistId, page = page)
+
+    suspend fun getLightPlaylist(videoId: String) = iwaraAPI.getLightPlaylists(videoId)
+
+    suspend fun addVideoToPlaylist(videoId: String, playlistId: String) = iwaraAPI.addVideoToPlaylist(videoId, playlistId)
+
+    suspend fun removeVideoFromPlaylist(videoId: String, playlistId: String) = iwaraAPI.removeVideoFromPlaylist(videoId, playlistId)
 }

@@ -37,8 +37,10 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -188,9 +190,23 @@ private fun VideoInfoCard(video: Video, vm: VideoVM) {
 
                 Spacer(modifier = Modifier.weight(1f))
 
-                IconButton(onClick = { /*TODO*/ }) {
+                var showPlaylistSheet by remember {
+                    mutableStateOf(false)
+                }
+                IconButton(
+                    onClick = {
+                        showPlaylistSheet = true
+                    }
+                ) {
                     Icon(Icons.Outlined.PlaylistAdd, null)
                 }
+                if(showPlaylistSheet) {
+                    PlaylistSheet(
+                        vm = vm,
+                        onDismissRequest = {showPlaylistSheet = false}
+                    )
+                }
+
 
                 Button(
                     onClick = {

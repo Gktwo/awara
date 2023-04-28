@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material.icons.outlined.Replay
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -188,6 +189,17 @@ private fun PlayerController(
                 CircularProgressIndicator(
                     color = Color.White
                 )
+            }
+
+            if(state.state == PlayerState.State.ENDED && state.duration > 0) {
+                IconButton(
+                    onClick = {
+                        state.seekTo(0)
+                        state.play()
+                    }
+                ) {
+                    Icon(Icons.Outlined.Replay, "Replay")
+                }
             }
 
             if(dragging) {

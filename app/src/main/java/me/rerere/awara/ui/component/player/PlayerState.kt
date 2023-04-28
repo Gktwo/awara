@@ -30,6 +30,7 @@ fun rememberPlayerState(
             .build()
             .apply {
                 playWhenReady = true
+                repeatMode = if(mmkvPreference.getBoolean("setting.loop_play", false)) Player.REPEAT_MODE_ONE else Player.REPEAT_MODE_OFF
             }
     }
 ): PlayerState {

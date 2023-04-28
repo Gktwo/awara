@@ -110,4 +110,21 @@ interface IwaraAPI {
         @Path("id") id: String,
         @Query("page") page: Int,
     ): PlaylistPager
+
+    @GET("/light/playlists")
+    suspend fun getLightPlaylists(
+        @Query("id") id: String
+    ): List<Playlist>
+
+    @POST("/playlist/{id}/{videoId}")
+    suspend fun addVideoToPlaylist(
+        @Path("id") id: String,
+        @Path("videoId") videoId: String
+    ): Response<Unit>
+
+    @DELETE("/playlist/{id}/{videoId}")
+    suspend fun removeVideoFromPlaylist(
+        @Path("id") id: String,
+        @Path("videoId") videoId: String
+    ): Response<Unit>
 }

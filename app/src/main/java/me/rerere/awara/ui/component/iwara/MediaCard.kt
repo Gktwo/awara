@@ -42,6 +42,9 @@ fun MediaCard(
         key = "setting.work_mode",
         default = false
     )
+    val painter = rememberAsyncImagePainter(
+        model = media.thumbnailUrl()
+    )
     Card(
         modifier = modifier,
         onClick = {
@@ -52,9 +55,6 @@ fun MediaCard(
         }
     ) {
         Column {
-            val painter = rememberAsyncImagePainter(
-                model = media.thumbnailUrl()
-            )
             SkeletonBox(
                 show = painter.state is AsyncImagePainter.State.Loading,
                 modifier = Modifier

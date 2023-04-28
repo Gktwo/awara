@@ -8,7 +8,8 @@ data class Playlist(
     val id: String,
     val numVideos: Int,
     val title: String,
-    val user: User
+    val user: User?,
+    val added: Boolean?
 )
 
 @Serializable

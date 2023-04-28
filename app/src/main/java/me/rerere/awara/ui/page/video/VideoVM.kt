@@ -7,16 +7,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import me.rerere.awara.data.entity.CommentCreationDto
 import me.rerere.awara.data.entity.HistoryItem
 import me.rerere.awara.data.entity.HistoryType
+import me.rerere.awara.data.entity.Playlist
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
-import me.rerere.awara.data.entity.fixUrl
 import me.rerere.awara.data.entity.thumbnailUrl
 import me.rerere.awara.data.repo.CommentRepo
 import me.rerere.awara.data.repo.MediaRepo
@@ -49,6 +47,7 @@ class VideoVM(
     init {
         getVideo()
         loadComments()
+        loadPlaylistForVideo()
     }
 
     private fun writeHistory() {
@@ -98,6 +97,21 @@ class VideoVM(
                 Log.w(TAG, "getRelatedVideos: $it")
             }.onException {
                 Log.w(TAG, "getRelatedVideos: ${it.exception}")
+            }
+        }
+    }
+
+    fun loadPlaylistForVideo() {
+        viewModelScope.launch {
+            runAPICatching {
+                mediaRepo.getLightPlaylist(id)
+            }.onSuccess {
+                Log.i(TAG, "loadPlaylistForVideo: $it")
+                state = state.copy(playlist = it)
+            }.onError {
+                Log.w(TAG, "loadPlaylistForVideo: $it")
+            }.onException {
+                Log.w(TAG, "loadPlaylistForVideo: ${it.exception}")
             }
         }
     }
@@ -194,6 +208,44 @@ class VideoVM(
         }
     }
 
+    fun addVideoToPlaylist(playlistId: String) {
+        viewModelScope.launch {
+            state = state.copy(playlistLoading = true)
+            runAPICatching {
+                mediaRepo.addVideoToPlaylist(playlistId, id)
+                mediaRepo.getLightPlaylist(id).let {
+                    state = state.copy(playlist = it)
+                }
+            }.onSuccess {
+                Log.i(TAG, "addVideoToPlaylist: $it")
+            }.onError {
+                Log.w(TAG, "addVideoToPlaylist(error): $it")
+            }.onException {
+                Log.w(TAG, "addVideoToPlaylist(exception)", it.exception)
+            }
+            state = state.copy(playlistLoading = false)
+        }
+    }
+
+    fun removeVideoFromPlaylist(playlistId: String) {
+        viewModelScope.launch {
+            state = state.copy(playlistLoading = true)
+            runAPICatching {
+                mediaRepo.removeVideoFromPlaylist(playlistId, id)
+                mediaRepo.getLightPlaylist(id).let {
+                    state = state.copy(playlist = it)
+                }
+            }.onSuccess {
+                Log.i(TAG, "removeVideoFromPlaylist: $it")
+            }.onError {
+                Log.w(TAG, "removeVideoFromPlaylist(error): $it")
+            }.onException {
+                Log.w(TAG, "removeVideoFromPlaylist(exception)", it.exception)
+            }
+            state = state.copy(playlistLoading = false)
+        }
+    }
+
     data class VideoState(
         val loading: Boolean = false,
         val video: Video? = null,
@@ -201,6 +253,8 @@ class VideoVM(
         val relatedVideos: List<Video> = emptyList(),
         val likeLoading: Boolean = false,
         val commentState: CommentState = CommentState(),
+        val playlist: List<Playlist> = emptyList(),
+        val playlistLoading: Boolean = false,
     )
 
     sealed class VideoEvent {

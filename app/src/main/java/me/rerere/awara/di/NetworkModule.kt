@@ -5,7 +5,6 @@ import me.rerere.awara.data.source.IwaraAPI
 import me.rerere.awara.data.source.UpdateChecker
 import me.rerere.awara.util.SerializationConverterFactory
 import me.rerere.compose_setting.preference.mmkvPreference
-import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
@@ -51,7 +50,7 @@ val networkModule = module {
             }
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    setLevel(HttpLoggingInterceptor.Level.BODY)
+                    setLevel(HttpLoggingInterceptor.Level.BASIC)
                 }
             )
 //            .addInterceptor {

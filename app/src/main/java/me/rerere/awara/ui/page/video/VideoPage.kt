@@ -28,8 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.common.VideoSize
 import androidx.media3.ui.AspectRatioFrameLayout
-import coil.compose.LocalImageLoader
-import coil.imageLoader
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import me.rerere.awara.data.entity.VideoFile
@@ -69,7 +67,7 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
     // M3
     val colorState = rememberDynamicColorSchemeState()
     LaunchedEffect(vm.state.video) {
-        colorState.updateColorScheme(ctx = context, url = vm.state.video?.thumbnailUrl() ?: "")
+        colorState.updateColorScheme(url = vm.state.video?.thumbnailUrl() ?: "")
     }
 
     // Dlna
