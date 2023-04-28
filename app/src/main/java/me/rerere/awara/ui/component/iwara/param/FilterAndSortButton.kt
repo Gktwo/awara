@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material3.Badge
 import androidx.compose.material3.FilledTonalButton
@@ -45,10 +46,14 @@ fun FilterAndSort(
     onFilterAdd: (FilterValue) -> Unit,
     onFilterRemove: (FilterValue) -> Unit,
     onFilterChooseDone: () -> Unit,
+    onFilterClear: () -> Unit
 ) {
     var showFilter by remember {
         mutableStateOf(false)
     }
+    val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -83,9 +88,6 @@ fun FilterAndSort(
     }
 
     if (showFilter) {
-        val pagerState = rememberPagerState()
-        val scope = rememberCoroutineScope()
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         ModalBottomSheet(
             onDismissRequest = { showFilter = false },
             sheetState = sheetState
@@ -105,21 +107,21 @@ fun FilterAndSort(
                         selected = pagerState.currentPage == 0,
                         onClick = { scope.launch { pagerState.animateScrollToPage(0) } },
                         text = {
-                            Text("标签")
+                            Text(stringResource(R.string.tag))
                         }
                     )
                     Tab(
                         selected = pagerState.currentPage == 1,
                         onClick = { scope.launch { pagerState.animateScrollToPage(1) } },
                         text = {
-                            Text("年份")
+                            Text(stringResource(R.string.date))
                         }
                     )
                     Tab(
                         selected = pagerState.currentPage == 2,
                         onClick = { scope.launch { pagerState.animateScrollToPage(2) } },
                         text = {
-                            Text("分级")
+                            Text(stringResource(R.string.rating))
                         }
                     )
                 }
@@ -156,14 +158,26 @@ fun FilterAndSort(
                     }
                 }
 
-                FilledTonalButton(
-                    onClick = {
-                        showFilter = false
-                        onFilterChooseDone()
-                    },
-                    modifier = Modifier.align(Alignment.End)
+                Row(
+                    modifier = Modifier.align(Alignment.End),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Text(stringResource(id = R.string.confirm))
+                    FilledTonalButton(
+                        onClick = {
+                            onFilterClear()
+                        },
+                    ) {
+                        Icon(Icons.Outlined.ClearAll, null)
+                    }
+
+                    FilledTonalButton(
+                        onClick = {
+                            showFilter = false
+                            onFilterChooseDone()
+                        },
+                    ) {
+                        Text(stringResource(id = R.string.confirm))
+                    }
                 }
             }
         }

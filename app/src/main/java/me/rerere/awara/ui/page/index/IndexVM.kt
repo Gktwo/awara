@@ -30,12 +30,15 @@ class IndexVM(
         private set
     var videoSort: String by mutableStateOf(MediaSortOptions.first().name)
     val videoFilters: MutableList<FilterValue> = mutableStateListOf()
+    var imageSort: String = MediaSortOptions.first().name
+    val imageFilters: MutableList<FilterValue> = mutableStateListOf()
 
     val events = MutableSharedFlow<IndexEvent>()
 
     init {
         loadSubscriptions()
         loadVideoList()
+        loadImageList()
         checkUpdate()
     }
 
@@ -103,6 +106,27 @@ class IndexVM(
         }
     }
 
+    fun loadImageList() {
+        viewModelScope.launch {
+            state = state.copy(imageLoading = true)
+            runAPICatching {
+                mediaRepo.getImageList(
+                    mapOf(
+                        "limit" to "24",
+                        "page" to (state.imagePage - 1).toString(),
+                        "sort" to imageSort,
+                    ) + imageFilters.toParams()
+                )
+            }.onSuccess {
+                state = state.copy(
+                    imageList = it.results,
+                    imageCount = it.count
+                )
+            }
+            state = state.copy(imageLoading = false)
+        }
+    }
+
     fun updateVideoSort(sort: String){
         videoSort = sort
         loadVideoList()
@@ -114,12 +138,39 @@ class IndexVM(
         loadVideoList()
     }
 
-    fun addFilter(filterValue: FilterValue) {
+    fun addVideoFilter(filterValue: FilterValue) {
         videoFilters.add(filterValue)
     }
 
-    fun removeFilter(filterValue: FilterValue) {
+    fun removeVideoFilter(filterValue: FilterValue) {
         videoFilters.remove(filterValue)
+    }
+
+    fun updateImageSort(sort: String){
+        imageSort = sort
+        loadImageList()
+    }
+
+    fun updateImagePage(it: Int) {
+        if(it == state.imagePage || it < 1) return
+        state = state.copy(imagePage = it)
+        loadImageList()
+    }
+
+    fun addImageFilter(filterValue: FilterValue) {
+        imageFilters.add(filterValue)
+    }
+
+    fun removeImageFilter(filterValue: FilterValue) {
+        imageFilters.remove(filterValue)
+    }
+
+    fun clearImageFilter() {
+        imageFilters.clear()
+    }
+
+    fun clearVideoFilter() {
+        videoFilters.clear()
     }
 
     data class IndexState(
@@ -132,6 +183,10 @@ class IndexVM(
         val videoPage: Int = 1,
         val videoCount: Int = 0,
         val videoList: List<Media> = emptyList(),
+        val imageLoading: Boolean = false,
+        val imagePage: Int = 1,
+        val imageCount: Int = 0,
+        val imageList: List<Media> = emptyList(),
     )
 
     enum class SubscriptionType(

@@ -55,10 +55,13 @@ fun IndexVideoPage(vm: IndexVM) {
                     },
                     sortOptions = MediaSortOptions,
                     filterValues = vm.videoFilters,
-                    onFilterAdd = vm::addFilter,
-                    onFilterRemove = vm::removeFilter,
+                    onFilterAdd = vm::addVideoFilter,
+                    onFilterRemove = vm::removeVideoFilter,
                     onFilterChooseDone = {
                         vm.loadVideoList()
+                    },
+                    onFilterClear = {
+                        vm.clearVideoFilter()
                     }
                 )
             }

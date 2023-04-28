@@ -12,7 +12,7 @@ data class FilterValue(
 
 fun List<FilterValue>.toParams(): Map<String, String> {
     return groupBy { it.key }.map { (key, value) ->
-        key to value.joinToString(separator = "%2C") { it.value }
+        key to value.joinToString(separator = ",") { it.value }
     }.toMap()
 }
 
