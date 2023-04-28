@@ -9,23 +9,23 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.VideoSize
-import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.AspectRatioFrameLayout
 import me.rerere.compose_setting.preference.mmkvPreference
 
 private const val TAG = "PlayerState"
 
+@androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 @Composable
 fun rememberPlayerState(
     builder: (Context) -> ExoPlayer = {
-        ExoPlayer.Builder(it)
+        ExoPlayer.Builder(it, DefaultMediaSourceFactory(PlayerCache.get(it)))
             .setHandleAudioBecomingNoisy(true)
             .build()
             .apply {
@@ -112,7 +112,12 @@ class PlayerState(val player: Player) {
 
     var playerItems by mutableStateOf<List<PlayerItem>>(emptyList())
         private set
-    var currentQuality by mutableStateOf(mmkvPreference.getString("setting.player_quality","Source")!!)
+    var currentQuality by mutableStateOf(
+        mmkvPreference.getString(
+            "setting.player_quality",
+            "Source"
+        )!!
+    )
     var currentMediaItem by mutableStateOf<MediaItem?>(null)
 
     fun prepare() {
@@ -120,7 +125,7 @@ class PlayerState(val player: Player) {
     }
 
     fun seekTo(newPosition: Long) {
-        if(duration <= 0L) return
+        if (duration <= 0L) return
         player.seekTo(newPosition.coerceIn(0..duration))
     }
 
@@ -137,7 +142,7 @@ class PlayerState(val player: Player) {
 
     fun updateCurrentQuality(quality: String) {
         currentQuality = quality
-        mmkvPreference.putString("setting.player_quality",quality)
+        mmkvPreference.putString("setting.player_quality", quality)
         if (playerItems.isNotEmpty()) {
             val item = playerItems.find { it.quality == quality }
             if (item != null) {

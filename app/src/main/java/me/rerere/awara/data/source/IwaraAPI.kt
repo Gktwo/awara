@@ -9,6 +9,7 @@ import me.rerere.awara.data.entity.Comment
 import me.rerere.awara.data.entity.CommentCreationDto
 import me.rerere.awara.data.entity.Image
 import me.rerere.awara.data.entity.Playlist
+import me.rerere.awara.data.entity.PlaylistPager
 import me.rerere.awara.data.entity.Tag
 import me.rerere.awara.data.entity.Video
 import retrofit2.Response
@@ -103,4 +104,10 @@ interface IwaraAPI {
     suspend fun getPlaylists(
         @QueryMap queryMap: Map<String, String>
     ): Pager<Playlist>
+
+    @GET("/playlist/{id}")
+    suspend fun getPlaylist(
+        @Path("id") id: String,
+        @Query("page") page: Int,
+    ): PlaylistPager
 }

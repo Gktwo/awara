@@ -98,13 +98,13 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     // MMUPnP
-    implementation("net.mm2d.mmupnp:mmupnp:3.1.3")
+    implementation("net.mm2d.mmupnp:mmupnp:3.1.6")
 
     // Setting
     implementation("com.github.re-ovo:compose-setting:1.1")
 
     // Koin
-    implementation("io.insert-koin:koin-androidx-compose:3.4.2")
+    implementation("io.insert-koin:koin-androidx-compose:3.4.4")
 
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
@@ -123,7 +123,7 @@ dependencies {
     implementation("org.jetbrains:markdown:0.4.1")
 
     // Coil
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-compose:2.3.0")
     implementation("io.coil-kt:coil-svg:2.3.0")
 
     // Profile Installer
