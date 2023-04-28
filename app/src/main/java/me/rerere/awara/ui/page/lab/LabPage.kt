@@ -27,6 +27,7 @@ import me.rerere.awara.ui.component.ext.plus
 import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.ui.component.iwara.param.FilterValue
 import me.rerere.awara.ui.component.iwara.param.filter.DateFilter
+import me.rerere.awara.ui.component.iwara.param.filter.RatingFilter
 import me.rerere.awara.ui.component.iwara.param.toParams
 import me.rerere.awara.ui.component.player.DlnaSelector
 import me.rerere.awara.ui.component.player.rememberDlnaCastState
@@ -60,13 +61,20 @@ fun LabPage() {
                         val filters = remember {
                             mutableStateListOf<FilterValue>()
                         }
+                        Text(
+                            text = filters.toParams().toList().joinToString(", ")
+                        )
+
                         DateFilter(
                             values = filters,
                             onValueAdd = { filters.add(it) },
                             onValueRemove = { filters.remove(it) }
                         )
-                        Text(
-                            text = filters.toParams().toList().joinToString(", ")
+
+                        RatingFilter(
+                            values = filters,
+                            onValueAdd = { filters.add(it) },
+                            onValueRemove = { filters.remove(it) }
                         )
                     }
                 }
