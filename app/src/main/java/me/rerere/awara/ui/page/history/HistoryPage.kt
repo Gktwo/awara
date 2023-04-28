@@ -25,6 +25,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import me.rerere.awara.R
 import me.rerere.awara.data.entity.HistoryItem
+import me.rerere.awara.data.entity.HistoryType
+import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.BackButton
 import me.rerere.awara.ui.component.ext.DynamicStaggeredGridCells
 import me.rerere.awara.ui.component.ext.items
@@ -65,7 +67,15 @@ fun HistoryPage(vm: HistoryVM = koinViewModel()) {
 
 @Composable
 private fun HistoryItem(item: HistoryItem) {
-    Card {
+    val router = LocalRouterProvider.current
+    Card(
+        onClick = {
+            when(item.type) {
+                HistoryType.VIDEO -> router.navigate("video/${item.resourceId}")
+                else -> /* TODO */ {}
+            }
+        }
+    ) {
         Column {
             AsyncImage(
                 model = item.thumbnail,
