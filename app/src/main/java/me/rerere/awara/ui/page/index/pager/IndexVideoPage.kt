@@ -49,11 +49,17 @@ fun IndexVideoPage(vm: IndexVM) {
             },
             leading = {
                 FilterAndSort(
-                    sort = state.videoSort,
+                    sort = vm.videoSort,
                     onSortChange = {
                         vm.updateVideoSort(it)
                     },
                     sortOptions = MediaSortOptions,
+                    filterValues = vm.videoFilters,
+                    onFilterAdd = vm::addFilter,
+                    onFilterRemove = vm::removeFilter,
+                    onFilterChooseDone = {
+                        vm.loadVideoList()
+                    }
                 )
             }
         )

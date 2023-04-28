@@ -1,6 +1,7 @@
 package me.rerere.awara.ui.page.index
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -27,6 +28,8 @@ class IndexVM(
 ) : ViewModel() {
     var state by mutableStateOf(IndexState())
         private set
+    var videoSort: String by mutableStateOf(MediaSortOptions.first().name)
+    val videoFilters: MutableList<FilterValue> = mutableStateListOf()
 
     val events = MutableSharedFlow<IndexEvent>()
 
@@ -87,8 +90,8 @@ class IndexVM(
                     mapOf(
                         "limit" to "24",
                         "page" to (state.videoPage - 1).toString(),
-                        "sort" to state.videoSort,
-                    ) + state.videoFilters.toParams()
+                        "sort" to videoSort,
+                    ) + videoFilters.toParams()
                 )
             }.onSuccess {
                 state = state.copy(
@@ -101,7 +104,7 @@ class IndexVM(
     }
 
     fun updateVideoSort(sort: String){
-        state = state.copy(videoSort = sort)
+        videoSort = sort
         loadVideoList()
     }
 
@@ -112,11 +115,11 @@ class IndexVM(
     }
 
     fun addFilter(filterValue: FilterValue) {
-        state = state.copy(videoFilters = state.videoFilters + filterValue)
+        videoFilters.add(filterValue)
     }
 
     fun removeFilter(filterValue: FilterValue) {
-        state = state.copy(videoFilters = state.videoFilters - filterValue)
+        videoFilters.remove(filterValue)
     }
 
     data class IndexState(
@@ -129,8 +132,6 @@ class IndexVM(
         val videoPage: Int = 1,
         val videoCount: Int = 0,
         val videoList: List<Media> = emptyList(),
-        val videoSort: String = MediaSortOptions.first().name,
-        val videoFilters: List<FilterValue> = emptyList(),
     )
 
     enum class SubscriptionType(
