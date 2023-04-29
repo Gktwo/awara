@@ -7,16 +7,24 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import me.rerere.awara.data.entity.HistoryItem
+import me.rerere.awara.data.entity.HistoryType
 import me.rerere.awara.data.entity.Image
+import me.rerere.awara.data.entity.thumbnailUrl
 import me.rerere.awara.data.repo.MediaRepo
+import me.rerere.awara.data.repo.UserRepo
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
+import me.rerere.awara.di.AppDatabase
+import java.time.Instant
 
 class ImageVM(
     savedStateHandle: SavedStateHandle,
-    private val mediaRepo: MediaRepo
+    private val mediaRepo: MediaRepo,
+    private val userRepo: UserRepo,
+    private val appDatabase: AppDatabase
 ) : ViewModel() {
-    private val id = checkNotNull(savedStateHandle.get<String>("id"))
+    val id = checkNotNull(savedStateHandle.get<String>("id"))
 
     var state by mutableStateOf(ImageState())
         private set
@@ -25,20 +33,73 @@ class ImageVM(
         load()
     }
 
-    fun load() {
+    fun followOrUnfollow() {
+        viewModelScope.launch {
+            runAPICatching {
+                if(state.state?.user?.following == true) {
+                    userRepo.unfollowUser(state.state?.user?.id ?: return@runAPICatching)
+                } else {
+                    userRepo.followUser(state.state?.user?.id ?: return@runAPICatching)
+                }
+            }.onSuccess {
+                load()
+            }
+        }
+    }
+
+    fun likeOrDislike() {
+        viewModelScope.launch {
+            state = state.copy(likeLoading = true)
+            runAPICatching {
+                if(state.state?.liked == true) {
+                    mediaRepo.unlikeImage(id)
+                } else {
+                    mediaRepo.likeImage(id)
+                }
+
+                mediaRepo.getImage(id).let {
+                    state = state.copy(state = it)
+                }
+            }
+            state = state.copy(likeLoading = false)
+        }
+    }
+
+    private fun load() {
         viewModelScope.launch {
             state = state.copy(loading = true)
             runAPICatching {
                 mediaRepo.getImage(id)
             }.onSuccess {
                 state = state.copy(state = it)
+                writeHistory()
             }
             state = state.copy(loading = false)
         }
     }
 
+    private fun writeHistory() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                appDatabase.historyDao().insertHistory(
+                    HistoryItem(
+                        time = Instant.now(),
+                        type = HistoryType.IMAGE,
+                        resourceId = id,
+                        title = state.state?.title ?: "",
+                        thumbnail = state.state?.thumbnailUrl() ?: ""
+                    )
+                )
+            }.onFailure {
+                it.printStackTrace()
+            }
+        }
+    }
+
+
     data class ImageState(
         val loading: Boolean = false,
+        val likeLoading: Boolean = false,
         val state: Image? = null,
     )
 }

@@ -3,6 +3,7 @@ package me.rerere.awara.ui.page.setting
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.AutoMode
 import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.HomeWork
 import androidx.compose.material.icons.outlined.LightMode
@@ -14,8 +15,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
@@ -128,6 +127,10 @@ fun SettingPage() {
                     key = "setting.auto_play",
                     default = true
                 )
+                val loopPlay = rememberBooleanPreference(
+                    key = "setting.loop_play",
+                    default = false
+                )
                 SettingItemCategory(title = { Text("播放器设置") }) {
                     SettingBooleanItem(
                         state = autoPlay,
@@ -135,7 +138,20 @@ fun SettingPage() {
                             Text("自动播放")
                         },
                         text = {
-                            Text("自动播放视频")
+                            Text("进入视频页面自动开始缓冲并播放视频")
+                        },
+                        icon = {
+                            Icon(Icons.Outlined.AutoMode,  null)
+                        }
+                    )
+
+                    SettingBooleanItem(
+                        state = loopPlay,
+                        title = {
+                            Text("循环播放")
+                        },
+                        text = {
+                            Text("自动循环播放视频")
                         },
                         icon = {
                             Icon(Icons.Outlined.Replay,  null)

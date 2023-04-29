@@ -1,11 +1,14 @@
 package me.rerere.awara.data.repo
 
 import kotlinx.serialization.decodeFromString
+import me.rerere.awara.data.entity.FavoriteImage
+import me.rerere.awara.data.entity.FavoriteVideo
+import me.rerere.awara.data.entity.PlaylistCreationDto
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.signature
 import me.rerere.awara.data.source.IwaraAPI
-import me.rerere.awara.data.source.runAPICatching
+import me.rerere.awara.data.source.Pager
 import me.rerere.awara.util.JsonInstance
 import me.rerere.awara.util.await
 import okhttp3.OkHttpClient
@@ -48,5 +51,33 @@ class MediaRepo(
 
     suspend fun unlikeVideo(id: String) = iwaraAPI.unlikeVideo(id)
 
+    suspend fun likeImage(id: String) = iwaraAPI.likeImage(id)
+
+    suspend fun unlikeImage(id: String) = iwaraAPI.unlikeImage(id)
+
     suspend fun getImage(id: String) = iwaraAPI.getImage(id)
+
+    suspend fun getTagsSuggestions(query: String) = iwaraAPI.autoCompleteTags(query)
+
+    suspend fun getPlaylists(userId: String, page: Int) = iwaraAPI.getPlaylists(
+        mapOf(
+            "page" to page.toString(),
+            "user" to userId
+        )
+    )
+
+    suspend fun getPlaylistContent(playlistId: String, page: Int) =
+        iwaraAPI.getPlaylist(id = playlistId, page = page)
+
+    suspend fun getLightPlaylist(videoId: String) = iwaraAPI.getLightPlaylists(videoId)
+
+    suspend fun addVideoToPlaylist(videoId: String, playlistId: String) = iwaraAPI.addVideoToPlaylist(videoId, playlistId)
+
+    suspend fun removeVideoFromPlaylist(videoId: String, playlistId: String) = iwaraAPI.removeVideoFromPlaylist(videoId, playlistId)
+
+    suspend fun createPlaylist(title: String) = iwaraAPI.createPlaylist(PlaylistCreationDto(title = title))
+
+    suspend fun getFavoriteVideos(page: Int): Pager<FavoriteVideo> = iwaraAPI.getFavoriteVideos(page = page)
+
+    suspend fun getFavoriteImages(page: Int): Pager<FavoriteImage> = iwaraAPI.getFavoriteImages(page = page)
 }

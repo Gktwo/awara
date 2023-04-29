@@ -9,33 +9,32 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import me.rerere.awara.R
 import me.rerere.awara.ui.component.common.DialogProvider
-import me.rerere.awara.ui.component.common.LottieAnimation
 import me.rerere.awara.ui.component.common.MessageProvider
-import me.rerere.awara.ui.component.hitokoto.Hitokoto
+import me.rerere.awara.ui.page.favorites.FavoritesPage
+import me.rerere.awara.ui.page.history.HistoryPage
 import me.rerere.awara.ui.page.image.ImagePage
 import me.rerere.awara.ui.page.index.IndexPage
+import me.rerere.awara.ui.page.lab.LabPage
 import me.rerere.awara.ui.page.login.LoginPage
+import me.rerere.awara.ui.page.playlist.PlaylistDetailPage
+import me.rerere.awara.ui.page.playlist.PlaylistsPage
 import me.rerere.awara.ui.page.search.SearchPage
 import me.rerere.awara.ui.page.setting.SettingPage
 import me.rerere.awara.ui.page.user.UserPage
@@ -49,34 +48,26 @@ import me.rerere.awara.ui.theme.AwaraTheme
 class RouterActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        val splashScreen = installSplashScreen().apply { setKeepOnScreenCondition { true } }
         super.onCreate(savedInstanceState)
         setContent {
             AwaraTheme {
                 ContextProvider {
                     UserStoreProvider {
                         val userState = LocalUserStore.current.collectAsState()
+                        LaunchedEffect(userState.refreshing) {
+                            splashScreen.setKeepOnScreenCondition{ userState.refreshing }
+                        }
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(MaterialTheme.colorScheme.background),
                             contentAlignment = Alignment.Center
                         ) {
-                            if (userState.refreshing) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    LottieAnimation(resource = R.raw.giblitribute)
-                                    CompositionLocalProvider(
-                                        LocalContentColor provides MaterialTheme.colorScheme.onBackground
-                                    ) {
-                                        Hitokoto(
-                                            modifier = Modifier.padding(32.dp)
-                                        )
-                                    }
-                                }
-                            } else {
+                            if (!userState.refreshing) {
                                 Routes()
+                            } else {
+                                CircularProgressIndicator()
                             }
                         }
                     }
@@ -159,12 +150,46 @@ class RouterActivity : ComponentActivity() {
                     UserPage()
                 }
 
+                composable(
+                    route = "playlists/{userId}",
+                    arguments = listOf(
+                        navArgument("userId") {
+                            type = NavType.StringType
+                        }
+                    )
+                ) {
+                    PlaylistsPage()
+                }
+
+                composable(
+                    route = "playlist/{id}",
+                    arguments = listOf(
+                        navArgument("id") {
+                            type = NavType.StringType
+                        }
+                    )
+                ) {
+                    PlaylistDetailPage()
+                }
+
+                composable("favorites") {
+                    FavoritesPage()
+                }
+
                 composable("setting") {
                     SettingPage()
                 }
 
                 composable("search") {
                     SearchPage()
+                }
+
+                composable("history") {
+                    HistoryPage()
+                }
+
+                composable("lab") {
+                    LabPage()
                 }
             }
         }

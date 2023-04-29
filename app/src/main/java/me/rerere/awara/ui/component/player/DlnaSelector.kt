@@ -1,7 +1,14 @@
 package me.rerere.awara.ui.component.player
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsIgnoringVisibility
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -12,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
+import me.rerere.awara.ui.component.ext.onlyBottom
 import net.mm2d.upnp.Device
 
 @Composable
@@ -29,6 +37,7 @@ fun DlnaSelector(
             Column(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
+                    .height(500.dp)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -37,7 +46,9 @@ fun DlnaSelector(
                     style = MaterialTheme.typography.titleLarge,
                 )
                 Column(
-                    modifier = Modifier.padding(vertical = 12.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(vertical = 12.dp)
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     if (state.deviceList.isNotEmpty()) {
@@ -67,7 +78,7 @@ fun DlnaSelector(
                     } else {
                         Text(
                             text = "No device found",
-                            style = MaterialTheme.typography.labelMedium,
+                            style = MaterialTheme.typography.titleLarge,
                         )
                     }
                 }

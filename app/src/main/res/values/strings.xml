@@ -26,4 +26,15 @@
     <string name="date">Date</string>
     <string name="filters">Filters</string>
     <string name="tag">Tag</string>
+    <string name="history">History</string>
+    <string name="playlist">Playlist</string>
+    <string name="playlist_num_videos">Total %d videos</string>
+    <string name="search">Search</string>
+    <string name="favorites">Favorites</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="like">Like</string>
+    <string name="dislike">Dislike</string>
+    <string name="private_badge">Private</string>
+    <string name="errors_private_video">This is a private video</string>
 </resources>

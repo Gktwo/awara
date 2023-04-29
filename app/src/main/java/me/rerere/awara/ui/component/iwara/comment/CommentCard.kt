@@ -2,6 +2,7 @@ package me.rerere.awara.ui.component.iwara.comment
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import me.rerere.awara.data.entity.Comment
+import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.iwara.Avatar
 import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.ui.stores.LocalUserStore
@@ -41,6 +43,7 @@ fun CommentCard(
 ) {
     val context = LocalContext.current
     val user = LocalUserStore.current.collectAsState()
+    val router = LocalRouterProvider.current
     Card(
         modifier = modifier,
     ) {
@@ -60,7 +63,10 @@ fun CommentCard(
                 Text(
                     text = comment.user?.name ?: "",
                     color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.titleLarge
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.clickable {
+                        router.navigate("user/${comment.user?.username}")
+                    }
                 )
 
                 // "Me" Tag

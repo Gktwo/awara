@@ -25,4 +25,15 @@
     <string name="date">日にち</string>
     <string name="filters">フィルター</string>
     <string name="tag">タグ</string>
+    <string name="history">記録</string>
+    <string name="playlist">プレイリスト</string>
+    <string name="playlist_num_videos">合計 %d ビデオ</string>
+    <string name="search">検索</string>
+    <string name="favorites">お気に入り</string>
+    <string name="follow">従う</string>
+    <string name="unfollow">フォローをやめる</string>
+    <string name="like">好き</string>
+    <string name="dislike">嫌い</string>
+    <string name="private_badge">プライベート</string>
+    <string name="errors_private_video">これはプライベートビデオです</string>
 </resources>

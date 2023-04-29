@@ -1,8 +1,7 @@
 package me.rerere.awara.ui.theme
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.drawable.BitmapDrawable
+import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -13,17 +12,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import coil.ImageLoader
-import coil.imageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
 import com.google.android.material.color.utilities.QuantizerCelebi
 import com.google.android.material.color.utilities.Scheme
 import com.google.android.material.color.utilities.Score
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.rerere.awara.util.await
 import me.rerere.compose_setting.preference.mmkvPreference
 import me.rerere.compose_setting.preference.rememberBooleanPreference
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 private const val TAG = "DynamicTheme"
 
@@ -49,7 +49,7 @@ fun DynamicColorTheme(
 
 @Stable
 @SuppressLint("RestrictedApi")
-class DynamicThemeState {
+class DynamicThemeState : KoinComponent {
     var lightScheme by mutableStateOf<ColorScheme?>(null)
         private set
 
@@ -57,32 +57,34 @@ class DynamicThemeState {
         private set
 
     suspend fun updateColorScheme(
-        ctx: Context,
         url: String
     ) {
         if (url.isEmpty()) return
         if(mmkvPreference.getBoolean("setting.dynamic_color", true).not()) return
         Log.i(TAG, "updateColorScheme: 开始设置 $url")
         withContext(Dispatchers.IO) {
-            val request = ImageRequest.Builder(ctx)
-                .data(url)
-                .allowHardware(false)
-                .build()
+            kotlin.runCatching {
+                val request = Request.Builder()
+                    .url(url)
+                    .get()
+                    .build()
+                val response = get<OkHttpClient>().newCall(request).await()
+                if (response.isSuccessful) {
+                    val bitmap = BitmapFactory.decodeStream(response.body?.byteStream())
 
-            val result = ctx.imageLoader.execute(request)
-            if(result is SuccessResult) {
-                val bitmap = (result.drawable as BitmapDrawable).bitmap
+                    val width = bitmap.width
+                    val height = bitmap.height
+                    val pixels = IntArray(width * height)
+                    bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
 
-                val width = bitmap.width
-                val height = bitmap.height
-                val pixels = IntArray(width * height)
-                bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+                    val seedColor = Score.score(QuantizerCelebi.quantize(pixels, 128))[0]
+                    lightScheme = Scheme.light(seedColor).toColorScheme()
+                    darkScheme = Scheme.dark(seedColor).toColorScheme()
 
-                val seedColor = Score.score(QuantizerCelebi.quantize(pixels, 128))[0]
-                lightScheme = Scheme.light(seedColor).toColorScheme()
-                darkScheme = Scheme.dark(seedColor).toColorScheme()
+                    bitmap.recycle()
 
-                Log.i(TAG, "updateColorScheme: 设置完成 $seedColor")
+                    Log.i(TAG, "updateColorScheme: 设置完成 $seedColor ${bitmap.config}")
+                }
             }
         }
     }

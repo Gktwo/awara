@@ -14,9 +14,6 @@ import me.rerere.awara.ui.component.ext.DynamicStaggeredGridCells
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.component.iwara.PaginationBar
 import me.rerere.awara.ui.component.iwara.param.FilterAndSort
-import me.rerere.awara.ui.component.iwara.param.filter.DateFilter
-import me.rerere.awara.ui.component.iwara.param.filter.RateFilter
-import me.rerere.awara.ui.component.iwara.param.filter.TagFilter
 import me.rerere.awara.ui.component.iwara.param.sort.MediaSortOptions
 import me.rerere.awara.ui.page.index.IndexVM
 
@@ -52,23 +49,19 @@ fun IndexVideoPage(vm: IndexVM) {
             },
             leading = {
                 FilterAndSort(
-                    sort = state.videoSort,
+                    sort = vm.videoSort,
                     onSortChange = {
                         vm.updateVideoSort(it)
                     },
                     sortOptions = MediaSortOptions,
-                    filters = state.videoFilters,
-                    filterOptions = listOf(
-                        RateFilter, DateFilter, TagFilter
-                    ),
-                    onFilterAdd = {
-                        vm.addFilter(it)
-                    },
-                    onFilterRemove = {
-                        vm.removeFilter(it)
-                    },
-                    onFilterFinish = {
+                    filterValues = vm.videoFilters,
+                    onFilterAdd = vm::addVideoFilter,
+                    onFilterRemove = vm::removeVideoFilter,
+                    onFilterChooseDone = {
                         vm.loadVideoList()
+                    },
+                    onFilterClear = {
+                        vm.clearVideoFilter()
                     }
                 )
             }

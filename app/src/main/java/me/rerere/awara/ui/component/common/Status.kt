@@ -22,14 +22,14 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import me.rerere.awara.R
 
 @Composable
-fun BoxScope.TodoStatus() {
+fun BoxScope.TodoStatus(modifier: Modifier = Modifier) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.maintenance))
     val progress by animateLottieCompositionAsState(
         composition = composition,
         iterations = LottieConstants.IterateForever
     )
     Column(
-        modifier = Modifier.align(Alignment.Center),
+        modifier = modifier.align(Alignment.Center),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LottieAnimation(
@@ -70,6 +70,28 @@ fun BoxScope.ErrorStatus(
         )
 
         Text(message, style = MaterialTheme.typography.titleLarge)
+    }
+}
+
+@Composable
+fun BoxScope.EmptyStatus(modifier: Modifier = Modifier) {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cat_tv))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = LottieConstants.IterateForever
+    )
+    Column(
+        modifier = modifier.align(Alignment.Center),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier.size(200.dp),
+            contentScale = ContentScale.Crop
+        )
+
+        Text("Nothing Here", style = MaterialTheme.typography.titleLarge)
     }
 }
 

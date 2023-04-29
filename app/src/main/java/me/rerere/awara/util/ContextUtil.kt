@@ -9,6 +9,9 @@ import android.util.Log
 
 private const val TAG = "ContextUtil"
 
+val Context.versionCode: Int
+    get() = packageManager.getPackageInfo(packageName, 0).versionCode
+
 /**
  * Open the url in browser
  *
@@ -43,4 +46,11 @@ fun Context.writeToClipboard(label: String, text: String) {
     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
     val clip = android.content.ClipData.newPlainText(label, text)
     clipboard.setPrimaryClip(clip)
+}
+
+fun Context.shareLink(url: String) {
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.putExtra(Intent.EXTRA_TEXT, url)
+    intent.type = "text/plain"
+    startActivity(Intent.createChooser(intent, "Share"))
 }

@@ -3,31 +3,22 @@ package me.rerere.awara.ui.component.iwara.param
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ClearAll
 import androidx.compose.material.icons.outlined.FilterList
-import androidx.compose.material.icons.outlined.Sort
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,23 +32,29 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
 import me.rerere.awara.ui.component.common.BetterTabBar
+import me.rerere.awara.ui.component.iwara.param.filter.DateFilter
+import me.rerere.awara.ui.component.iwara.param.filter.RatingFilter
+import me.rerere.awara.ui.component.iwara.param.filter.TagFilter
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun FilterAndSort(
     modifier: Modifier = Modifier,
     sort: String?,
     onSortChange: (String) -> Unit,
     sortOptions: List<SortOption>,
-    filters: List<FilterValue> = emptyList(),
-    onFilterAdd: (FilterValue) -> Unit = {},
-    onFilterRemove: (FilterValue) -> Unit = {},
-    onFilterFinish: () -> Unit = {},
-    filterOptions: List<Filter> = emptyList(),
+    filterValues: List<FilterValue>,
+    onFilterAdd: (FilterValue) -> Unit,
+    onFilterRemove: (FilterValue) -> Unit,
+    onFilterChooseDone: () -> Unit,
+    onFilterClear: () -> Unit
 ) {
-    var showFilterModal by remember {
+    var showFilter by remember {
         mutableStateOf(false)
     }
+    val pagerState = rememberPagerState()
+    val scope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -69,184 +66,119 @@ fun FilterAndSort(
                 sortOptions = sortOptions
             )
         }
+        Box {
+            FilledTonalButton(
+                onClick = {
+                    showFilter = true
+                }
+            ) {
+                Icon(Icons.Outlined.FilterList, null)
+            }
 
-        if (filterOptions.isNotEmpty()) {
-            Box {
-                FilledTonalButton(
-                    onClick = {
-                        showFilterModal = true
-                    },
-                    shape = CircleShape,
+            if (filterValues.isNotEmpty()) {
+                Badge(
+                    modifier = Modifier.align(Alignment.TopEnd),
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                 ) {
-                    Icon(Icons.Outlined.FilterList, "Filters")
-                }
-
-                if (filters.isNotEmpty()) {
-                    Badge(
-                        modifier = Modifier.align(Alignment.TopEnd),
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                    ) {
-                        Text(filters.size.toString())
-                    }
+                    Text(filterValues.size.toString())
                 }
             }
         }
     }
 
-    if (showFilterModal) {
-        AlertDialog(
-            onDismissRequest = {
-                showFilterModal = false
-            },
-            title = {
-                Text(stringResource(R.string.filters))
-            },
-            text = {
-                val pagerState = rememberPagerState()
-                val scope = rememberCoroutineScope()
-                Column {
-                    BetterTabBar(
-                        selectedTabIndex = pagerState.currentPage,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        filterOptions.forEachIndexed { index, filter ->
-                            Tab(
-                                selected = index == pagerState.currentPage,
-                                onClick = {
-                                    scope.launch { pagerState.animateScrollToPage(index) }
-                                },
-                                modifier = Modifier.height(40.dp)
-                            ) {
-                                filter.label()
-                            }
+    if (showFilter) {
+        ModalBottomSheet(
+            onDismissRequest = { showFilter = false },
+            sheetState = sheetState
+        ) {
+            Column(
+                modifier = Modifier.padding(
+                    bottom = 32.dp,
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                BetterTabBar(
+                    selectedTabIndex = pagerState.currentPage
+                ) {
+                    Tab(
+                        selected = pagerState.currentPage == 0,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(0) } },
+                        text = {
+                            Text(stringResource(R.string.tag))
                         }
-                    }
-                    HorizontalPager(
-                        pageCount = filterOptions.size,
-                        state = pagerState,
-                    ) {
-                        FlowRow(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp, Alignment.Start),
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            val filter = filterOptions[it]
-                            filter.options.forEach { option ->
-                                val selected = filters.any { value ->
-                                    value.key == filter.key && value.value == option.value
-                                }
-                                FilterChip(
-                                    selected = selected,
-                                    colors = FilterChipDefaults.filterChipColors(
-                                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                                    ),
-                                    onClick = {
-                                        when (filter.type) {
-                                            FilterType.SINGLE -> {
-                                                filters.filter { value ->
-                                                    value.key == filter.key
-                                                }.forEach { value ->
-                                                    onFilterRemove(value)
-                                                }
-                                                if (!selected) {
-                                                    onFilterAdd(
-                                                        FilterValue(
-                                                            key = filter.key,
-                                                            value = option.value
-                                                        )
-                                                    )
-                                                }
-                                            }
+                    )
+                    Tab(
+                        selected = pagerState.currentPage == 1,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(1) } },
+                        text = {
+                            Text(stringResource(R.string.date))
+                        }
+                    )
+                    Tab(
+                        selected = pagerState.currentPage == 2,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(2) } },
+                        text = {
+                            Text(stringResource(R.string.rating))
+                        }
+                    )
+                }
 
-                                            FilterType.MULTI -> {
-                                                if (selected) {
-                                                    onFilterRemove(
-                                                        FilterValue(
-                                                            key = filter.key,
-                                                            value = option.value
-                                                        )
-                                                    )
-                                                } else {
-                                                    onFilterAdd(
-                                                        FilterValue(
-                                                            key = filter.key,
-                                                            value = option.value
-                                                        )
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    },
-                                    label = {
-                                        option.label()
-                                    },
-                                )
-                            }
+                HorizontalPager(
+                    pageCount = 3,
+                    state = pagerState,
+                    modifier = Modifier.height(500.dp)
+                ) {
+                    when (it) {
+                        0 -> {
+                            TagFilter(
+                                values = filterValues,
+                                onValueAdd = onFilterAdd,
+                                onValueRemove = onFilterRemove
+                            )
+                        }
+
+                        1 -> {
+                            DateFilter(
+                                values = filterValues,
+                                onValueAdd = onFilterAdd,
+                                onValueRemove = onFilterRemove
+                            )
+                        }
+
+                        2 -> {
+                            RatingFilter(
+                                values = filterValues,
+                                onValueAdd = onFilterAdd,
+                                onValueRemove = onFilterRemove
+                            )
                         }
                     }
                 }
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    onFilterFinish()
-                    showFilterModal = false
-                }) {
-                    Text(stringResource(R.string.confirm))
+
+                Row(
+                    modifier = Modifier.align(Alignment.End),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    FilledTonalButton(
+                        onClick = {
+                            onFilterClear()
+                        },
+                    ) {
+                        Icon(Icons.Outlined.ClearAll, null)
+                    }
+
+                    FilledTonalButton(
+                        onClick = {
+                            showFilter = false
+                            onFilterChooseDone()
+                        },
+                    ) {
+                        Text(stringResource(id = R.string.confirm))
+                    }
                 }
-            },
-        )
-    }
-}
-
-
-@Composable
-private fun SortButton(
-    modifier: Modifier = Modifier,
-    sort: String?,
-    onSortChange: (String) -> Unit,
-    sortOptions: List<SortOption>,
-) {
-    var showPopup by remember { mutableStateOf(false) }
-    val currentSort = sortOptions.find { it.name == sort } ?: sortOptions.first()
-    FilledTonalButton(
-        onClick = {
-            showPopup = !showPopup
-        },
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = modifier,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            if (currentSort.icon != null) {
-                currentSort.icon.invoke()
-            } else {
-                Icon(Icons.Outlined.Sort, "Sort")
-            }
-            currentSort.label.invoke()
-        }
-    }
-    if (showPopup) {
-        DropdownMenu(
-            expanded = showPopup,
-            onDismissRequest = { showPopup = false }
-        ) {
-            sortOptions.forEach { option ->
-                DropdownMenuItem(
-                    text = {
-                        option.label.invoke()
-                    },
-                    onClick = {
-                        onSortChange(option.name)
-                        showPopup = false
-                    },
-                    leadingIcon = if (option.icon != null) {
-                        {
-                            option.icon.invoke()
-                        }
-                    } else null
-                )
             }
         }
     }

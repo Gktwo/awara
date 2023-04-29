@@ -1,15 +1,21 @@
 package me.rerere.awara.ui.page.index
 
+import android.util.Log
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import me.rerere.awara.R
 import me.rerere.awara.data.entity.Media
 import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.repo.UserRepo
+import me.rerere.awara.data.source.UpdateChecker
+import me.rerere.awara.data.source.onError
+import me.rerere.awara.data.source.onException
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
 import me.rerere.awara.ui.component.iwara.param.FilterValue
@@ -20,14 +26,32 @@ private const val TAG = "IndexVM"
 
 class IndexVM(
     private val userRepo: UserRepo,
-    private val mediaRepo: MediaRepo
+    private val mediaRepo: MediaRepo,
+    private val updateChecker: UpdateChecker
 ) : ViewModel() {
     var state by mutableStateOf(IndexState())
         private set
+    var videoSort: String by mutableStateOf(MediaSortOptions.first().name)
+    val videoFilters: MutableList<FilterValue> = mutableStateListOf()
+    var imageSort: String = MediaSortOptions.first().name
+    val imageFilters: MutableList<FilterValue> = mutableStateListOf()
+
+    val events = MutableSharedFlow<IndexEvent>()
 
     init {
         loadSubscriptions()
         loadVideoList()
+        loadImageList()
+        checkUpdate()
+    }
+
+    private fun checkUpdate() {
+        viewModelScope.launch {
+            kotlin.runCatching {
+                val (code, name, changes) = updateChecker.getLatestVersion()
+                events.emit(IndexEvent.ShowUpdateDialog(code, name, changes))
+            }
+        }
     }
 
     private fun loadSubscriptions() {
@@ -53,6 +77,48 @@ class IndexVM(
         }
     }
 
+    fun loadCounts(userId: String) {
+        viewModelScope.launch {
+            launch {
+                runAPICatching {
+                    userRepo.getFollowingCount(userId = userId)
+                }.onSuccess {
+                    state = state.copy(followingCount = it)
+                }.onError {
+                    Log.i(TAG, "loadCounts: $it")
+                }.onSuccess {
+                    Log.i(TAG, "loadCounts: following count: $it")
+                }.onException {
+                    Log.i(TAG, "loadCounts: $it")
+                }
+            }
+
+            launch {
+                runAPICatching {
+                    userRepo.getFollowerCount(userId = userId)
+                }.onSuccess {
+                    state = state.copy(followerCount = it)
+                }
+            }
+
+            launch {
+                runAPICatching {
+                    userRepo.getFriendCount(userId = userId)
+                }.onSuccess {
+                    state = state.copy(friendsCount = it)
+                }
+            }
+
+            launch {
+                runAPICatching {
+                    userRepo.getFriendRequestCount(userId = userId)
+                }.onSuccess {
+                    state = state.copy(friendRequestsCount = it)
+                }
+            }
+        }
+    }
+
     fun jumpToSubscriptionPage(page: Int){
         if(page == state.subscriptionPage || page < 1) return
         state = state.copy(subscriptionPage = page)
@@ -72,8 +138,8 @@ class IndexVM(
                     mapOf(
                         "limit" to "24",
                         "page" to (state.videoPage - 1).toString(),
-                        "sort" to state.videoSort,
-                    ) + state.videoFilters.toParams()
+                        "sort" to videoSort,
+                    ) + videoFilters.toParams()
                 )
             }.onSuccess {
                 state = state.copy(
@@ -85,8 +151,29 @@ class IndexVM(
         }
     }
 
+    fun loadImageList() {
+        viewModelScope.launch {
+            state = state.copy(imageLoading = true)
+            runAPICatching {
+                mediaRepo.getImageList(
+                    mapOf(
+                        "limit" to "24",
+                        "page" to (state.imagePage - 1).toString(),
+                        "sort" to imageSort,
+                    ) + imageFilters.toParams()
+                )
+            }.onSuccess {
+                state = state.copy(
+                    imageList = it.results,
+                    imageCount = it.count
+                )
+            }
+            state = state.copy(imageLoading = false)
+        }
+    }
+
     fun updateVideoSort(sort: String){
-        state = state.copy(videoSort = sort)
+        videoSort = sort
         loadVideoList()
     }
 
@@ -96,12 +183,39 @@ class IndexVM(
         loadVideoList()
     }
 
-    fun addFilter(filterValue: FilterValue) {
-        state = state.copy(videoFilters = state.videoFilters + filterValue)
+    fun addVideoFilter(filterValue: FilterValue) {
+        videoFilters.add(filterValue)
     }
 
-    fun removeFilter(filterValue: FilterValue) {
-        state = state.copy(videoFilters = state.videoFilters - filterValue)
+    fun removeVideoFilter(filterValue: FilterValue) {
+        videoFilters.remove(filterValue)
+    }
+
+    fun updateImageSort(sort: String){
+        imageSort = sort
+        loadImageList()
+    }
+
+    fun updateImagePage(it: Int) {
+        if(it == state.imagePage || it < 1) return
+        state = state.copy(imagePage = it)
+        loadImageList()
+    }
+
+    fun addImageFilter(filterValue: FilterValue) {
+        imageFilters.add(filterValue)
+    }
+
+    fun removeImageFilter(filterValue: FilterValue) {
+        imageFilters.remove(filterValue)
+    }
+
+    fun clearImageFilter() {
+        imageFilters.clear()
+    }
+
+    fun clearVideoFilter() {
+        videoFilters.clear()
     }
 
     data class IndexState(
@@ -114,8 +228,14 @@ class IndexVM(
         val videoPage: Int = 1,
         val videoCount: Int = 0,
         val videoList: List<Media> = emptyList(),
-        val videoSort: String = MediaSortOptions.first().name,
-        val videoFilters: List<FilterValue> = emptyList(),
+        val imageLoading: Boolean = false,
+        val imagePage: Int = 1,
+        val imageCount: Int = 0,
+        val imageList: List<Media> = emptyList(),
+        val followingCount: Int = 0,
+        val followerCount: Int = 0,
+        val friendsCount: Int = 0,
+        val friendRequestsCount: Int = 0,
     )
 
     enum class SubscriptionType(
@@ -123,6 +243,10 @@ class IndexVM(
     ) {
         VIDEO(R.string.video),
         IMAGE(R.string.image),
+    }
+
+    sealed class IndexEvent {
+        data class ShowUpdateDialog(val code: Int, val version: String, val changes: String) : IndexEvent()
     }
 }
 

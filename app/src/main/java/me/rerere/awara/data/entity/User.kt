@@ -25,3 +25,19 @@ data class User(
     val updatedAt: Instant,
     val avatar: File?,
 )
+
+@Serializable
+data class Follower(
+    val id: Int,
+    @Serializable(with = InstantSerializer::class)
+    val createdAt: Instant,
+    val follower: User,
+)
+
+@Serializable
+data class Following(
+    val id: Int,
+    @Serializable(with = InstantSerializer::class)
+    val createdAt: Instant,
+    val user: User,
+)
