@@ -22,7 +22,7 @@ class ImageVM(
     private val mediaRepo: MediaRepo,
     private val appDatabase: AppDatabase
 ) : ViewModel() {
-    private val id = checkNotNull(savedStateHandle.get<String>("id"))
+    val id = checkNotNull(savedStateHandle.get<String>("id"))
 
     var state by mutableStateOf(ImageState())
         private set

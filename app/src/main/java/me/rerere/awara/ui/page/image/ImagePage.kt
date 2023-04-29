@@ -16,8 +16,10 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -48,6 +50,7 @@ import me.rerere.awara.ui.component.common.zoomable.zoomable
 import me.rerere.awara.ui.component.iwara.AuthorCard
 import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.util.openUrl
+import me.rerere.awara.util.shareLink
 import me.rerere.awara.util.toLocalDateTimeString
 import org.koin.androidx.compose.koinViewModel
 
@@ -142,6 +145,14 @@ fun ImagePage(vm: ImageVM = koinViewModel()) {
                                 verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
+                                IconButton(
+                                    onClick = {
+                                        context.shareLink("https://www.iwara.tv/image/${vm.id}")
+                                    }
+                                ) {
+                                    Icon(Icons.Outlined.Share, null)
+                                }
+                                
                                 Spacer(modifier = Modifier.weight(1f))
                                 
                                 Button(

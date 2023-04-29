@@ -47,3 +47,10 @@ fun Context.writeToClipboard(label: String, text: String) {
     val clip = android.content.ClipData.newPlainText(label, text)
     clipboard.setPrimaryClip(clip)
 }
+
+fun Context.shareLink(url: String) {
+    val intent = Intent(Intent.ACTION_SEND)
+    intent.putExtra(Intent.EXTRA_TEXT, url)
+    intent.type = "text/plain"
+    startActivity(Intent.createChooser(intent, "Share"))
+}

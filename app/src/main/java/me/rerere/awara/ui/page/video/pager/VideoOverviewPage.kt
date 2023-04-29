@@ -58,6 +58,7 @@ import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.ui.component.iwara.TagRow
 import me.rerere.awara.ui.page.video.VideoVM
 import me.rerere.awara.util.openUrl
+import me.rerere.awara.util.shareLink
 import me.rerere.awara.util.toLocalDateTimeString
 
 @Composable
@@ -183,7 +184,9 @@ private fun VideoInfoCard(video: Video, vm: VideoVM) {
                     Icon(Icons.Outlined.Download, null)
                 }
 
-                IconButton(onClick = { /*TODO*/ }) {
+                IconButton(
+                    onClick = { context.shareLink("https://www.iwara.tv/video/${vm.id}") }
+                ) {
                     Icon(Icons.Outlined.Share, null)
                 }
 
