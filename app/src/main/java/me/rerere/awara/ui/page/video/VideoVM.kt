@@ -101,6 +101,20 @@ class VideoVM(
         }
     }
 
+    fun createPlaylist(title: String) {
+        viewModelScope.launch {
+            runAPICatching {
+                mediaRepo.createPlaylist(title)
+            }.onSuccess {
+                loadPlaylistForVideo()
+            }.onError {
+                Log.w(TAG, "createPlaylist: $it")
+            }.onException {
+                Log.w(TAG, "createPlaylist: ${it.exception}")
+            }
+        }
+    }
+
     fun loadPlaylistForVideo() {
         viewModelScope.launch {
             runAPICatching {

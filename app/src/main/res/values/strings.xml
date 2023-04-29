@@ -30,4 +30,5 @@
     <string name="playlist">Playlist</string>
     <string name="playlist_num_videos">Total %d videos</string>
     <string name="search">Search</string>
+    <string name="favorites">Favorites</string>
 </resources>

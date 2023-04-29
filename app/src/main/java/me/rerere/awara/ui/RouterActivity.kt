@@ -27,6 +27,7 @@ import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import me.rerere.awara.ui.component.common.DialogProvider
 import me.rerere.awara.ui.component.common.MessageProvider
+import me.rerere.awara.ui.page.favorites.FavoritesPage
 import me.rerere.awara.ui.page.history.HistoryPage
 import me.rerere.awara.ui.page.image.ImagePage
 import me.rerere.awara.ui.page.index.IndexPage
@@ -169,6 +170,10 @@ class RouterActivity : ComponentActivity() {
                     )
                 ) {
                     PlaylistDetailPage()
+                }
+
+                composable("favorites") {
+                    FavoritesPage()
                 }
 
                 composable("setting") {

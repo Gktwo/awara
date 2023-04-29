@@ -57,7 +57,7 @@ fun IndexPagePhoneLayout(vm: IndexVM) {
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet {
-                IndexDrawer()
+                IndexDrawer(vm)
             }
         },
         drawerState = drawerState,

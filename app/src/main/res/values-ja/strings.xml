@@ -29,4 +29,5 @@
     <string name="playlist">プレイリスト</string>
     <string name="playlist_num_videos">合計 %d ビデオ</string>
     <string name="search">検索</string>
+    <string name="favorites">お気に入り</string>
 </resources>

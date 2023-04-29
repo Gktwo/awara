@@ -56,7 +56,7 @@ fun IndexPageTabletLayout(vm: IndexVM) {
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet {
-                IndexDrawer()
+                IndexDrawer(vm)
             }
         },
         drawerState = drawerState,

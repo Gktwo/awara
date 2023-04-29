@@ -26,4 +26,20 @@ class UserRepo(private val iwaraAPI: IwaraAPI) {
     suspend fun followUser(id: String) = iwaraAPI.followUser(id)
 
     suspend fun unfollowUser(id: String) = iwaraAPI.unfollowUser(id)
+
+    suspend fun getFollowerCount(userId: String) = iwaraAPI.getUserFollowers(userId, mapOf(
+        "limit" to "1"
+    )).count
+
+    suspend fun getFollowingCount(userId: String) = iwaraAPI.getUserFollowing(userId, mapOf(
+        "limit" to "1"
+    )).count
+
+    suspend fun getFriendCount(userId: String) = iwaraAPI.getUserFriends(userId, mapOf(
+        "limit" to "1"
+    )).count
+
+    suspend fun getFriendRequestCount(userId: String) = iwaraAPI.getUserFriendRequests(userId, mapOf(
+        "limit" to "1"
+    )).count
 }

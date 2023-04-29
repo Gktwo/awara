@@ -50,7 +50,7 @@ val networkModule = module {
             }
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
-                    setLevel(HttpLoggingInterceptor.Level.BASIC)
+                    setLevel(HttpLoggingInterceptor.Level.BODY)
                 }
             )
 //            .addInterceptor {

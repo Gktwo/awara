@@ -1,5 +1,6 @@
 package me.rerere.awara.ui.page.index
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +14,8 @@ import me.rerere.awara.data.entity.Media
 import me.rerere.awara.data.repo.MediaRepo
 import me.rerere.awara.data.repo.UserRepo
 import me.rerere.awara.data.source.UpdateChecker
+import me.rerere.awara.data.source.onError
+import me.rerere.awara.data.source.onException
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
 import me.rerere.awara.ui.component.iwara.param.FilterValue
@@ -71,6 +74,48 @@ class IndexVM(
                 )
             }
             state = state.copy(subscriptionLoading = false)
+        }
+    }
+
+    fun loadCounts(userId: String) {
+        viewModelScope.launch {
+            launch {
+                runAPICatching {
+                    userRepo.getFollowingCount(userId = userId)
+                }.onSuccess {
+                    state = state.copy(followingCount = it)
+                }.onError {
+                    Log.i(TAG, "loadCounts: $it")
+                }.onSuccess {
+                    Log.i(TAG, "loadCounts: following count: $it")
+                }.onException {
+                    Log.i(TAG, "loadCounts: $it")
+                }
+            }
+
+            launch {
+                runAPICatching {
+                    userRepo.getFollowerCount(userId = userId)
+                }.onSuccess {
+                    state = state.copy(followerCount = it)
+                }
+            }
+
+            launch {
+                runAPICatching {
+                    userRepo.getFriendCount(userId = userId)
+                }.onSuccess {
+                    state = state.copy(friendsCount = it)
+                }
+            }
+
+            launch {
+                runAPICatching {
+                    userRepo.getFriendRequestCount(userId = userId)
+                }.onSuccess {
+                    state = state.copy(friendRequestsCount = it)
+                }
+            }
         }
     }
 
@@ -187,6 +232,10 @@ class IndexVM(
         val imagePage: Int = 1,
         val imageCount: Int = 0,
         val imageList: List<Media> = emptyList(),
+        val followingCount: Int = 0,
+        val followerCount: Int = 0,
+        val friendsCount: Int = 0,
+        val friendRequestsCount: Int = 0,
     )
 
     enum class SubscriptionType(

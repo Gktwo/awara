@@ -7,10 +7,16 @@ import me.rerere.awara.data.dto.ProfileDto
 import me.rerere.awara.data.dto.Self
 import me.rerere.awara.data.entity.Comment
 import me.rerere.awara.data.entity.CommentCreationDto
+import me.rerere.awara.data.entity.FavoriteImage
+import me.rerere.awara.data.entity.FavoriteVideo
+import me.rerere.awara.data.entity.Follower
+import me.rerere.awara.data.entity.Following
 import me.rerere.awara.data.entity.Image
 import me.rerere.awara.data.entity.Playlist
+import me.rerere.awara.data.entity.PlaylistCreationDto
 import me.rerere.awara.data.entity.PlaylistPager
 import me.rerere.awara.data.entity.Tag
+import me.rerere.awara.data.entity.User
 import me.rerere.awara.data.entity.Video
 import retrofit2.Response
 import retrofit2.http.Body
@@ -127,4 +133,43 @@ interface IwaraAPI {
         @Path("id") id: String,
         @Path("videoId") videoId: String
     ): Response<Unit>
+
+    @POST("/playlists")
+    suspend fun createPlaylist(
+        @Body dto: PlaylistCreationDto
+    ): Playlist
+
+    @GET("/user/{userId}/followers")
+    suspend fun getUserFollowers(
+        @Path("userId") userId: String,
+        @QueryMap queryMap: Map<String, String>
+    ): Pager<Follower>
+
+    @GET("/user/{userId}/following")
+    suspend fun getUserFollowing(
+        @Path("userId") userId: String,
+        @QueryMap queryMap: Map<String, String>
+    ): Pager<Following>
+
+    @GET("/user/{userId}/friends")
+    suspend fun getUserFriends(
+        @Path("userId") userId: String,
+        @QueryMap queryMap: Map<String, String>
+    ): Pager<User>
+
+    @GET("/user/{userId}/friends/requests")
+    suspend fun getUserFriendRequests(
+        @Path("userId") userId: String,
+        @QueryMap queryMap: Map<String, String>
+    ): Pager<User>
+
+    @GET("/favorites/videos")
+    suspend fun getFavoriteVideos(
+        @Query("page") page: Int
+    ): Pager<FavoriteVideo>
+
+    @GET("/favorites/images")
+    suspend fun getFavoriteImages(
+        @Query("page") page: Int
+    ): Pager<FavoriteImage>
 }

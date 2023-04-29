@@ -20,3 +20,8 @@ data class PlaylistPager(
     override val results: List<Video>,
     val playlist: Playlist
 ) : IPager<Video>
+
+@Serializable
+data class PlaylistCreationDto(
+    val title: String
+)
