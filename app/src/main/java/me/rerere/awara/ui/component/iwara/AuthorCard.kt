@@ -26,7 +26,7 @@ import me.rerere.awara.ui.component.common.ButtonType
 @Composable
 fun AuthorCard(
     user: User?,
-    onClickSub: () -> Unit
+    onClickSub: (() -> Unit)?
 ) {
     val router = LocalRouterProvider.current
     if (user != null) {
@@ -64,11 +64,17 @@ fun AuthorCard(
                     )
                 }
 
-                Button(
-                    onClick = onClickSub,
-                    type = if (user.following) ButtonType.Outlined else ButtonType.Default
-                ) {
-                    Text(if (user.following) stringResource(R.string.unfollow) else stringResource(R.string.follow))
+                onClickSub?.let {
+                    Button(
+                        onClick = onClickSub,
+                        type = if (user.following) ButtonType.Outlined else ButtonType.Default
+                    ) {
+                        Text(
+                            if (user.following) stringResource(R.string.unfollow) else stringResource(
+                                R.string.follow
+                            )
+                        )
+                    }
                 }
             }
         }

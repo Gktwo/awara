@@ -3,6 +3,7 @@ package me.rerere.awara.ui.page.video.pager
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -39,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -64,43 +66,57 @@ import me.rerere.awara.util.toLocalDateTimeString
 @Composable
 fun VideoOverviewPage(vm: VideoVM) {
     val state = vm.state
-    Spin(
-        show = state.loading,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        LazyVerticalStaggeredGrid(
-            modifier = Modifier.fillMaxSize(),
-            columns = DynamicStaggeredGridCells(),
-            verticalItemSpacing = 8.dp,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            contentPadding = PaddingValues(8.dp) + WindowInsets.navigationBars.asPaddingValues()
+    if(state.private) {
+        Column(
+            modifier = Modifier.padding(8.dp)
         ) {
-            state.video?.let {
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    VideoInfoCard(
-                        video = it,
-                        vm = vm
-                    )
-                }
-                item(
-                    span = StaggeredGridItemSpan.FullLine
-                ) {
-                    AuthorCard(
-                        user = it.user,
-                        onClickSub = {
-                            vm.followOrUnfollow()
-                        }
-                    )
-                }
+            AuthorCard(user = state.privateUser, onClickSub = null)
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = stringResource(R.string.errors_private_video),
+                )
+            }
+        }
 
-                item(span = StaggeredGridItemSpan.FullLine) {
-                    TagRow(
-                        tags = state.video.tags,
-                    )
-                }
+    } else {
+        Spin(
+            show = state.loading,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            LazyVerticalStaggeredGrid(
+                modifier = Modifier.fillMaxSize(),
+                columns = DynamicStaggeredGridCells(),
+                verticalItemSpacing = 8.dp,
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                contentPadding = PaddingValues(8.dp) + WindowInsets.navigationBars.asPaddingValues()
+            ) {
+                state.video?.let {
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        VideoInfoCard(
+                            video = it,
+                            vm = vm
+                        )
+                    }
+                    item(
+                        span = StaggeredGridItemSpan.FullLine
+                    ) {
+                        AuthorCard(
+                            user = it.user,
+                            onClickSub = {
+                                vm.followOrUnfollow()
+                            }
+                        )
+                    }
 
-                items(state.relatedVideos) {
-                    MediaCard(media = it)
+                    item(span = StaggeredGridItemSpan.FullLine) {
+                        TagRow(
+                            tags = state.video.tags,
+                        )
+                    }
+
+                    items(state.relatedVideos) {
+                        MediaCard(media = it)
+                    }
                 }
             }
         }

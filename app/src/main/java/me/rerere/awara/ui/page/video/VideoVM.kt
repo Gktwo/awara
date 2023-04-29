@@ -13,6 +13,7 @@ import me.rerere.awara.data.entity.CommentCreationDto
 import me.rerere.awara.data.entity.HistoryItem
 import me.rerere.awara.data.entity.HistoryType
 import me.rerere.awara.data.entity.Playlist
+import me.rerere.awara.data.entity.User
 import me.rerere.awara.data.entity.Video
 import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.thumbnailUrl
@@ -30,6 +31,7 @@ import me.rerere.awara.ui.component.iwara.comment.pop
 import me.rerere.awara.ui.component.iwara.comment.push
 import me.rerere.awara.ui.component.iwara.comment.updatePage
 import me.rerere.awara.ui.component.iwara.comment.updateTopStack
+import me.rerere.awara.util.JsonInstance
 import java.time.Instant
 
 private const val TAG = "VideoVM"
@@ -70,7 +72,7 @@ class VideoVM(
 
     private fun getVideo() {
         viewModelScope.launch {
-            state = state.copy(loading = true)
+            state = state.copy(loading = true, private = false)
             runAPICatching {
                 val video = mediaRepo.getVideo(id)
                 val urls = mediaRepo.parseVideoUrl(video).filter {
@@ -84,6 +86,13 @@ class VideoVM(
                 writeHistory()
             }.onError {
                 Log.w(TAG, "getVideo: $it")
+
+                if(it.message == "errors.privateVideo") {
+                    state = state.copy(
+                        private = true,
+                        privateUser = it.data?.get("user")?.let { JsonInstance.decodeFromJsonElement(User.serializer(), it) }
+                    )
+                }
             }.onException {
                 Log.w(TAG, "getVideo: ${it.exception}")
             }
@@ -279,6 +288,8 @@ class VideoVM(
     data class VideoState(
         val loading: Boolean = false,
         val video: Video? = null,
+        val private: Boolean = false,
+        val privateUser: User? = null,
         val urls: List<VideoFile> = emptyList(),
         val relatedVideos: List<Video> = emptyList(),
         val likeLoading: Boolean = false,

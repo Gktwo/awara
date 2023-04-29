@@ -36,4 +36,6 @@
     <string name="unfollow">取消订阅</string>
     <string name="like">喜欢</string>
     <string name="dislike">取消喜欢</string>
+    <string name="private_badge">私享</string>
+    <string name="errors_private_video">这是一个私人视频</string>
 </resources>

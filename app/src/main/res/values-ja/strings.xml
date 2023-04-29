@@ -34,4 +34,6 @@
     <string name="unfollow">フォローをやめる</string>
     <string name="like">好き</string>
     <string name="dislike">嫌い</string>
+    <string name="private_badge">プライベート</string>
+    <string name="errors_private_video">これはプライベートビデオです</string>
 </resources>
