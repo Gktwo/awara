@@ -74,6 +74,16 @@ interface IwaraAPI {
         @Path("id") id: String
     ): Response<Unit>
 
+    @POST("/image/{id}/like")
+    suspend fun likeImage(
+        @Path("id") id: String
+    ): Response<Unit>
+
+    @DELETE("/image/{id}/like")
+    suspend fun unlikeImage(
+        @Path("id") id: String
+    ): Response<Unit>
+
     @GET("/video/{id}/comments")
     suspend fun getVideoComments(
         @Path("id") id: String,

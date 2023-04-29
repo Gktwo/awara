@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 import me.rerere.awara.util.InstantSerializer
 import me.rerere.awara.util.sha1
 import me.rerere.awara.util.toHex
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.time.Instant
@@ -49,6 +48,7 @@ data class Video(
     val embedUrl: String?,
     val file: File?,
     val fileUrl: String?,
+    val thumbnail: Int
 ): Media
 
 @Serializable
@@ -81,7 +81,8 @@ fun Media.thumbnailUrl(): String = when(this) {
         val id = url?.queryParameter("v") ?: url?.pathSegments?.lastOrNull() ?: ""
         "https://i.iwara.tv/image/embed/thumbnail/youtube/$id"
     } else run {
-        "https://i.iwara.tv/image/thumbnail/${file?.id}/thumbnail-00.jpg"
+        val id = this.thumbnail.toString().padStart(2, '0')
+        "https://i.iwara.tv/image/thumbnail/${file?.id}/thumbnail-$id.jpg"
     }
     is Image -> "https://i.iwara.tv/image/thumbnail/${thumbnail.id}/${thumbnail.name}"
 }

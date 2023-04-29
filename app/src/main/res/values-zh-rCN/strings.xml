@@ -32,4 +32,8 @@
     <string name="playlist_num_videos">共 %d 个视频</string>
     <string name="search">搜索</string>
     <string name="favorites">最爱</string>
+    <string name="follow">订阅</string>
+    <string name="unfollow">取消订阅</string>
+    <string name="like">喜欢</string>
+    <string name="dislike">取消喜欢</string>
 </resources>

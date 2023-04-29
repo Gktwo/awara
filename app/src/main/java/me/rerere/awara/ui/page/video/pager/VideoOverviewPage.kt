@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -33,7 +32,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.ProvideTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,20 +39,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import me.rerere.awara.R
 import me.rerere.awara.data.entity.Video
-import me.rerere.awara.ui.LocalRouterProvider
 import me.rerere.awara.ui.component.common.Button
 import me.rerere.awara.ui.component.common.ButtonType
 import me.rerere.awara.ui.component.common.Spin
 import me.rerere.awara.ui.component.ext.DynamicStaggeredGridCells
 import me.rerere.awara.ui.component.ext.plus
-import me.rerere.awara.ui.component.iwara.Avatar
+import me.rerere.awara.ui.component.iwara.AuthorCard
 import me.rerere.awara.ui.component.iwara.MediaCard
 import me.rerere.awara.ui.component.iwara.RichText
 import me.rerere.awara.ui.component.iwara.TagRow
@@ -83,9 +81,14 @@ fun VideoOverviewPage(vm: VideoVM) {
                         vm = vm
                     )
                 }
-                item(span = StaggeredGridItemSpan.FullLine) {
+                item(
+                    span = StaggeredGridItemSpan.FullLine
+                ) {
                     AuthorCard(
-                        video = it
+                        user = it.user,
+                        onClickSub = {
+                            // TODO
+                        }
                     )
                 }
 
@@ -215,41 +218,8 @@ private fun VideoInfoCard(video: Video, vm: VideoVM) {
                     type = if (video.liked) ButtonType.Outlined else ButtonType.Default,
                     loading = vm.state.likeLoading
                 ) {
-                    Text(if (video.liked) "取消喜欢" else "喜欢")
+                    Text(if (video.liked) stringResource(R.string.dislike) else stringResource(R.string.like))
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun AuthorCard(video: Video) {
-    val router = LocalRouterProvider.current
-    OutlinedCard(
-        modifier = Modifier
-            .fillMaxWidth(),
-        onClick = {
-            router.navigate("user/${video.user.username}")
-        }
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp),
-        ) {
-            Avatar(
-                user = video.user,
-                modifier = Modifier.size(32.dp)
-            )
-            Column {
-                Text(
-                    text = video.user.name,
-                    style = MaterialTheme.typography.labelLarge
-                )
-                Text(
-                    text = "@" + video.user.username,
-                    style = MaterialTheme.typography.labelSmall
-                )
             }
         }
     }

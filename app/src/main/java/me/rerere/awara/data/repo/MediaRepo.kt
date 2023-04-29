@@ -51,6 +51,10 @@ class MediaRepo(
 
     suspend fun unlikeVideo(id: String) = iwaraAPI.unlikeVideo(id)
 
+    suspend fun likeImage(id: String) = iwaraAPI.likeImage(id)
+
+    suspend fun unlikeImage(id: String) = iwaraAPI.unlikeImage(id)
+
     suspend fun getImage(id: String) = iwaraAPI.getImage(id)
 
     suspend fun getTagsSuggestions(query: String) = iwaraAPI.autoCompleteTags(query)

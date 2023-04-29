@@ -30,4 +30,8 @@
     <string name="playlist_num_videos">合計 %d ビデオ</string>
     <string name="search">検索</string>
     <string name="favorites">お気に入り</string>
+    <string name="follow">従う</string>
+    <string name="unfollow">フォローをやめる</string>
+    <string name="like">好き</string>
+    <string name="dislike">嫌い</string>
 </resources>

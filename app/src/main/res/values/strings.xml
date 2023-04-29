@@ -31,4 +31,8 @@
     <string name="playlist_num_videos">Total %d videos</string>
     <string name="search">Search</string>
     <string name="favorites">Favorites</string>
+    <string name="follow">Follow</string>
+    <string name="unfollow">Unfollow</string>
+    <string name="like">Like</string>
+    <string name="dislike">Dislike</string>
 </resources>

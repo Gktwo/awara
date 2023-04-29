@@ -31,6 +31,24 @@ class ImageVM(
         load()
     }
 
+    fun likeOrDislike() {
+        viewModelScope.launch {
+            state = state.copy(likeLoading = true)
+            runAPICatching {
+                if(state.state?.liked == true) {
+                    mediaRepo.unlikeImage(id)
+                } else {
+                    mediaRepo.likeImage(id)
+                }
+
+                mediaRepo.getImage(id).let {
+                    state = state.copy(state = it)
+                }
+            }
+            state = state.copy(likeLoading = false)
+        }
+    }
+
     private fun load() {
         viewModelScope.launch {
             state = state.copy(loading = true)
@@ -65,6 +83,7 @@ class ImageVM(
 
     data class ImageState(
         val loading: Boolean = false,
+        val likeLoading: Boolean = false,
         val state: Image? = null,
     )
 }
