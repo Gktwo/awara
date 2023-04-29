@@ -178,17 +178,6 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
                                 Icon(Icons.Outlined.Cast, null)
                             }
                         }
-
-                        IconButton(
-                            onClick = {
-                                if (!fullscreen) enterFullScreen() else exitFullScreen()
-                            }
-                        ) {
-                            Icon(
-                                if (!fullscreen) Icons.Outlined.Fullscreen else Icons.Outlined.FullscreenExit,
-                                "Fullscreen"
-                            )
-                        }
                         if (fullscreen) {
                             IconButton(
                                 onClick = {
@@ -232,6 +221,18 @@ fun  VideoPage(vm: VideoVM = koinViewModel()) {
                                     )
                                 }
                             }
+                        }
+                    },
+                    controllerTrail = {
+                        IconButton(
+                            onClick = {
+                                if (!fullscreen) enterFullScreen() else exitFullScreen()
+                            }
+                        ) {
+                            Icon(
+                                if (!fullscreen) Icons.Outlined.Fullscreen else Icons.Outlined.FullscreenExit,
+                                "Fullscreen"
+                            )
                         }
                     }
                 )

@@ -50,6 +50,7 @@ fun Player(
     modifier: Modifier,
     state: PlayerState,
     navigationIcon: @Composable (() -> Unit)? = null,
+    controllerTrail: @Composable (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     Box(
@@ -64,7 +65,8 @@ fun Player(
                 state = state,
                 modifier = Modifier.matchParentSize(),
                 navigationIcon = navigationIcon,
-                actions = actions
+                actions = actions,
+                controllerTrail = controllerTrail
             )
         }
     }
@@ -76,6 +78,7 @@ private fun PlayerController(
     state: PlayerState,
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
+    controllerTrail: @Composable (() -> Unit)? = null,
 ) {
     // 自动隐藏Controller
     var visible by remember { mutableStateOf(true) }
@@ -176,6 +179,8 @@ private fun PlayerController(
                     ProgressBar(state) {
                         lastInteract = System.currentTimeMillis()
                     }
+
+                    controllerTrail?.invoke()
                 }
             }
         }
