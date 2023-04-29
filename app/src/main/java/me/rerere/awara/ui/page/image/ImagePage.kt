@@ -152,23 +152,25 @@ fun ImagePage(vm: ImageVM = koinViewModel()) {
                                 ) {
                                     Icon(Icons.Outlined.Share, null)
                                 }
-                                
+
                                 Spacer(modifier = Modifier.weight(1f))
-                                
+
                                 Button(
                                     onClick = { vm.likeOrDislike() },
-                                    type = if(state.state?.liked == true) ButtonType.Outlined else ButtonType.Default,
+                                    type = if (state.state?.liked == true) ButtonType.Outlined else ButtonType.Default,
                                     loading = state.likeLoading
                                 ) {
                                     Text(
-                                        text = if(state.state?.liked == true) stringResource(R.string.dislike) else stringResource(R.string.like)
+                                        text = if (state.state?.liked == true) stringResource(R.string.dislike) else stringResource(
+                                            R.string.like
+                                        )
                                     )
                                 }
                             }
                         }
                     }
 
-                    AuthorCard(user = state.state?.user, onClickSub = {})
+                    AuthorCard(user = state.state?.user, onClickSub = { vm.followOrUnfollow() })
                 }
             }
         }

@@ -18,6 +18,7 @@ import me.rerere.awara.data.entity.VideoFile
 import me.rerere.awara.data.entity.thumbnailUrl
 import me.rerere.awara.data.repo.CommentRepo
 import me.rerere.awara.data.repo.MediaRepo
+import me.rerere.awara.data.repo.UserRepo
 import me.rerere.awara.data.source.APIResult
 import me.rerere.awara.data.source.onError
 import me.rerere.awara.data.source.onException
@@ -36,6 +37,7 @@ private const val TAG = "VideoVM"
 class VideoVM(
     savedStateHandle: SavedStateHandle,
     private val mediaRepo: MediaRepo,
+    private val userRepo: UserRepo,
     private val commentRepo: CommentRepo,
     private val appDatabase: AppDatabase
 ) : ViewModel() {
@@ -148,6 +150,20 @@ class VideoVM(
                 Log.w(TAG, "likeOrUnlike(exception)", it.exception)
             }
             state = state.copy(likeLoading = false)
+        }
+    }
+
+    fun followOrUnfollow() {
+        viewModelScope.launch {
+            runAPICatching {
+                if(state.video?.user?.following == true) {
+                    userRepo.unfollowUser(state.video?.user?.id ?: return@runAPICatching)
+                } else {
+                    userRepo.followUser(state.video?.user?.id ?: return@runAPICatching)
+                }
+            }.onSuccess {
+                getVideo()
+            }
         }
     }
 

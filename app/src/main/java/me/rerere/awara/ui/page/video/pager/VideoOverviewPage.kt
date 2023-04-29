@@ -88,7 +88,7 @@ fun VideoOverviewPage(vm: VideoVM) {
                     AuthorCard(
                         user = it.user,
                         onClickSub = {
-                            // TODO
+                            vm.followOrUnfollow()
                         }
                     )
                 }

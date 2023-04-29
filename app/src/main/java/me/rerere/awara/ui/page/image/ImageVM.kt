@@ -12,6 +12,7 @@ import me.rerere.awara.data.entity.HistoryType
 import me.rerere.awara.data.entity.Image
 import me.rerere.awara.data.entity.thumbnailUrl
 import me.rerere.awara.data.repo.MediaRepo
+import me.rerere.awara.data.repo.UserRepo
 import me.rerere.awara.data.source.onSuccess
 import me.rerere.awara.data.source.runAPICatching
 import me.rerere.awara.di.AppDatabase
@@ -20,6 +21,7 @@ import java.time.Instant
 class ImageVM(
     savedStateHandle: SavedStateHandle,
     private val mediaRepo: MediaRepo,
+    private val userRepo: UserRepo,
     private val appDatabase: AppDatabase
 ) : ViewModel() {
     val id = checkNotNull(savedStateHandle.get<String>("id"))
@@ -29,6 +31,20 @@ class ImageVM(
 
     init {
         load()
+    }
+
+    fun followOrUnfollow() {
+        viewModelScope.launch {
+            runAPICatching {
+                if(state.state?.user?.following == true) {
+                    userRepo.unfollowUser(state.state?.user?.id ?: return@runAPICatching)
+                } else {
+                    userRepo.followUser(state.state?.user?.id ?: return@runAPICatching)
+                }
+            }.onSuccess {
+                load()
+            }
+        }
     }
 
     fun likeOrDislike() {
