@@ -1,4 +1,6 @@
-<img src="doc/icon.png"  width="128" height="128" style="border-radius:50%" />
+<kbd>
+<img src="doc/icon.png"  width="128" height="128" />
+</kbd>
 
 # Awara
 [English](doc/README.en.md) | [日本語説明](doc/README.ja.md) | [한국어 설명](doc/README.ko.md)
